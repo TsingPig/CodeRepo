@@ -71,6 +71,7 @@ public class Game
         // 游戏中动态装备
         decoratedPlayer.Equip();
 
-        Console.ReadKey(); // 等待用户按下键盘任意键，以便在终端看到输出结果
+
+        Console.WriteLine("GameMain!");
     }
 }
