@@ -3,31 +3,44 @@
         "iostream": "cpp"
     },
     "files.exclude": {
-            "output/": true,
-            "*.metadata": true,
-            "*.settings": true,
-            "**/*.pyc": true, //隐藏所有pyc文件
-            "**/*.meta": true, //隐藏所有meta文件
-            "**/*.prefab": true, //隐藏所有prefab文件
-            "**/*.d.ts": true, //隐藏所有d.ts文件
-            "**/*.fnt": true,
-            "**/*.sln": true,
-            "**/*.csproj": true,
-            "**/.vscode": true,
-            "**/*.anim": true,
-            "**/*.controller": true,
-            "**/Logs": true,
-            "**/[Pp]lugins": true, //使用中括号时表示不区分大小写
-            "**/[Mm]aterials": true,
-            "**/[Aa]nimation": true,
-            "**/[Pp]ackages": true, 
-            "**/[Tt]extures": true,
-            "**/[Ss]cenes": true,
-            "**/temp": true, //隐藏temp文件夹
-            "**/library": true, //隐藏library文件夹
-            "**/audio": true, //隐藏audio文件夹
-            "**/video": true, //隐藏video文件夹
-        }
-
-
+        "output/": true,
+        "*.metadata": true,
+        "*.settings": true,
+        "**/*.pyc": true, //隐藏所有pyc文件
+        "**/*.meta": true, //隐藏所有meta文件
+        "**/*.prefab": true, //隐藏所有prefab文件
+        "**/*.d.ts": true, //隐藏所有d.ts文件
+        "**/*.fnt": true,
+        "**/*.sln": true,
+        "**/*.csproj": true,
+        "**/.vscode": true,
+        "**/*.anim": true,
+        "**/*.controller": true,
+        "**/Logs": true,
+        "**/[Pp]lugins": true, //使用中括号时表示不区分大小写
+        "**/[Mm]aterials": true,
+        "**/[Aa]nimation": true,
+        "**/[Pp]ackages": true,
+        "**/[Tt]extures": true,
+        "**/[Ss]cenes": true,
+        "**/temp": true, //隐藏temp文件夹
+        "**/library": true, //隐藏library文件夹
+        "**/audio": true, //隐藏audio文件夹
+        "**/video": true, //隐藏video文件夹
+        "**/.git": true,
+        "**/.gitee": true,
+        "demos/": true,
+        "docs/": true,
+        "projects/": true,
+        "templates/[!i]*/": true,
+        "components/[!d]*": true,
+        "drivers/": true,
+        "scripts/": true,
+        "user/": true,
+        ".clang-format*": true,
+        ".cppcheck-ignore": true,
+        ".gitignore": true,
+        ".gitlab-ci.yml": true,
+        "**/LICENSE": true
+    }
 }
