@@ -1,0 +1,32 @@
+@startuml 
+abstract class Player {
+  {abstract} Equip()
+}
+
+class BasicPlayer {
+  + Equip()
+}
+
+abstract class Equipment {
+  # player: Player
+  + Equip()
+}
+
+class Sword {
+  + Equip()
+}
+
+class Shield {
+  + Equip()
+}
+
+class Helmet {
+  + Equip()
+}
+
+Player <|-- BasicPlayer
+Player <|-- Equipment
+Equipment <|-- Sword
+Equipment <|-- Shield
+Equipment <|-- Helmet
+@enduml

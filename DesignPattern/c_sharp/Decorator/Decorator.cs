@@ -15,12 +15,14 @@ public class BasicPlayer : Player
     }
 }
 
-// 抽象装饰类
-public abstract class PlayerDecorator : Player
+/// <summary>
+/// 抽象装饰类（Decorator）
+/// </summary>
+public abstract class Equipment : Player
 {
     protected Player player;
 
-    public PlayerDecorator(Player player)
+    public Equipment(Player player)
     {
         this.player = player;
     }
@@ -34,10 +36,12 @@ public abstract class PlayerDecorator : Player
     }
 }
 
-// 具体装饰类
-public class SwordDecorator : PlayerDecorator
+/// <summary>
+/// 具体装饰类（ConcreteDecorator）
+/// </summary>
+public class Sword : Equipment
 {
-    public SwordDecorator(Player player) : base(player) { }
+    public Sword(Player player) : base(player) { }
 
     public override void Equip()
     {
@@ -46,9 +50,12 @@ public class SwordDecorator : PlayerDecorator
     }
 }
 
-public class ShieldDecorator : PlayerDecorator
+/// <summary>
+/// 具体装饰类（ConcreteDecorator）
+/// </summary>
+public class Shield : Equipment
 {
-    public ShieldDecorator(Player player) : base(player) { }
+    public Shield(Player player) : base(player) { }
 
     public override void Equip()
     {
@@ -57,6 +64,17 @@ public class ShieldDecorator : PlayerDecorator
     }
 }
 
+
+public class Helmet : Equipment
+{
+    public Helmet(Player player) : base(player) { }
+
+    public override void Equip()
+    {
+        base.Equip();
+        Console.WriteLine("Helmet equipped");
+    }
+}
 // 使用
 public class Game
 {
@@ -65,13 +83,26 @@ public class Game
         // 创建基本玩家
         Player basicPlayer = new BasicPlayer();
 
-        // 添加剑和盾的装备
-        Player decoratedPlayer = new SwordDecorator(new ShieldDecorator(basicPlayer));
+        // 动态添加剑和盾的装备
+        Player equippedPlayer = new Sword(new Shield(basicPlayer));
 
-        // 游戏中动态装备
-        decoratedPlayer.Equip();
+        // 展示装备
+        equippedPlayer.Equip();
 
+        Console.WriteLine("GameEnd!");
 
-        Console.WriteLine("GameMain!");
+        // 动态装备头盔
+        new Helmet(equippedPlayer).Equip();
+
+        /*
+            Basic equipment equipped
+            Shield equipped
+            Sword equipped
+            GameEnd!
+            Basic equipment equipped
+            Shield equipped
+            Sword equipped
+            Helmet equipped
+        */
     }
 }
