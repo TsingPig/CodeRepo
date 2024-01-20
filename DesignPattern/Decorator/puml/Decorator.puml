@@ -1,4 +1,4 @@
-@startuml 
+@startuml Decorator
 abstract class Player {
   {abstract} Equip()
 }

@@ -300,6 +300,19 @@ $$
 
 
 
+## 4.数学公式
+
+### 1.排序不等式
+
+结论：$对于两个有序数组的乘积和，顺序和 \ge 乱序和 \ge 倒序和$。
+
+$对于 a_1 \le a_2 \le \cdots \le a_n，b_1 \le b_2 \le \cdots \le b_n,并有c1,c2,\cdots, c_n是b1, b2, \cdots , b_n 的乱序排列。有如下关系： $
+$$
+
+\sum_{i = 1}^{n}a_ib_{n + 1 - i} \le \sum_{i=1}^{n}a_ic_i\le \sum_{i = 1}^{n}a_ib_i。\\
+$$
+$当且仅当 a_i = a_j 或者b_i = b_j \space (1 \le i, j\le n)时，等号成立。$
+
 # 数据结构
 
 ## 字典树
@@ -931,4 +944,30 @@ def findMaximumXOR(self, nums: List[int]) -> int:
         return res
 ```
 
-# 
+# 数位dp
+```python
+class Solution:
+    def numberOfPowerfulInt(self, start: int, finish: int, limit: int, s: str) -> int:
+        low = str(start)
+        high = str(finish)
+        n = len(high)
+        low = '0' * (n - len(low)) + low # 补全前导0
+        diff = n - len(s)
+
+        @lru_cache(maxsize = None)
+        def dfs(i, limit_low: bool, limit_high: bool) -> int:
+            if i == n:
+                return 1
+            lo = int(low[i]) if limit_low else 0
+            hi = int(high[i]) if limit_high else 9
+            res = 0
+            if i < diff:    # 枚举这个位填什么
+                for d in range(lo, min(hi, limit) + 1):
+                    res += dfs(i + 1, limit_low and d == lo, limit_high and d == hi)
+            else:
+                x = int(s[i - diff])
+                if lo <= x <= min(hi, limit):
+                    res = dfs(i + 1, limit_low and x == lo, limit_high and x == high)
+            return res
+        return dfs(0, True, True)
+```
