@@ -1,21 +1,5 @@
 [TOC]
 
-# 字符串哈希
-
-```c++
-//下标越大，权重越大
-using ull = unsigned long long;
-ull hash_string(string s, int base = 131, ull moder = 1e18 + 7) {
-	ull hash_value = 0;
-	ull base_power = 1;
-	for (const auto& ch : s) {
-		hash_value = (hash_value + base_power * ch) % moder;
-		base_power = (base_power * base) % moder;
-	}
-	return hash_value;
-}
-```
-
 # unordered_map
 
 ## 遍历
@@ -33,20 +17,6 @@ for(const auto& p:m){	//遍历pair<TKey,TValue>
 ```C++
 	for (const auto& [k, v] : m)cout << k << " " << v << endl;
 	for (const auto& [_, v] : m)cout << v << endl;	//只需要遍历Value
-```
-
-
-
-# 全排列
-
-```c++
-#include<algorithm>
-vector<int> a{1,2,3,4};
-do{
-    //每次拿到a的一个全排列，覆盖到a中
-    for(const auto& elem:a)cout<<e<<" ";
-    cout<<endl;
-}while(next_permutation(a.begin(),a.end()));
 ```
 
 
@@ -82,17 +52,11 @@ for(int& num: nums)
 
 ```
 
-# Vector
+# 字符串
 
-求最大元素位置：
+## KMP
 
-```c++
-auto idx = max
-```
-
-# KMP
-
-## 求next数组
+### 求next数组
 
 ```c++
 vector<int> get_next(string& p){
@@ -111,83 +75,7 @@ vector<int> get_next(string& p){
 }
 ```
 
-
-
-# 快速幂
-
-## 递归
-
-```c++
-using ull = unsigned long long; using ll = long long;
-double fast_pow_ull(double a, ull n) {
-	if (!n)return 1;
-	double half = fast_pow_ull(a, n >> 1);
-	return (n & 1) ? half * half * a : half * half;
-}
-double fast_pow(double a, ll n) {		//支持负数幂
-	return n >= 0 ? fast_pow_ull(a, n) : fast_pow_ull(1 / a, -n);
-}
-```
-
-## 迭代+二进制
-
-```c++
-double fast_pow(double a, ll n) {
-	if (n == 0)return 1;
-	double res = 1;
-	if (n < 0) { n = -n; a = 1 / a; }
-	while (n) {
-		if (n & 1)res *= a;
-		a *= a;
-		n >>= 1;
-	}
-	return res;
-}
-```
-
-## 矩阵快速幂（2x2）
-
-```c++
-vector<vector<ull>> pow(vector<vector<ull>>& a,ull n){
-    vector<vector<ull>> res{	//其他形状的改成nxn的E矩阵
-        {1,0},
-        {0,1}
-    };
-    while(n){
-        if(n&1)res=mul(res,a);
-        a=mul(a,a);
-        n>>=1;
-    }
-    return res;
-}
-```
-
-
-
-# 矩阵乘法
-
-```c++
-const ull moder=1e9+7;
-vector<vector<ull>> mul(vector<vector<ull>>& a,vector<vector<ull>>& b){
-        int m_a=a.size(),n_a=a[0].size();
-        int m_b=b.size(),n_b=b[0].size();
-        int c=n_a;  	//可以加一个n_a和m_b的判等
-        vector<vector<ull>> res(m_a,vector<ull>(n_b,0));
-        for(int i=0;i<m_a;i++){
-            for(int j=0;j<n_b;j++){
-                ull tmp=0;
-                for(int k=0;k<c;k++){
-                    //tmp=(tmp+(a[i][k]*b[k][j])%moder)%moder;	//如果需要取模
-                	tmp+=a[i][k]*b[k][j];
-                }
-                res[i][j]=tmp;
-            }
-        }
-        return res;
-    }
-```
-
-# split
+## split
 
 ```c++
 //不考虑前导和后导 
@@ -204,54 +92,23 @@ inline vector<string> split(string s,string delim=" "){
 }
 ```
 
-# Count
+## 字符串哈希
 
 ```c++
-#include <algorithm> 
-char target='1';
-int c=count(str.begin(),str.end(), target);
+//下标越大，权重越大
+using ull = unsigned long long;
+ull hash_string(string s, int base = 131, ull moder = 1e18 + 7) {
+	ull hash_value = 0;
+	ull base_power = 1;
+	for (const auto& ch : s) {
+		hash_value = (hash_value + base_power * ch) % moder;
+		base_power = (base_power * base) % moder;
+	}
+	return hash_value;
+}
 ```
 
-
-
-# queue
-
-```c++
-q.push(elem);
-q.pop();
-q.front();	
-q.back();
-q.empty();
-```
-
-# deque
-
-```c++
-deq.push_back();
-deq.pop_back();
-deq.push_front();
-deq.pop_front();
-deq.front();
-deq.back();
-```
-
-
-
-# Lambda表达式
-
-```c++
-auto func1=[&](vector<int> seg)->int{return seg[0]};
-
-// function
-function<vector<int>(int)> dfs=[&](int i)->vector<int>{
-	return xxxx;    
-};
-
-sort(intervals.begin(),intervals.end(),
-     [](vector<int> a,vector<int> b)->bool{
-         return a[0]<b[0];
-     });
-```
+# 
 
 # 区间合并
 
@@ -275,23 +132,9 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 
 
 
-# 自定义哈希规则
+# 数据结构
 
-```c++
-struct TreeNodeHash {
-    size_t operator()(const pair<TreeNode*, bool>& key) const {
-        auto h1 = hash<TreeNode*>{}(key.first);
-        auto h2 = hash<bool>{}(key.second);
-        return h1 ^ h2;
-    }
-};
-
-unordered_map<pair<TreeNode*, bool>, int, TreeNodeHash> memo;
-```
-
-
-
-# 树状数组
+## 树状数组
 
 ```c++
 class FenwickTree {
@@ -332,7 +175,7 @@ for (int& num : h) {
 auto tree_right = FenwickTree(n);
 ```
 
-# 字典树
+## 字典树
 
 ```c++
 class Trie {
@@ -377,9 +220,9 @@ public:
 };
 ```
 
+## 哈希
 
-
-# 自定义优先队列
+### 自定义优先队列
 
 ```c++
 struct node {
@@ -397,7 +240,71 @@ struct cmp {
 priority_queue<node, vector<node>, cmp> can_do;
 ```
 
-# 换根DP
+### 自定义哈希规则
+
+```c++
+struct TreeNodeHash {
+    size_t operator()(const pair<TreeNode*, bool>& key) const {
+        auto h1 = hash<TreeNode*>{}(key.first);
+        auto h2 = hash<bool>{}(key.second);
+        return h1 ^ h2;
+    }
+};
+
+unordered_map<pair<TreeNode*, bool>, int, TreeNodeHash> memo;
+```
+
+## ST表 / 可重复贡献问题
+
+```c++
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+int opt(int a, int b) {
+    return max(a, b);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+    int lenj = ceil(log2(n)) + 1;
+    vector<vector<int>> f(n, vector<int>(lenj));
+    vector<int> log(n + 1);
+    for (int i = 2; i <= n; ++i) {
+        log[i] = log[i >> 1] + 1;
+    }
+    for (int i = 0; i < n; ++i) {
+        f[i][0] = a[i];
+    }
+    for (int j = 1; j < lenj; ++j) {
+        for (int i = 0; i < n + 1 - (1 << j); ++i) {
+            f[i][j] = opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1]);
+        }
+    }
+    auto qry = [&](int l, int r) {
+        int k = log[r - l + 1];
+        return opt(f[l][k], f[r - (1 << k) + 1][k]);
+    };
+    for (int i = 0; i < m; ++i) {
+        int l, r;
+        cin >> l >> r;
+        cout << qry(l - 1, r - 1) << '\n';
+    }
+    return 0;
+}
+```
+
+# 图论 / 树
+
+## 换根DP
 
 ```c++
 class Solution {
@@ -430,14 +337,7 @@ public:
 };
 ```
 
-# 卡常
-
-```c++
-std::cin.tie(nullptr);
-std::ios::sync_with_stdio(false);
-```
-
-# 倍增：最近公共祖先
+## 倍增LCA
 
 ```c++
 class Solution {
@@ -535,7 +435,9 @@ void replace(string& base, string src, string dst)
 }
 ```
 
- # 单调队列
+# 单调结构
+
+## 单调队列
 
 ```c++
 vector<int> maxSlidingWindow(vector<int>& nums, int k) {
@@ -559,7 +461,7 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 
 ```
 
-# 单调栈
+## 单调栈
 
 ```c++
 nt trap(vector<int>& height) {
@@ -584,7 +486,9 @@ nt trap(vector<int>& height) {
     }
 ```
 
-# 异或性质
+# 数学
+
+## 异或性质
 
 $1. 交换律： A \oplus B = B \oplus A \\$
 
@@ -594,7 +498,7 @@ $3. 自反性：A \oplus B \oplus B = A \\$
 
 $4. 推论：如果A \oplus B = X, 则有 X \oplus A = B, X \oplus B = A$
 
-## 1.交换变量
+### 1.交换变量
 
 ```c++
 a = a ^ b;	
@@ -602,7 +506,7 @@ b = a ^ b;
 a = a ^ b;
 ```
 
-## 2.排除偶次重复
+### 2.排除偶次重复
 
 在整数数组中，仅存在一个不重复的数字，其他数字均出现两次（或者偶数次），找出不重复数字。
 
@@ -613,5 +517,145 @@ int res = 0;
 for (int& num : nums) res ^= num;
 ```
 
+## 快速幂
 
+### 递归
+
+```c++
+using ull = unsigned long long; using ll = long long;
+double fast_pow_ull(double a, ull n) {
+	if (!n)return 1;
+	double half = fast_pow_ull(a, n >> 1);
+	return (n & 1) ? half * half * a : half * half;
+}
+double fast_pow(double a, ll n) {		//支持负数幂
+	return n >= 0 ? fast_pow_ull(a, n) : fast_pow_ull(1 / a, -n);
+}
+```
+
+### 迭代+二进制
+
+```c++
+double fast_pow(double a, ll n) {
+	if (n == 0)return 1;
+	double res = 1;
+	if (n < 0) { n = -n; a = 1 / a; }
+	while (n) {
+		if (n & 1)res *= a;
+		a *= a;
+		n >>= 1;
+	}
+	return res;
+}
+```
+
+### 矩阵快速幂（2x2）
+
+```c++
+vector<vector<ull>> pow(vector<vector<ull>>& a,ull n){
+    vector<vector<ull>> res{	//其他形状的改成nxn的E矩阵
+        {1,0},
+        {0,1}
+    };
+    while(n){
+        if(n&1)res=mul(res,a);
+        a=mul(a,a);
+        n>>=1;
+    }
+    return res;
+}
+```
+
+
+
+### 矩阵乘法
+
+```c++
+const ull moder=1e9+7;
+vector<vector<ull>> mul(vector<vector<ull>>& a,vector<vector<ull>>& b){
+        int m_a=a.size(),n_a=a[0].size();
+        int m_b=b.size(),n_b=b[0].size();
+        int c=n_a;  	//可以加一个n_a和m_b的判等
+        vector<vector<ull>> res(m_a,vector<ull>(n_b,0));
+        for(int i=0;i<m_a;i++){
+            for(int j=0;j<n_b;j++){
+                ull tmp=0;
+                for(int k=0;k<c;k++){
+                    //tmp=(tmp+(a[i][k]*b[k][j])%moder)%moder;	//如果需要取模
+                	tmp+=a[i][k]*b[k][j];
+                }
+                res[i][j]=tmp;
+            }
+        }
+        return res;
+    }
+```
+
+# 语法 / 其他板子
+
+## 卡常
+
+```c++
+std::cin.tie(nullptr);
+std::ios::sync_with_stdio(false);
+```
+
+## Lambda表达式
+
+```c++
+auto func1=[&](vector<int> seg)->int{return seg[0]};
+
+// function
+function<vector<int>(int)> dfs=[&](int i)->vector<int>{
+	return xxxx;    
+};
+
+sort(intervals.begin(),intervals.end(),
+     [](vector<int> a,vector<int> b)->bool{
+         return a[0]<b[0];
+     });
+```
+
+## Count
+
+```c++
+#include <algorithm> 
+char target='1';
+int c=count(str.begin(),str.end(), target);
+```
+
+## queue
+
+```c++
+q.push(elem);
+q.pop();
+q.front();	
+q.back();
+q.empty();
+```
+
+## deque
+
+```c++
+deq.push_back();
+deq.pop_back();
+deq.push_front();
+deq.pop_front();
+deq.front();
+deq.back();
+```
+
+
+
+## 全排列
+
+```c++
+#include<algorithm>
+vector<int> a{1,2,3,4};
+do{
+    //每次拿到a的一个全排列，覆盖到a中
+    for(const auto& elem:a)cout<<e<<" ";
+    cout<<endl;
+}while(next_permutation(a.begin(),a.end()));
+```
 
