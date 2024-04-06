@@ -134,6 +134,13 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 
 # 数据结构
 
+## 并查集
+
+```c++
+```
+
+
+
 ## 树状数组
 
 ```c++
@@ -657,5 +664,15 @@ do{
     for(const auto& elem:a)cout<<e<<" ";
     cout<<endl;
 }while(next_permutation(a.begin(),a.end()));
+```
+
+# 动态规划
+
+## 背包问题
+
+### 完全背包
+
+```c++
+
 ```
 

@@ -124,6 +124,46 @@ s.add((1, 2, 1))
 print(s)  # 输出：{(1, 1, 2)}
 ```
 
+## 6. 技巧
+
+#### 快读快写
+
+```python
+import sys
+sys.setrecursionlimit(1000000)
+input=lambda:sys.stdin.readline().strip()
+write=lambda x:sys.stdout.write(str(x)+'\n')
+```
+
+## 7.优先队列 / 堆
+
+```python
+from heapq import heapify, heappop, heappush
+    heapify(nums)
+    score = heappop(nums)
+    heappush(nums, val)
+# 注意：
+# python中堆默认且只能是小顶堆
+```
+
+```python
+nums = []
+heapq.heappush(nums, val)	#插入
+heapq.heappop(nums)			#弹出顶部
+```
+
+### 8. 有序列表 / 有序集合
+
+**SortedList** 
+
+SortedList 相当于 multiset
+
+添加元素：$O(\log ~n)$；`s.add(val)`
+
+添加一组可迭代元素：$O(k \log n)$；`s.upadte(*iterable*)`
+
+查找元素：$O(\log n)$；`s.count(val)`，返回元素的个数
+
 # 字符串
 
 ## 1.字符串排序
@@ -133,7 +173,7 @@ sorted(str) #返回按照字典序排序后的列表，如"eda"->['a','d','e']
 s_sorted=''.join(sorted(str))	#把字符串列表组合成一个完整的字符串
 ```
 
-## 
+
 
 ## 2.Z函数 (扩展KMP)
 
@@ -188,9 +228,18 @@ for i in range(1, n):
 
   用于检查字符串s1 是否以字符串 s2开头。是则返回True。如果指定beg 和 end，则在s1[beg: end] 范围内查找。
 
+- 使用 ascii_lowercase遍历26个字母。
 
+  ```python
+  from string import ascii_lowercase
+  cnt = {ch: 0 for ch in ascii_lowercase}
+  ```
 
-# 区间合并
+  
+
+# 合并区间
+
+先排序。
 
 ```python
 class Solution:
@@ -207,6 +256,22 @@ class Solution:
         res.append([l, r])
         return res
 ```
+
+[2580. 统计将重叠区间合并成组的方案数 - 力扣（LeetCode）](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/description/?envType=daily-question&envId=2024-03-27)
+
+```python
+    def countWays(self, ranges: List[List[int]]) -> int:
+        ranges.sort(key = lambda x: x[0])
+        l, r = ranges[0][0], ranges[0][1]
+        nranges = []
+        for il, ir in ranges:
+            if il > r:
+                nranges.append([l, r])
+                l = il 
+            r = max(ir, r)
+```
+
+
 
 # 回溯/递归
 
@@ -373,23 +438,6 @@ return -1 if res > m else res
 pre = list(accumulate(nums, xor, initial = 0))
 ```
 
-# 优先队列
-
-```python
-from heapq import heapify, heappop, heappush
-    heapify(nums)
-    score = heappop(nums)
-    heappush(nums, val)
-# 注意：
-# python中堆默认且只能是小顶堆
-```
-
-```python
-nums = []
-heapq.heappush(nums, val)	#插入
-heapq.heappop(nums)			#弹出顶部
-```
-
 
 
 ## 自定义比较规则
@@ -430,11 +478,110 @@ class node():
         return res
 ```
 
+[84. 柱状图中最大的矩形 - 力扣（LeetCode）](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
 
+矩形面积求解：维护单调增栈，同时首尾插入哨兵节点。
+
+```python
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        heights.append(-1)
+        stk = [-1]
+        res = 0
+        for i, h in enumerate(heights):
+            while len(stk) > 1 and h < heights[stk[-1]]:
+                cur = stk.pop()
+                l = stk[-1]
+                width = i - l - 1
+                s = width * heights[cur]
+                res = max(res, s)
+            stk.append(i)
+        return res
+```
+
+[1793. 好子数组的最大分数 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/)
+
+矩形面积求解问题变形：求 $min(nums[i], ~ \cdots~, nums[j]) \times (j -i+1)$ ，并对$i, ~j $ 做了范围约束。
+
+```python
+   def maximumScore(self, nums: List[int], k: int) -> int:
+        stk = [-1]
+        nums.append(-1)
+        res = 0
+        for i, h in enumerate(nums):
+            while len(stk) > 1 and h < nums[stk[-1]]:
+                cur = stk.pop()
+                l = stk[-1]
+                if not(l + 1 <= k and i - 1 >= k): continue	# 约束范围
+                width = i - l - 1
+                res = max(res, width * nums[cur])
+            stk.append(i)
+        return res
+```
+
+## 单调栈优化dp
+
+[2617. 网格图中最少访问的格子数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/description/?envType=daily-question&envId=2024-03-22)
+
+暴力dp转移做法
+
+```python
+class Solution:
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[inf] * n for _ in range(m)]
+        f[-1][-1] = 0
+        for i in range(m - 1, -1, -1):
+            for j in range(n - 1, -1, -1):
+                g = grid[i][j] 
+                for k in range(1, min(g + 1, m - i)):
+                    f[i][j] = min(f[i][j], f[i + k][j] + 1)
+                for k in range(1, min(g + 1, n - j)):                    
+                    f[i][j] = min(f[i][j], f[i][j + k] + 1)
+        return f[0][0] + 1 if f[0][0] != inf else -1
+```
+
+单调栈 + 二分 优化dp
+
+倒序枚举$i,~j$
+$$
+f[i][j]=\min\left\{\min_{k=j+1}^{j+g}f[i][k], ~\min_{k=i+1}^{i+g}f[k][j]\right\}+1
+$$
+可以发现左边界$i$ 是递减的，右边界$ j +g$ 是不确定的。联想到滑动窗口最值问题，维护一个向左增长的栈，栈元素自左向右递减。
+
+由于栈中元素有序，每次查找只需要二分即可找出最值。
+
+```python
+def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        stkyy = [deque() for _ in range(n)]	# 列上单调栈
+        f = 0								# 行上单调栈
+        for i in range(m - 1, -1, -1):
+            stkx = deque()
+            for j in range(n - 1, -1, -1):
+                g, stky = grid[i][j], stkyy[j]
+                f = 1 if i == m - 1 and j == n - 1 else inf
+                if g > 0:
+                    if stkx and j + g >= stkx[0][1]:
+                        mnj = bisect_left(stkx, j + g + 1, key = lambda x: x[1]) - 1
+                        f = stkx[mnj][0] + 1
+                    if stky and i + g >= stky[0][1]:
+                        mni = bisect_left(stky, i + g + 1, key = lambda x: x[1]) - 1
+                        f = min(f, stky[mni][0] + 1)
+                if f < inf:
+                    while stkx and f <= stkx[0][0]:
+                        stkx.popleft()
+                    stkx.appendleft((f, j))
+                    while stky and f <= stky[0][0]:
+                        stky.popleft()
+                    stky.appendleft((f, i))
+        return f if f != inf else -1
+```
 
 
 
 ## 单调队列
+
+滑窗最大值 ~ 维护递减小队列； 滑窗最小值 ~  维护递增队列
 
 [239. 滑动窗口最大值 - 力扣（LeetCode）](https://leetcode.cn/problems/sliding-window-maximum/)
 
@@ -484,7 +631,49 @@ class node():
         return res
 ```
 
+## 单调队列优化dp
 
+[2944. 购买水果需要的最少金币数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/description/?envType=featured-list&envId=PAkZSAkX?envType=featured-list&envId=PAkZSAkX)
+
+暴力做法：$O(n^2)$
+
+```python
+    def minimumCoins(self, prices: List[int]) -> int:
+        n = len(prices)
+        # f[i] 表示获得 i及其以后的所有水果的最少开销
+        f = [inf] * (n + 1)
+        for i in range(n, 0, -1):
+            # [i + 1, 2 * i] 免费
+            if 2 * i >= n:
+                f[i] = prices[i - 1]
+            else:
+                for j in range(i + 1, 2 * i + 2):
+                    f[i] = min(f[i], f[j] + prices[i - 1])
+        return f[1]
+```
+
+注意到 i递减，区间[i + 1, 2 * i + 1]是一个长度为为i + 1 的滑动窗口，转移成滑动窗口最值问题。
+
+```python
+    def minimumCoins(self, prices: List[int]) -> int:
+        n = len(prices)
+        # f[i] 表示获得 i及其以后的所有水果的最少开销
+        f = [inf] * (n + 1)
+        q = deque()
+        for i in range(n, 0, -1):
+            # i递减，区间[i + 1, 2 * i + 1]是一个定长为i + 1 的滑动窗口
+            while q and q[-1][1] - (i + 1) + 1 > i + 1:
+                q.pop()
+            if 2 * i >= n:
+                f[i] = prices[i - 1]
+            else:
+
+                f[i] = q[-1][0] + prices[i - 1]
+            while q and f[i] <= q[0][0]:
+                q.popleft()
+            q.appendleft((f[i], i))
+        return f[1]
+```
 
 
 
@@ -579,7 +768,7 @@ class Solution:
 
 # 数学
 
-## 1.取整函数性质
+## 取整函数性质
 
 ### (1). 上下取整转换
 
@@ -604,19 +793,23 @@ $$
 
 
 
-## 2. 素数
+## 素数
 
-### (1). 素数筛
+### (1). 埃氏筛
 
-埃氏筛：nloglogn
+时间复杂度：$O(nloglogn)$
 
 ```python
-is_prime = [True] * MX # MX为最大可能遇到的质数 + 1
+primes = []
+is_prime = [True] * (n + 1) # MX为最大可能遇到的质数 + 1
 is_prime[1] = is_prime[0] = False
-for i in range(2, isqrt(MX) + 1):	# i * i <= n
+
+for i in range(2, int(math.sqrt(n)) + 1):	# i * i <= n
     if is_prime[i]:
-        for j in range(i * i, MX, i):
+        for j in range(i * i, n + 1, i):
             is_prime[j] = False
+for i in range(2, n + 1):
+    if is_prime[i]: primes.append(i)
 ```
 
 时间复杂度证明
@@ -626,19 +819,50 @@ $$
 故有 O\left(\sum_{k=1}^{\pi(n)}\frac{n}{p_k} \right) = O\left(n \sum_{k=1}^{\pi(n)} \frac{1}{p_k}\right)
 = O(nloglogn) \space (Mertens 第二定理)
 $$
-
-
 切片优化
 
 ```python
-is_prime = [True] * MX 
+primes = []
+is_prime = [True] * (n + 1) 
 is_prime[0] = is_prime[1] = False
-for i in range(2, isqrt(MX) + 1):
-    if is_prime[i]: # [i * i, n] -> [i * i, n + 1) -> [i * i, MX)
-        is_prime[i * i::i] = [False] * ((MX - 1 - i * i) // i + 1)
+for i in range(2, int(math.sqrt(n)) + 1):
+    if is_prime[i]: 
+        is_prime[i * i::i] = [False] * ((n - i * i) // i + 1)
+for i in range(2, n + 1):
+    if is_prime[i]: primes.append(i)
 ```
 
-### (2). 分解质因子
+### (2). 欧拉筛 / 线性筛
+
+基本思想：每一个合数一定存在最小的质因子。确保每一个合数只被他的最小质因子筛去。 	
+
+```python
+primes = []
+is_prime = [True] * (n + 1)
+is_prime[0] = is_prime[1] = False
+for i in range(2, n + 1):
+    if is_prime[i]: primes.append(i)
+    for p in primes:
+        if i * p > n: break
+        is_prime[i * p] = False
+        if i % p == 0: break
+```
+
+正确性证明：
+
+1. 每个合数不会被筛超过一次：
+
+   枚举$i$  从小到大的所有质数，在$i \% p = 0$ 出现之前，$p$ 一定小于$i$ 的所有质因子，$p \cdot i$  的质因子的前缀与$i$ 的质因子前缀相同，故$p$ 一定是$i \cdot p$ 的最小质因子，筛去；在出现$i \% p =0$ 时，$p$ 恰好是$i$ 的最小质因子，同理，然后break。保证每个合数只会被最小的质因子筛去。
+
+2. 每个合数都会被筛最少一次：
+
+   每个合数$x$ 一定存在最小质因子$p$，和对应的$ x / p$。在 $i$ 枚举到 $x / p$ 的时候，一定会筛去$x$
+
+由于保证每个合数一定被晒一次，所以是$O(n)$ 
+
+
+
+### (3). 分解质因子
 
 试除法。复杂度不超过$O(\sqrt n )$，实际上是 $O(logn) \sim O(\sqrt {n})$
 
@@ -675,35 +899,261 @@ def breakdown(N):
     return result
 ```
 
-
-
-### (3). 素数计数函数近似值
+### (4). 素数计数函数近似值
 
 小于等于$x$ 的素数个数记为 $\pi(x)$，$\pi (x) 近似于 \frac{x}{\ln x}$。
 
-## 3.其他简单数学
 
-### 1.判断回文
-```python
-def is_par(x: int) -> bool:
-	return x == int(str(x)[::-1])
-```
-### 2.pow函数
-求$a^b \mod c$：
+
+## 约数
+
+### 1. 试除法求所有约数
+
+复杂度为：$O(\sqrt{n})$
 
 ```python
-pow(a, b, c)
+def solve(x):
+    res = []
+    for i in range(2, int(math.sqrt(x)) + 1):
+        if x % i == 0:
+            res.append(i)
+            if i != x // i:
+            	res.append(x // i)
+	res.sort()  
 ```
 
-### 3.求和公式
+### 2. 乘积数的约数个数
+
+对于一个以标准分解式给出的数 $N = \prod_{i = 1}^k p_i^{\alpha_i}$, 其约数个数为  $\prod_{i = 1} ^k (\alpha_i + 1)$
+
+> 例如 $N = 2^5 \cdot 3^1, 约数个数为(5 + 1) \times (1 + 1) = 12$
+
+### 3. 乘积数的所有约数之和
+
+对于一个以标准分解式给出的数 $N = \prod_{i = 1}^k p_i^{\alpha_i}$, 其约数之和为  $\prod_{i = 1} ^k (\sum_{j = 0}^{\alpha_i} p_i^j)$
+
+> 例如 $N = 2^5 \cdot 3^1, 约数个数为 (2^0 + 2^1 + \cdots + 2^5) \times (3^0 + 3^1)$。展开结果实际上，各个互不相同，每一项都是一个约数，总个数就是约数个数。
+
+### 4. 欧几里得算法
+
+算法原理：$gcd(a, b) = gcd(b,a\mod b)$
+
+证明：
+
+- 对于任意一个能整除$a$ 且 能整除 b 的数 $d$， $a \mod b $ 可以写成 $a - k \cdot b$ ，其中 $k = a // b$ ，所以 $d$ 一定能够整除 $b, a \mod b$；
+- 对于任意一个能整除 $b$  且能整除 $a - k \cdot b$  的数 $d$， 一定能整除$a-k\cdot b + k\cdot b  = a$，所以二者的公约数的集合是等价的。
+- 所以二者的最大公约数等价
+
+```python
+def gcd(a, b):
+    return gcd(b, a % b) if b else a
+```
+
+**时间复杂度：$O(\log (\max(a,~b)))$**
+
+证明：
+
+引理1： $a\mod b \in[0,~ b-1]$。例如，$38 \mod 13 = 12$
+
+引理2：取模，余数至少折半。
+
+如果$ b > a//2,~a \mod ~b = a - b < a//2$。例如，a = 9, b = 5, a mod b = 9 - 5 = 4
+
+如果 $b \le a//2, ~ a \mod b \le b - 1 \le a//2 -1$。
+
+情况1：当每次执行 gcd时，如果 $a < b$ ，则交换；情况2：否则$a \ge b$，一定发生引理2的情况，即对 $a$ 取模，一定会让 $a$ 折半。最坏情况下，每两次让 $a$ 折半，所以时间复杂度为 ：
+
+$O(T) =  O(T /2) + 2 = O(T/4) + 4 = O(\frac {T}{2^k}) + k\times2 = 2\log k$，即 $O(\log(\max(a, b)))$
+
+
+
+## 欧拉函数
+
+定义：$\phi(n) $ 表示 $1 \sim n $ 中 与 $n$  互质（最大公约数为1）的数的个数。
+
+时间复杂度：$O(\sqrt n)$ ，同质因数分解。
+
+对于一个以标准分解式给出的数$N = \prod_{i = 1}^k p_i^{\alpha_i}$，满足：
+$$
+\phi(N) = N \cdot \prod_{i = 1}^{k} \left( 1 - \frac{1}{p_i} \right)
+$$
+证明方法：
+
+- 容斥原理。
+
+- 减去 $p_1, p_2, \cdots, p_k $ 的所有倍数的个数，这一步会多筛一些数。例如 一个数既是 $p_1$, 又是$p_2$ 的倍数，会删去两次。
+  $$
+  N - \sum_{i = 1}^{k} \frac{N}{p_i}
+  $$
+
+- 加上所有 $p_i \cdot p_j$ 的倍数
+  $$
+  N - \sum_{i = 1}^{k} \frac{N}{p_i} + \sum_{i, j \in [0, k] 且 i< j} \frac{N}{p_i \cdot p_j}
+  $$
+
+- 减去所有$p_i \cdot p_j \cdot p_u$ 的倍数，以此类推。
+  $$
+  N - \sum_{i = 1}^{k} \frac{N}{p_i} + \sum_{i, j \in [0, k] 且 i< j} \frac{N}{p_i \cdot p_j} - \sum_{i, j,u \in [0, k] 且 i< j<u} \frac{N}{p_i \cdot p_j \cdot p_u} + \cdots =  N \cdot \prod_{i = 1}^{k} \left( 1 - \frac{1}{p_i} \right)
+  $$
+
+最后一步，可以通过观察系数的角度来证明。例如$\frac{1}{p_i} $ 项的系数是 -1。
+
+证明方法二：
+$$
+\phi(N) = \phi(\prod_{i = 1} ^ k p_i ^ {a_i}) = \prod_{i = 1} ^ {k} \phi(p_i^{a_i}) = \prod_{i = 1}^{k} p_i^{k}(1 - \frac{1}{p_i}) = N \cdot \prod_{i = 1}^{k} (1 - \frac{1}{p_i})
+$$
+
+性质：
+
+- 积性函数：对于互质的$p, q$,  $\phi(p \times q) = \phi(p) \times \phi(q)$。 特别的， 对于奇数$p$， $\phi(2p) = \phi(p)$
+
+​		证明：互质的数，质因子分解的集合无交集。$\phi(2) = 1$
+
+- 对于质数$p$ ， $\phi(p^k) = p^k - \frac{p^k}{p} = p^k - p^{k -1}$
+
+​		证明：减去是$p$ 的倍数的数，得到不是p 的倍数的数的个数一定和 $p$ 互质。
+
+```python
+def solve(n):
+    res = n
+    for i in range(2, int(sqrt(n)) + 1):
+        if n % i == 0:
+            res = res * (i - 1) // i
+            while n % i == 0:
+                n //= i 
+    if n > 1:
+        res = res * (n - 1) // n
+    return res
+```
+
+#### 筛法求欧拉函数
+
+对于$N$ 的最小质因子$p_1$， $N' = \frac{N}{p_1}$，我们希望筛法中，$N$ 通过$N' \cdot p_1$ 筛掉。
+
+考虑两种情况：
+
+- $ N' \mod p_1 = 0  $，则 $N'$ 包含了$N$ 的所有质因子。
+
+$$
+\phi(N) = N \times \prod_{i = 1}^{k} (1 - \frac{1}{p_i}) = N' \cdot p_1 \times \prod_{i = 1}^{k} (1 - \frac{1}{p_i}) = p_i \times \phi(N')
+$$
+
+- $N' \mod p_i \ne 0$ ，则$N'$ 与 $p_1$ 互质（证明：质数是因子只有1和本身，因此最大公约数是1，互质）。
+
+​	由欧拉函数的积性性质，互质的数质因子分解无交集：
+$$
+\phi (N) = \phi(N' \times p_1) = \phi(N') \times \phi(p_1) = \phi(N') \times (p_i - 1)
+$$
+在筛质数的同时筛出欧拉函数。
+
+```python
+primes = []
+is_prime = [True] * (n + 1)
+phi = [0] * (n + 1) 
+phi[1] = 1
+for i in range(2, n + 1):
+    if is_prime[i]: 
+        phi[i] = i - 1
+        primes.append(i)
+    for p in primes:
+        if p * i > n: break
+        is_prime[i * p] = False
+        if i % p == 0:
+            phi[i * p] = p * phi[i]
+            break
+        phi[i * p] = (p - 1) * phi[i]
+```
+
+## 容斥原理
+
+[2652. 倍数求和 - 力扣（LeetCode）](https://leetcode.cn/problems/sum-multiples/description/?envType=daily-question&envId=2023-10-17)
+
+给你一个正整数 `n` ，请你计算在 `[1，n]` 范围内能被 `3或者5或者7` 整除的所有整数之和。
+
+返回一个整数，用于表示给定范围内所有满足约束条件的数字之和。
+
+利用等差数列求和公式：$1 \sim n 中 能被 x 整除的数之和 = (x + 2\cdot x+ \cdots + n//x \cdot x) = x \cdot(1 + n // x) * (n // x) // 2$
+
+因而， 
+
+```python
+class Solution:
+    def sumOfMultiples(self, n: int) -> int:
+        # 定义 f(x) 为能被 x 整除的数字之和
+        def f(x):
+            return x * (1 + n // x) * (n // x) // 2
+        return f(3) + f(5) + f(7) - f(15) - f(21) - f(35) + f(105)
+```
+
+
+
+## 数学公式
+
+### 排序不等式
+
+结论：$对于两个有序数组的乘积和，顺序和 \ge 乱序和 \ge 倒序和$。
+
+$对于 a_1 \le a_2 \le \cdots \le a_n，b_1 \le b_2 \le \cdots \le b_n,并有c1,c2,\cdots, c_n是b1, b2, \cdots , b_n 的乱序排列。有如下关系： $
+$$
+\sum_{i = 1}^{n}a_ib_{n + 1 - i} \le \sum_{i=1}^{n}a_ic_i\le \sum_{i = 1}^{n}a_ib_i。\\
+$$
+$当且仅当 a_i = a_j 或者b_i = b_j \space (1 \le i, j\le n)时，等号成立。$
+
+### 区间递增k个数
+
+结论：对于$i_0 = a$，每次递增$k$，在区间$[a, b)$ 内的个数是：
+$$
+(b - a - 1) // k + 1
+$$
+
+
+
+###  平均数不等式
+
+$$
+x_1,x_2,\ldots,x_n\in\mathbb{R}_+\Rightarrow\frac n{\sum_{i=1}^n\frac1{x_i}}
+\leq\sqrt[n]{\prod_{i=1}^nx_i}
+\leq\frac{\sum_{i=1}^nx_i}n
+\leq\sqrt{\frac{\sum_{i=1}^nx_i^2}n} 
+\\
+\text{当且仅当 }x_1=x_2=\cdots=x_n\text{,等号成立。}
+$$
+
+即：调和平均数 ，几何平均数，算术平均数，平方平均数 （调几算方）
+
+应用：
+
+例如当算术平均数为定值，$x_i$ 分布越接近，平方平均数越小，因此可以进行贪心算法：
+
+[3081. 替换字符串中的问号使分数最小 - 力扣（LeetCode）](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/description/) 
+各个字母之间的出现次数的差异越小，越均衡，最终结果越小。可以基于贪心 + 堆进行维护，每次取出出现次数最小中字典序最小的字符。
+
+```python
+    def minimizeStringValue(self, s: str) -> str:
+        cnt = Counter(s)
+        hq = [(cnt[ch], ch) for ch in string.ascii_lowercase] 
+        heapq.heapify(hq)
+        alp = []
+        res = list(s)
+        for i in range(s.count('?')):
+            v, k = heappop(hq)
+            v += 1
+            alp.append(k)
+            heappush(hq, (v, k))
+        alp.sort(reverse = True)
+        for i, x in enumerate(res):
+            if res[i] == '?':
+                res[i] = alp.pop()
+        return ''.join(res)
+```
+
+### 求和公式
 
 $$
 \Sigma_1^nn^2 = \frac{n \cdot (n + 1) \cdot (2n + 1)}{6}
 $$
 
-
-
-### 4. 取模性质
+### 取模性质
 
 模运算与基本四则运算有些相似，但是除法例外。其规则如下：
 (a + b) % p = (a % p + b % p) % p
@@ -720,30 +1170,80 @@ a ^ b % p = ((a % p)^b) % p
 (a+b) % p = ( a % p + b % p ) % p
 ((a +b)% p * c) % p = ((a * c) % p + (b * c) % p) % p
 
-## 4.数学公式
+## 组合数学
 
-### (1).排序不等式
+$A_m^n = \frac{m!}{n!}, ~ C_m^n = \frac{m!}{n!(m-n)!}$
 
-结论：$对于两个有序数组的乘积和，顺序和 \ge 乱序和 \ge 倒序和$。
+$C_m^n = C_m^{m-n}$
 
-$对于 a_1 \le a_2 \le \cdots \le a_n，b_1 \le b_2 \le \cdots \le b_n,并有c1,c2,\cdots, c_n是b1, b2, \cdots , b_n 的乱序排列。有如下关系： $
+$C_m^n = C_{m -1}^n + C_{m-1}^{n-1}$
+
+$C_n^0+C_n^1 + \cdots+ C_n^n = 2 ^ n$
+
+### 二项式定理
+
 $$
-\sum_{i = 1}^{n}a_ib_{n + 1 - i} \le \sum_{i=1}^{n}a_ic_i\le \sum_{i = 1}^{n}a_ib_i。\\
-$$
-$当且仅当 a_i = a_j 或者b_i = b_j \space (1 \le i, j\le n)时，等号成立。$
-
-### (2). 区间递增k个数
-
-结论：对于$i_0 = a$，每次递增$k$，在区间$[a, b)$ 内的个数是：
-$$
-(b - a - 1) // k + 1
+(a + b) ^n = \sum_{i=0}^n C_n^ia^ib^{n-i}
 $$
 
+### 卡特兰数
+
+[5. 卡特兰数（Catalan）公式、证明、代码、典例._c n = n+11 ( n2n )-CSDN博客](https://blog.csdn.net/sherry_yue/article/details/88364746)
+$$
+给定 ~n ~ 个0 和 ~n~ 个1，排序成长度为2n 的序列。其中任意前缀中0的个数都不少于1的个数的序列的数量为：
+\\
+H(n) = C_{2n}^n-C_{2n}^{n-1} = \frac{C_{2n}^n}{n+1} = \frac{(2n)!}{(n + 1)!n!}
+$$
+![image.png](https://pic.leetcode.cn/1712072728-MZfRtq-image.png)
+
+证明方法：
+
+看成从从 $(0,~ 0)$ 到 右上角 $(n, ~n )$，每次只能向右或者向上，向上的次数不超过向右的次数的路径数。
+
+对于不合法的情况，超过 $y = x$ ，即一定触碰 $y = x + 1$， 取路径与$y = x + 1$ 交点中，距离原点最近的点，将路径远离原点的部分关于$y = x + 1$ 翻转。由于原来的终点 $(n,n)$ 关于 $y = x + 1$ 翻转的点是$(n - 1, n + 1) $ ，所以不合法的路径数是 $C_{2n}^{n-1}$
+
+**递推公式1：**
+$$
+H(n+1) = H(0)\cdot H(n) + H(1)\cdot H(n - 1) + \cdots +H(n)\cdot H(0) = \sum_{i=0}^{n} H(i)\cdot H(n-i)
+$$
+证明方法：从 $(0, 0)$ 到 $(n +1, n+1)$ 的路径数可以看成分三步：
+
+首先从 $(0,0)$ 走到 $(i,i)$ ，其方案数为 $H(i)$；然后从 $(i,i)$ 走到 $(n,n)$ 方案数为 $H(n-i)$；最后从 $(n,n)$ 走到 $(n + 1, n + 1)$ 其方案数为 $H(1)$ = 1。
+
+**递推公式2：**
+$$
+H(n) = H(n-1) \cdot \frac{2n(2n - 1)}{(n+1)n} = H(n-1) \cdot \frac{(4n - 2)}{(n+1)}
+$$
+
+
+**推论：**
+
+前几项:  1,1,2,5,14,42,132,429,1430
+
+- $n$ 个节点可以构造的不同的二叉树的个数。（证明：$F(n) $为有n个节点的二叉树的所有根节点个数。其左子树的可能情况为 $F(i), i \in [0,n], $对应右子树的情况为 $F(n-i),$ 乘积求和形式即为卡特兰数列的递推式。
+- 从 $(0,~ 0)$ 到 右上角 $(n, ~n )$，每次只能向右或者向上，向上的次数不超过向右的次数的路径数。（即不超过 $y = x$ ）
+- 一个无穷大栈，进栈顺序为 $1, 2, ... , n$ 的出栈顺序数
+- $n$ 个左括号和 $n$ 个右括号构成的括号序列，能够构成的有效括号序列个数。
 
 
 
+凸多边形划分问题
 
-## 5.矩阵乘法/矩阵快速幂
+**在一个n边形中，通过不相交于n边形内部的对角线，把n边形拆分为若干个三角形，问有多少种拆分方案？**
+
+![image.png](https://pic.leetcode.cn/1712073924-PFLnSL-image.png)
+
+以凸多边形的一边为基，设这条边的2个顶点为A和B。从剩余顶点中选1个，可以将凸多边形分成三个部分，中间是一个三角形，左右两边分别是两个凸多边形，然后求解左右两个凸多边形。
+
+2.设问题的解f(n)，其中n表示顶点数，那么f(n)=f(2)*f(n-1)+f(3)*f(n-2)+……+f(n-2)*f(3)+f(n-1)*f(2)。
+其中，f(2)*f(n-1)表示：三个相邻的顶点构成一个三角形，另外两个部分的顶点数分别为2（一条直线两个点）和n-1。
+其中，f(3)*f(n-2)表示：将凸多边形分为三个部分，左右两边分别是一个有3个顶点的三角形和一个有n-2个顶点的多边形。
+
+3.设f(2) = 1，那么f(3) = 1, f(4) = 2, f(5) = 5。结合递推式，不难发现f(n) 等于H(n-2)。
+
+
+
+## 矩阵乘法/矩阵快速幂/快速幂
 
 > 矩阵乘法时间复杂度：$O(n^3)$
 
@@ -765,8 +1265,6 @@ def mul(a, b):
                 tmp += a[i][k] * b[k][j]
             res[i][j] = tmp
     return res
-
-
 ```
 
 矩阵快速幂
@@ -801,7 +1299,21 @@ def pow(a, n):
     return res
 ```
 
-## 6. 高等数学
+快速幂
+
+```python
+def pow(a, n, moder):
+    res = 1
+    while n:
+        if n & 1: res = (res * a) % moder
+        n >>= 1
+        a = (a * a) % moder
+    return res
+```
+
+
+
+## 高等数学
 
 ### (1). 调和级数
 
@@ -809,11 +1321,91 @@ $$
 \sum_{i=1}^{n} \frac{1}{k} 是调和级数，其发散率表示为\sum_{i=1}^{n} \frac{1}{k} = \ln n + C
 $$
 
- 
+ 经典应用：求一个数的约数的个数期望值
+
+- 考虑 1~n 所有的数的约数个数。
+
+- 从筛法的角度来看，拥有约数2的所有的数，是 1 ~ n中所有2的倍数，大约是 n // 2个。
+- 所以 1~n所有的数的约数个数和 可以看成 所有的倍数的个数 = $n/1 + n / 2 + n /3 + \cdots + n / n = n \sum_{i=1}^n\frac{1}{i} = n \ln n。$
+- 所以=，从期望角度来讲，一个数$n$ 的约束个数的期望约是 $\ln n$
 
 # 数据结构
 
-## 26叉字典树
+## 并查集
+
+合并和查询的时间复杂度： 近似 $O(1)$
+
+`find(u) == find(v)` 表示u, v在同一集合。
+
+**路径压缩**
+
+```python
+    fa = list(range(n)
+    # 查找x集合的根
+    def find(x):
+        if fa[x] != x:
+            fa[x] = find(fa[x])
+        return fa[x]
+
+    # v并向u中
+    def union(u, v):
+        if find(u) != find(v):
+	        fa[find(v)] = find(u)
+```
+
+常用拓展：
+
+- 记录每个集合大小：绑定到根节点
+- 记录每个点到根节点的**距离**：绑定到每一个节点上
+
+
+
+**并查集维护连通分量**
+
+[1998. 数组的最大公因数排序 - 力扣（LeetCode）](https://leetcode.cn/problems/gcd-sort-of-an-array/)
+
+ 质因子分解 + 并查集判断连通分量。
+
+将所有数看成一个图中的节点。任意两个数 $u, v$ ， 如果不互质（gcd>1) 说明存在一条边$ u \sim v$。显然一种做法是用$O(n^2)$ 的时间维护所有节点对应的连通块。然而，实际上只需要对每个数$x$ 和它的所有质因子进行合并，这样可以保证有相同质因子的两个元素，他们可以在同一个连通分量。
+
+记数组中最大值$ m = max(nums)$,  可以看成一个 有 m 个节点的图。每次质因子分解的时间复杂度是$O(\sqrt x)$ ，所以从 $O(n^2)$   优化到 $O(n \sqrt m)$。最后，将排序好的数组和原数组对应位置上的元素进行对比。判断两个元素是否同属于一个连通分量即可。
+
+时间复杂度：$O\bigg(n\big(\sqrt m \cdot \alpha(m) \big) +n\log n \bigg ) $
+
+```python
+    def gcdSort(self, nums: List[int]) -> bool:
+        n = len(nums)
+        fa = list(range(max(nums) + 1))	
+        def find(x):    # x 压缩到 fa[x] 中
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):    # u 合并到 v 中
+            if find(u) != find(v):
+                fa[find(u)] = find(v)
+        
+        for i, x in enumerate(nums):
+            xx = x
+            for j in range(2, int(sqrt(x)) + 1):
+                if x % j == 0:
+                    union(j, xx)
+                    while x % j == 0:
+                        x //= j
+            if x > 1:
+                union(x, xx)
+        sorted_nums = sorted(nums)
+        for u, v in zip(nums, sorted_nums):
+            if u == v: continue 
+            # 不在位元素，需要看是否在同一连通分量
+            if find(u) != find(v): return False
+        return True
+```
+
+
+
+## 字典树
+
+### 26叉字典树
 
 ```python
 class Trie:
@@ -851,9 +1443,7 @@ class Trie:
 
 ```
 
-
-
-## 哈希字典树
+### 哈希字典树
 
 ```python
     def countPrefixSuffixPairs(self, words: List[str]) -> int:
@@ -875,9 +1465,51 @@ class Trie:
         return res
 ```
 
+```python
+class Trie:
+
+    def __init__(self):
+        self.end = False
+        self.next = {}
+
+    def insert(self, word: str) -> None:
+        p = self 
+        for ch in word:
+            if ch not in p.next:
+                p.next[ch] = Trie()
+            p = p.next[ch]
+        p.end = True 
+
+    def search(self, word: str) -> bool:
+        p = self 
+        for ch in word:
+            if ch not in p.next:
+                return False 
+            p = p.next[ch]
+        return p.end
+
+    def startsWith(self, prefix: str) -> bool:
+        p = self 
+        for ch in prefix:
+            if ch not in p.next:
+                return False 
+            p = p.next[ch]
+        return True        
 
 
-## 动态开点 + lazy 线段树			
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
+```
+
+
+
+## 线段树
+
+### 动态开点 + lazy 线段树			
 
 ```python
 # https://leetcode.cn/problems/range-module/
@@ -980,7 +1612,110 @@ class RangeModule:
 # obj.removeRange(left,right)
 ```
 
-## 递归动态开点（无lazy) 线段树
+### 线段树优化DP问题
+
+[2617. 网格图中最少访问的格子数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/description/?envType=daily-question&envId=2024-03-22)
+
+单点修改 + 区间查询
+
+```python
+class SegmentTree:
+    def __init__(self, n: int):
+        self.n = n
+        self.tree = [inf] * (4 * n)
+
+    def op(self, a, b):
+        return min(a, b)
+
+    def update(self, ul, ur, val, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
+        if ul <= l and r <= ur:
+            self.tree[idx] = val
+            return
+        mid = (l + r) >> 1
+        if ul <= mid:self.update(ul, ur, val, idx * 2, l, mid)
+        if ur > mid: self.update(ul, ur, val, idx * 2 + 1, mid + 1, r)
+        self.tree[idx] = self.op(self.tree[idx * 2], self.tree[idx * 2 + 1])  # 更新当前节点的值
+
+    def query(self, ql, qr, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
+        if ql <= l and r <= qr:
+            return self.tree[idx]
+        mid = (l + r) >> 1
+        ansl, ansr = inf, inf
+        if ql <= mid:ansl = self.query(ql, qr, idx * 2, l, mid)
+        if qr > mid: ansr = self.query(ql, qr, idx * 2 + 1, mid + 1, r)
+        return self.op(ansl, ansr)
+
+class Solution:
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        treey = [SegmentTree(m) for _ in range(n)]
+        # treey[j] 是第j 列的线段树
+        for i in range(m - 1, -1, -1):
+            treex = SegmentTree(n)
+            for j in range(n - 1, -1, -1):
+                if i == m - 1 and j == n - 1:
+                    treex.update(j + 1, j + 1, 1)
+                    treey[j].update(i + 1, i + 1, 1)
+                    continue
+                g = grid[i][j]
+                if g == 0: continue
+                mnx = treex.query(j + 1 + 1, min(g + j, n - 1) + 1)  if j < n - 1 else inf 
+                mny = treey[j].query(i + 1 + 1, min(g + i, m - 1) + 1) if i < m - 1 else inf
+                mn =  min(mnx, mny) + 1
+                treex.update(j + 1, j + 1, mn)
+                treey[j].update(i + 1, i + 1, mn)
+        res = treey[0].query(1, 1)
+        return res if res != inf else -1
+```
+
+最值查询朴素无更新线段树：
+
+```python
+class Solution:
+    def subArrayRanges(self, nums: List[int]) -> int:
+        class SegmentTree:
+            def __init__(self, n, flag):
+                self.n = n
+                self.tree = [inf * flag] * (4 * n)
+                self.flag = flag
+            def op(self, a, b):
+                if self.flag == 1: return min(a, b)
+                elif self.flag == -1: return max(a, b)
+            def build(self, idx = 1, l = 1, r = None):
+                if not r: r = self.n
+                if l == r:
+                    self.tree[idx] = nums[l - 1]
+                    return
+                mid = (l + r) >> 1
+                self.build(idx * 2, l, mid)
+                self.build(idx * 2 + 1, mid + 1, r)
+                self.tree[idx] = self.op(self.tree[idx * 2], self.tree[idx * 2 + 1])
+            def query(self, ql, qr, idx = 1, l = 1, r = None):
+                if not r: r = self.n 
+                if ql <= l and r <= qr: 
+                    return self.tree[idx]
+                ansl, ansr = inf * self.flag, inf * self.flag 
+                mid = (l + r) >> 1
+                if ql <= mid: ansl = self.query(ql, qr, idx * 2, l, mid)
+                if qr > mid: ansr = self.query(ql, qr, idx * 2 + 1, mid + 1, r)
+                return self.op(ansl, ansr)
+        n = len(nums)
+        mxtr, mntr = SegmentTree(n, -1), SegmentTree(n, 1)
+        res = 0
+        mxtr.build()
+        mntr.build()
+        for i in range(n):
+            for j in range(i + 1, n):
+                res += mxtr.query(i + 1, j + 1) - mntr.query(i + 1, j + 1)
+        return res
+
+```
+
+
+
+### 递归动态开点（无lazy) 线段树
 
 区间覆盖统计问题，区间覆盖不需要重复操作，不需要进行lazy传递
 
@@ -1029,90 +1764,7 @@ class CountIntervals:
 
 ```
 
-
-
-## lazy线段树（内部）
-
-```python
-n = 0
-tree, lazy = [], []
-Nums = []
-
-def build(i, l, r):
-    if l == r:
-        tree[i] = Nums[l - 1]
-        return 
-    mid = (l + r) >> 1
-    build(i * 2, l, mid)
-    build(i * 2 + 1, mid + 1, r)
-    tree[i] = tree[i * 2] + tree[i * 2 + 1]
-
-# 节点区间赋值、打上lazy标记
-def do(i, l, r, val):
-    tree[i] = (l - r + 1) * val
-    lazy[i] = val
-
-# 根据标记信息，更新子节点，设置子节点标记，清空标记
-def pushdown(i, l, r):
-    if lazy[i]:
-        val = lazy[i]
-        mid = (l + r) >> 1
-        do(i * 2, l, mid, val)
-        do(i * 2 + 1, mid + 1, r, val)
-        lazy[i] = val
-
-def Update(L, R, val, i = 1, l = 1, r = n):
-    if L <= l and r <= R:
-        do(i, l, r, val)
-        return
-    
-    # 检查标记
-    pushdown(i, l, r)
-    mid = (l + r) >> 1
-    if L <= mid:
-        Update(L, R, val, i * 2, l, mid)
-    if R > mid:
-        Update(L, R, val, i * 2 + 1, mid + 1, r)
-    
-    # 更新节点区间
-    tree[i] = tree[i * 2] + tree[i * 2 + 1]
-
-
-def Query(L, R, i, l, r) -> int:
-    if L <= l and r <= R:
-        return tree[i]
-    
-    pushdown(i, l, r)
-    mid = (l + r) >> 1
-    vl = vr = 0
-    if L <= mid:
-        vl = Query(L, R, i * 2, l, mid)
-    if R > mid:
-        vr = Query(L, R, i * 2 + 1, mid + 1, r)
-    return vl + vr
-
-
-class NumArray:
-    def __init__(self, nums: List[int]):
-        global n, tree, lazy, Nums
-        n = len(nums)
-        tree = [0] * (4 * n)
-        lazy = [0] * (4 * n)
-        Nums = nums
-        build(1, 1, n)
-
-    def update(self, index: int, val: int) -> None:
-        Update(index + 1, index + 1, val, 1, 1, n)
-
-    def sumRange(self, left: int, right: int) -> int:
-        return Query(left + 1, right + 1, 1, 1, n)
-
-
-```
-
-
-
-## lazy线段树（点区间赋值）
+lazy线段树（点区间赋值）
 
 ```python
 class SegmentTree:
@@ -1180,13 +1832,10 @@ class SegmentTree:
             vl = self.query(i * 2, l, mid, L, R)
         if R > mid:
             vr = self.query(i * 2 + 1, mid + 1, r, L, R)
-        
         return vl + vr
 ```
 
-
-
-## lazy 线段树（01翻转）
+lazy 线段树（01翻转）
 
 ```python
 class Solution:
@@ -1457,9 +2106,45 @@ for _ in range(m):
     write(qry(l - 1, r - 1))
 ```
 
+[2104. 子数组范围和 - 力扣（LeetCode）](https://leetcode.cn/problems/sum-of-subarray-ranges/?envType=featured-list&envId=ZZi8gf6w?envType=featured-list&envId=ZZi8gf6w)
+
+```python
+    def subArrayRanges(self, nums: List[int]) -> int:
+        # f[i][j] 表示 [i, i + 2^j - 1] 的最值
+        n = len(nums)
+        lenj = ceil(math.log(n, 2)) + 1
+        log = [0] * (n + 1)
+        for i in range(2, n + 1):
+            log[i] = log[i // 2] + 1
+        
+        class ST:
+            def __init__(self, n, flag):
+                self.flag = flag
+                f = [[inf * flag] * lenj for _ in range(n)]
+                for i in range(n):
+                    f[i][0] = nums[i]
+                for j in range(1, lenj):
+                    for i in range(n + 1 - (1 << j)):
+                        f[i][j] = self.op(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+                self.f = f
+            def op(self, a, b):
+                if self.flag == 1: return min(a, b)
+                return max(a, b)
+            def query(self, l, r):
+                k = log[(r - l + 1)]
+                return self.op(self.f[l][k], self.f[r - (1 << k) + 1][k])
+        n = len(nums)
+        mxtr, mntr = ST(n, -1), ST(n, 1)
+        res = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                res += mxtr.query(i, j) - mntr.query(i, j)
+        return res
+```
 
 
-# 图论/树
+
+# 图论
 
 ## 建图
 
@@ -1829,6 +2514,39 @@ def minimumCost(self, start: List[int], target: List[int], specialRoads: List[Li
         return dd[n]        
 ```
 
+转换建图问题：可折返图 转换成 到达时间的奇偶问题
+
+[2577. 在网格图中访问一个格子的最少时间 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/?envType=featured-list&envId=QAPjw82k?envType=featured-list&envId=QAPjw82k)
+
+```python
+class Solution:
+    def minimumTime(self, grid: List[List[int]]) -> int:
+        # (w, x0, x1) 表示到达(x0, x1) 时刻至少为w
+        if grid[0][1] > 1 and grid[1][0] > 1: return -1
+        m, n = len(grid), len(grid[0])
+        deltas = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        target = (m - 1, n - 1)
+        d = {}
+        hq = [(0, (0, 0))]
+        while hq:
+            dx, x = heappop(hq)
+            if x in d: continue
+            d[x] = dx
+            if x == target: return d[target]
+            x0, x1 = x[0], x[1]
+            for u0, u1 in [(x0 + dx, x1 + dy) for dx, dy in deltas]:
+                if not (0 <= u0 < m and 0 <= u1 < n) or (u0, u1) in d: continue
+                u, t = (u0, u1), grid[u0][u1]
+                if dx + 1 >= t:
+                    heappush(hq, (dx + 1, u))
+                else:
+                    # 例如 3 -> 6，折返一次变成5 后 + 1到达 6
+                    du = (t - dx - 1) if (t - dx) & 1 else t - dx
+                    heappush(hq, (dx + du + 1, u))
+```
+
+
+
 ### 4.最短路与子序列 和/积 问题
 
 求解一个数组的所有子序列的和 / 积中第k小 (大同理) 问题，其中子序列是原数组删去一些元素后剩余元素不改变相对位置的数组。
@@ -1867,9 +2585,195 @@ def minimumCost(self, start: List[int], target: List[int], specialRoads: List[Li
         return res - hq[0][0]      
 ```
 
+### 5. 动态修改边权
+
+[2699. 修改图中的边权 - 力扣（LeetCode）](https://leetcode.cn/problems/modify-graph-edge-weights/description/)
+
+	1. 在邻接表数组中记录原矩阵中边的位置，方便修改
+	1. 记$d_{signal, i}$ 表示第$signal$ 次得到的节点$i$ 到源点的最短路。跑两次 dijkstra算法
+	1. .第二次修改边权时，对于特殊边尝试修改条件：
+
+$$
+d_{1,x} + nw + d_{0,dest} - d_{0, u} = target \\
+解得nw = target - d_{1,x} + d_{0, u} -  d_{0,dest} \\
+$$
+
+当这个值大于1时，是一个合法的边权，进行修改。
+
+![image.png](https://pic.leetcode.cn/1710550705-aHllZi-image.png)
+
+```python
+def modifiedGraphEdges(self, n: int, edges: List[List[int]], source: int, destination: int, target: int) -> List[List[int]]:
+        e = [[] for _ in range(n)]
+        # 存放边的位置，方便在原矩阵直接修改
+        for pos, (u, v, w) in enumerate(edges):
+            e[u].append([v, pos])
+            e[v].append([u, pos])
+
+        total_d = [[inf] * n for _ in range(2)]
+        total_d[0][source] = total_d[1][source] = 0
+        def dijkstra(signal):
+            d = total_d[signal] # 第signal次的最短路数组
+            v = set()
+            for _ in range(n - 1):
+                x = -1
+                for u in range(n):
+                    if u not in v and (x < 0 or d[u] < d[x]):
+                        x = u
+                v.add(x)
+                for u, pos in e[x]:
+                    w = edges[pos][2] 
+                    w = 1 if w == -1 else w
+                    # d[x] + nw +  total_d[0][destination] - total_d[0][u] = target
+                    if signal == 1 and edges[pos][2] == -1:
+                        nw = target - total_d[0][destination] + total_d[0][u] - d[x]
+                        if nw > 1:  # 合法修改
+                            w = edges[pos][2] = nw 
+                    d[u] = min(d[u], d[x] + w)
+            return d[destination]
+        if dijkstra(0) > target: return []  # 全为1也会超过target
+        if dijkstra(1) < target: return []  # 最短路无法变大
+        for e in edges: 
+            if e[2] == -1:
+                e[2] = 1
+        return edges
+
+```
+
+## 最小生成树
+
+### Prim
+
+```python
+def solve():
+    n, m = map(int, input().split())
+    low_cost = [inf] * n 
+    g = [[] for _ in range(n)]
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        u, v = u - 1, v - 1
+        g[u].append((v, w))
+        g[v].append((u, w))
+        
+    low_cost[0] = 0
+    res = 0
+    s = set()
+    for _ in range(n):
+        dx, x = inf, -1
+        for i in range(n):
+            if i not in s and (x < 0 or low_cost[i] < dx):
+                dx, x = low_cost[i], i
+        s.add(x)
+        res += dx
+
+        for i, w in g[x]:
+            if i not in s:
+                low_cost[i] = min(low_cost[i], w)
+
+    if inf not in low_cost:
+        print(res)
+        return
+    print('orz')
+```
 
 
 
+## 二分图
+
+定义：无向图$G(U,V,E)$中节点可以划分成互斥集合$U$, $V$，使得 $\forall (u, v) \in E$ 的两个端点分属于两个集合。
+
+- 两个互斥点集中的任意两点之间都不存在边
+
+- 任何一条边的两个端点分别来互斥的两个点集$U, V$
+
+- 不存在奇数点的环（不存在奇数条边的环）
+
+  ​	证明：因为走过一条边必然从一个集合走到另一个集合，要完成闭环必须走偶数条边（偶数个点）
+
+- 可能存在孤点
+
+  ![image.png](https://pic.leetcode.cn/1710725424-kbrwZc-image.png)
+
+[785. 判断二分图 - 力扣（LeetCode）](https://leetcode.cn/problems/is-graph-bipartite/description/?envType=featured-list&envId=JMxeEVyu?envType=featured-list&envId=JMxeEVyu)
+
+DFS染色：
+
+```python
+    def isBipartite(self, graph: List[List[int]]) -> bool:
+        n = len(graph)
+        color = [0] * n    
+        flag = True
+        def dfs(u, c):
+            nonlocal flag
+            color[u] = c 
+            for v in graph[u]:
+                if color[v] == 0:
+                    dfs(v, -c)
+                elif color[v] == c:
+                    flag = False
+                    return 
+        for i in range(n):
+            if color[i] == 0: dfs(i, 1)
+            if not flag: return False
+        return True
+```
+
+Bfs染色：
+
+```python
+    def isBipartite(self, graph: List[List[int]]) -> bool:
+        n = len(graph)
+        q = collections.deque()
+        color = [0] * n
+        for i in range(n):
+            if not color[i]:
+                q.append(i)
+                color[i] = 1
+            while q:
+                u = q.popleft()
+                c = color[u]
+                for v in graph[u]:
+                    if not color[v]:
+                        color[v] = -c 
+                        q.append(v)
+                    elif color[v] == c:
+                        return False
+        return True
+```
+
+并查集做法：
+
+维护两个并查集$U, V$ , 分别存储两个互斥点集。
+
+对于每个节点$u$ 遍历其所有邻接节点$v $ 。如果遇到 $u$ , $v$ 在同一个并查集，说明不满足二分图。（同一点集中出现连接的边）
+
+否则将所有邻接节点加到另一个并查集中。
+
+```python
+    def isBipartite(self, graph: List[List[int]]) -> bool:
+        n = len(graph)
+        s = set()
+        pa = list(range(n))
+        def find(x):
+            if pa[x] != x:
+                pa[x] = find(pa[x])
+            return pa[x]
+        def union(u, v):
+            if find(u) != find(v):
+                pa[find(v)] = find(u)
+        for u in range(n):
+            if u not in s:
+                s.add(u)
+                p = None
+                for v in graph[u]:
+                    if find(u) == find(v):
+                        return False
+                    if p: union(p, v)
+                    p = v
+        return True
+```
+
+# 树论
 
 ## 倍增LCA
 
@@ -1978,25 +2882,6 @@ $v$子树部分上升1，深度和减少$siz[v]$
 
 ![image.png](https://pic.leetcode.cn/1709177362-feHrFp-image.png)
 
-## 并查集
-
-`find(u) == find(v)` 表示u, v在同一集合
-
-```python
-    fa = list(range(n)
-
-    # 查找x集合的根
-    def find(x):
-        if fa[x] != x:
-            fa[x] = find(fa[x])
-        return fa[x]
-
-    # v并向u中
-    def union(u, v):
-        if find(u) != find(v):
-	        fa[find(v)] = find(u)
-```
-
 ## 树上异或
 
 性质1：对树上一条路径 $u \rightarrow x_0 \rightarrow x_1 \rightarrow \cdots \rightarrow v$ 进行相邻节点两两异或运算，等价于只对路径起始节点和终止节点异或。
@@ -2017,7 +2902,102 @@ class Solution:
         return res 
 ```
 
-# 位运算/状态压缩
+## 树上直径
+
+时间复杂度：$O(n)$
+
+定义：**树上任意两节点之间最长的简单路径即为树的「直径」。**
+
+定理：
+
+- **对于无负边权的树，从树的任意节点出发寻找到距离最远的节点，一定是树直径的一个端点。** （反证）
+
+方法一：两次dfs
+
+```python
+    def treeDiameter(self, edges: List[List[int]]) -> int:
+        n = len(edges) + 1
+        e = [[] for _ in range(n + 1)]
+        for u, v in edges:
+            e[u].append(v)
+            e[v].append(u)
+        def dfs(u, fa):
+            res, mxv = 0, u
+            for v in e[u]:
+                if v == fa: continue
+                a, b = dfs(v, u)
+                if a + 1 > res:
+                    res, mxv = a + 1, b 
+            return res, mxv
+        _, s = dfs(0, -1)
+        res, _ = dfs(s, -1)
+        return res
+```
+
+方法二：树形DP
+
+返回每个节点 的最长路径fst 和 与最长路径没有公共边的次长路径 sec，取max(fst + sec) 
+
+```python
+    def treeDiameter(self, edges: List[List[int]]) -> int:
+        n = len(edges) + 1
+        e = [[] for _ in range(n + 1)]
+        for u, v in edges:
+            e[u].append(v)
+            e[v].append(u)
+        res = 0
+        def dfs(u, fa):
+            nonlocal res
+            # 找出节点u 为子树的最长 / 次长路径
+            fst = sec = -1 
+            for v in e[u]:
+                if v == fa: continue
+                a, _ = dfs(v, u)
+                if a >= fst:
+                    fst, sec = a, fst
+                else:
+                    sec = max(a, sec)
+            res = max(fst + sec + 2, res)        
+            return fst + 1, sec + 1
+        dfs(0, -1)
+        return res
+```
+
+[310. 最小高度树 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-height-trees/description/?envType=daily-question&envId=2024-03-17)
+
+树的直径问题，最小高度树的根一定在树的直径上。
+
+```python
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+            e = [[] for _ in range(n)]
+            for u, v in edges:
+                e[u].append(v)
+                e[v].append(u)
+            # 确定以x 为根
+            pa = [-1] * n
+            def dfs(u, fa):
+                pa[u] = fa
+                res, mxv = 0, u
+                for v in e[u]:
+                    if v == fa:
+                        continue
+                    a, b = dfs(v, u)
+                    if a + 1 > res:
+                        res, mxv = a + 1, b
+                return res, mxv
+            _, x = dfs(0, -1)
+            dis, y = dfs(x, -1)
+            path = []
+            while y != -1:
+                path.append(y)
+                y = pa[y]
+            res = [path[dis // 2]]
+            if dis & 1:
+                res.append(path[dis // 2 + 1])
+            return res
+```
+
+# 位运算
 
 ## 1.二维矩阵 压缩为一维二进制串
 
@@ -2169,9 +3149,654 @@ https://leetcode.cn/problems/minimize-or-of-remaining-elements-using-operations/
         return res
 ```
 
+# 动态规划
+
+[划分型dp - 力扣（LeetCode）](https://leetcode.cn/problem-list/lfZOUTrA/)
+
+[数位dp - 力扣（LeetCode）](https://leetcode.cn/problem-list/30QHpYGW/)
+
+[状压dp - 力扣（LeetCode）](https://leetcode.cn/problem-list/ptud3zoQ/)
+
+[线性dp / 背包 - 力扣（LeetCode）](https://leetcode.cn/problem-list/PAkZSAkX/)
+
+[状态机dp - 力扣（LeetCode）](https://leetcode.cn/problem-list/oX87FqKK/)
+
+[区间dp - 力扣（LeetCode）](https://leetcode.cn/problem-list/2UzczrXX/)
+
+## 背包问题
+
+$N$ 个物品，价值为$v_i$，重量为$w_i$，背包容量为$W$。挑选物品不超过背包容量下，总价值最大是多少。
+
+- 0 - 1背包：每个物品用 0 或者 1 次。
+- 完全背包：每个物品可以用 0 到 $+\infty$ 次。
+- 多重背包：每个物品最多 $s_i$ 次。
+- 分组背包：物品分为若干组，每一组里面选 0 或者1 次。
+
+### 0 - 1 背包
+
+**状态表示：$f(i, j)$ **
+
+- 集合 ：
+
+  - 所有拿物品的选法
+  - 条件：1. 只从前$i$ 个物品中选；2. 总重量 $\le j$ 
+
+- 表示的属性（一般是$\max, \min, 个数$）：所有选法的总价值的最大值（$\max$ ）
+
+  最终求解的问题 $f(N, W)$ 。
+
+**状态计算：**
+
+集合的划分问题：如何将集合$f(i,j)$ 划分成更小的可计算子集。
+
+![image.png](https://pic.leetcode.cn/1710840104-YjZLqr-image.png)
+
+```python
+# f[i][j] 表示用前i 个物品，在总重量不超过j 的情况下，所有物品选法构成的集合中，总价值的最大值
+# f[0][0] ~ f[N][0] = 0
+# 考虑f[i][j] 对应集合的完备划分： 选i ，其子集的最大值是f[i - 1][j - w[i]] + v[i]，需要在 j - w[i] >= 0 满足
+# 不选i， 其子集的最大值是 f[i - 1][j]。一定可以满足
+for i in range(1, N + 1):
+    for j in range(W + 1):
+        f[i][j] = f[i - 1][j]
+        if j - w[i] >= 0:
+            f[i][j] = max(f[i][j], f[i - 1][j - w[i]] + v[i])
+return f[N][W]
+```
+
+**滚动数组优化为一维：逆序遍历** 
+
+由于$f(i, j)$ 只和 $f(i-1, j)$ 有关。如果使用滚动数组$f(j)$ 优化，去掉第一维度，在同一个$i$ 下，如果正序遍历$j$ ，在恰好更新$f(j)$ 前所有$f(j'< j)$ 存放的是新值$f(i,j')$，所有$f(j''\geq j)$ 存放的是老值 $f(i-1,j'')$。
+
+由于我们希望能够得到$f(i-1, j - w[i])$ ，所以我们必须逆序遍历$j$ ：在恰好更新$f(j)$ 前，$f(j'\leq j)$ 都是老值，表示$f(i-1, j')$。
+
+所以$j$ 的枚举为$range(W, w[i]-1, -1)$
+
+```python
+f = [0] * (W + 1)
+for i in range(1, N + 1):
+    for j in range(W, w[i] - 1, -1):
+        f[j] = max(f[j], f[j - w[i]] + v[i])
+        # 此时f[j] 就代表 f[i - 1][j], f[j - w[i] 代表f[i - 1][j - w[i]]
+return f[W]        
+```
+
+[题目详情 - LC2431. 最大限度地提高购买水果的口味 - HydroOJ](https://hydro.ac/d/nnu_contest/p/LC1)
+
+增加限制条件：不超过k次使用折扣券。注意，k 的遍历方向也是逆序。
+
+```python
+    def maxTastiness(self, price: List[int], tastiness: List[int], maxAmount: int, maxCoupons: int) -> int:
+        # f[i][j][k] 从前i 个物品，不超过容量j 的情况下，不超过k张券的最大价值
+        # f[i][j][k] = max(f[i - 1][j][k], f[i - 1][j - w][k] + v, f[i - 1][j - w // 2][k - 1] + v)
+        f = [[0] * (maxCoupons + 1) for _ in range(maxAmount + 1)]
+
+        for w, v in zip(price, tastiness):
+            for j in range(maxAmount, w // 2 - 1, -1):
+                for k in range(maxCoupons, -1, -1):
+                    if j - w >= 0:
+                        f[j][k] = max(f[j][k], f[j - w][k] + v)
+                    if k >= 1:
+                        f[j][k] = max(f[j][k], f[j - w // 2][k - 1] + v)
+        return f[maxAmount][maxCoupons]
+```
+
+恰好装满型 0 - 1背包
+
+[2915. 和为目标值的最长子序列的长度 - 力扣（LeetCode）](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/description/?envType=featured-list&envId=OZhLbgFT?envType=featured-list&envId=OZhLbgFT)
+$$
+f[i][j] = max(f[i - 1][j], ~ f[i - 1][j - w] + v) ，第二个转移的条件是f[i - 1][j - w]> 0 或者  f[i - 1][j - w] =0 且 ~w =j
+$$
+可以通过初始值修改，将不合法的$f[i][j] 置为  -\infty$，合法的$f[i][j] \ge 0$。则初始值 $f[0][0] =0$ 
+
+得到二维版本：
+
+```python
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        # f[i][j] 表示从前i 个数中，和为j 的子序列的所有选法构成的集合中，子序列长度的最大值
+        # f[n][target]
+        # f[i][j] = max(f[i - 1][j], f[i - 1][j - w] + 1)
+        n = len(nums)
+        f = [[-inf] * (target + 1) for _ in range(n + 1)]
+        f[0][0] = 0
+        for i in range(1, n + 1):
+            w = nums[i - 1]
+            for j in range(target + 1):
+                f[i][j] = f[i - 1][j]
+                if j - w >= 0:
+                    f[i][j] = max(f[i][j], f[i - 1][j - w] + 1)
+        return f[n][target] if f[n][target] >= 0 else -1
+```
+
+优化：$j的上界可以优化为 \min(重量前缀, ~ target)$
+
+```python
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        f = [0] + [-inf] * target
+        pre = 0
+        for w in nums:
+            pre += w
+            for j in range(min(pre, target), w - 1, -1):
+                f[j] = max(f[j], f[j - w] + 1)
+        return f[target] if f[target] >= 0 else -1
+```
+
+### 完全背包
+
+**状态表示：$f(i, j)$ ** 同 0 - 1背包。
+
+**状态计算：**对于集合的划分，按照第$i$ 个物品选几个（$0, 1, ... , $)  划分。
+
+朴素做法：$O(N\cdot W^2)$
+
+```python
+for i in range(1, N + 1):
+    for j in range(W + 1):
+        for k in range(j // w[i] + 1):
+            f[i][j] = max(f[i][j], f[i - 1][j - k * w[i]] + k * v[i])
+return f[N][W]            
+```
+
+**冗余优化**：$O(N \cdot W)$
+
+可以发现后面一坨的最大值等价于 $f(i, j - w)$
+$$
+\begin{align}
+f[i,j]~ &=~Max(f[i-1,j],&  	&f[i-1,j-w]+v,&	&~f[i-1,j-2w]+2v,&	&~f[i-1,j-3w]+3v &,...)
+
+\\
+
+f[i,j-w]~ &= ~Max(	&		&f[i-1,j-w],&	&~f[i-1,j-2w]+v,&			&~f[i-1,j-3w]+2v,    &...)
+
+\end{align}
+$$
+所以 $f(i, j) = max \big(f(i - 1, j), f(i, j - w[i]) + v[i] \big)$， 
+
+```python
+for i in range(1, N + 1):
+    for j in range(W + 1):
+        f[i][j] = f[i - 1][j]
+        if j - w[i] >= 0:
+            f[i][j] = max(f[i][j], f[i][j - w[i]] + v[i])    
+            # f[i][j - w[i]] 包含了 f[i - 1][j - k * w[i]] 的部分 （k >= 1）
+return f[N][W]
+```
+
+**优化为一维**
+
+```python
+for i in range(1, N + 1):
+    for j in range(w[i], W + 1):
+        f[j] = max(f[j], f[j - w[i]] + v[i])
+```
+
+[518. 零钱兑换 II - 力扣（LeetCode）](https://leetcode.cn/problems/coin-change-ii/description/?envType=featured-list&envId=OZhLbgFT?envType=featured-list&envId=OZhLbgFT)
+
+求组合方案数
+$$
+\begin{align}
+f[i,j]~ &=~\sum (f[i-1,j],&  	&~f[i,j-c] )
+
+\\
+
+f[i,j-c]~ &= ~\sum(f[i-1,j-c],&	 &~f[i,j- 2 \cdot c])
+
+\end{align}
+$$
+
+```python
+    def change(self, amount: int, coins: List[int]) -> int:
+        # f[i][j] 表示 前i 个硬币凑出 j 的方案数
+        # 状态表示：从前i 个硬币中组合出j 的所有方案的集合
+        # 属性：个数
+        # 转移：对集合进行划分。
+        # f[i][j] = f[i - 1][j] + f[i][j - c]
+        n = len(coins)
+        f = [[0] * (amount + 1) for _ in range(n + 1)]
+        # f[i][0] = 1
+        for i in range(n + 1): f[i][0] = 1
+
+        for i in range(1, n + 1):
+            for j in range(1, amount + 1):
+                c = coins[i - 1]
+                f[i][j] = f[i - 1][j]
+                if j - c >= 0:
+                    f[i][j] += f[i][j - c]
+        return f[n][amount]
+```
+
+优化成一维：
+
+```python
+    def change(self, amount: int, coins: List[int]) -> int:
+        # f[i][j] = f[i - 1][j] + f[i][j - c]
+        n = len(coins)
+        # 从前i 个中构成 j 的方案数
+        f = [0] * (amount + 1)
+        f[0] = 1
+        for c in coins:
+            for j in range(c, amount + 1):
+                f[j] += f[j - c]
+        return f[amount]
+```
 
 
-# 数位dp
+
+[1449. 数位成本和为目标值的最大数字 - 力扣（LeetCode）](https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/description/?envType=featured-list&envId=OZhLbgFT?envType=featured-list&envId=OZhLbgFT)
+
+每个数字有一个重量，可以无限选，问恰好重量为target的最大数字。（类似题目：长度最大的字典序最小串等）
+
+先用完全背包模型求出最长长度，然后贪心的从9~1倒序遍历逆序构造。构造的条件是$f[target-w]+1 = f[target]$，即通过长度判断是否可以转移。
+
+```python
+    def largestNumber(self, cost: List[int], target: int) -> str:
+        # 先求出能构成的最长数串
+        # 每个物品重量W, 价值为1，
+        # f[i][j] 表示从前i 个物品中选法中，能够构成的最大价值
+        # f[i][j] = max(f[i][j], f[i][j - w])
+        f = [0] + [-inf] * target
+        for w in cost:
+            for j in range(w, target + 1):
+                f[j] = max(f[j], f[j - w] + 1)
+        mxl = f[target]
+        if mxl <= 0: return '0'
+        res = ''
+        # 贪心的构造，从高位到低位尽可能构造
+        for x in range(9, -1, -1):
+            w = cost[x - 1]
+            while target - w >= 0 and f[target] == f[target - w] + 1:
+                res += str(x)
+                target -= w
+        return res
+```
+
+### 多重背包
+
+在完全背包的基础上，增加每个物品最多选择选择的次数限制 $s[i]$。
+
+暴力做法：$O(N \cdot W ^2)$
+
+```python
+for i in range(1, n + 1):
+    for j in range(W + 1):
+        for k in range(min(c[i] + 1, j // w[i] + 1)):   
+            f[i][j] = max(f[i][j], f[i - 1][j - k * w[i]] + k * v[i])
+```
+
+$$
+f(i,j)=\max 	(f(i - 1,  j), 	&f(i-1,~ j-w)+v,& ~\cdots , &~ f(i-1,~ j - c \cdot w) + c \cdot v))&
+\\
+f(i, j - w)=\max(	&f(i-1,~ j-w),&	 ~\cdots , &~ f(i-1,~ j - c \cdot w) + (c-1) \cdot v),& ~f(i-1, j - (c + 1) \cdot w) + c \cdot v))
+$$
+
+可以发现无法借助完全背包的方法进行优化。
+
+**二进制拆分重量为新的包裹**：$O(N \cdot W\cdot log(\sum W) \cdot )$
+
+思路：将每一件最多能选 $c$ 个的物品拆分成若干个包裹，大小分别是$ 1, 2, \cdots, 2^k, c' $ ，例如 $c=500$, 拆分成$1, 2, \cdots, 128,245 $，可以证明这些数字可以枚举出$ 0 \sim 500$ 之间的所有数。将这些包裹看出是新的物品，有其对应的新的 重量 和 价值。
+
+可以估算，总包裹的个数不超过 $ N \cdot log_2{(\sum W)}$ 。
+
+```python
+W, V = [], []
+for _ in range(N):
+    ow, ov, oc = map(int, input().split())
+    k = 1
+    while oc >= k:  # 例如10， 拆分成1，2，4和3
+        W, V = W + [ow * k], V + [ov * k] 
+        oc -= k
+        k <<= 1
+    if oc > 0:
+        W, V = W + [ow * oc], V + [ov * oc]
+
+f = [0] * (mxW + 1)
+for w, v in zip(W, V):
+    for j in range(mxW, w - 1, -1):
+        f[j] = max(f[j], f[j - w] + v)
+print(f[mxW])
+```
+
+### 分组背包
+
+有$N$ 组物品，容量为$mxW$ 的背包，每组物品最多只能选其中一个。 例如，水果（苹果，香蕉，橘子）只能选一个或者不选。
+
+$f(i, j)$ 从前$i$ 组选，总重量不超过 $j$  的所有选法方案的价值和的最大值。
+
+状态转移：第$i$ 组物品一个都不选 $f(i-1,j)$，第$i$ 组物品选第$k$ 个 $f(i-1,j-w[i][k]) + v[i][k]$
+
+```python
+W, V = [[0] for _ in range(N + 1)], [[0] for _ in range(N + 1)]
+for i in range(1, N + 1):
+    K = int(input()) 
+    for k in range(K):
+        w, v = map(int, input().split())
+        W[i], V[i] = W[i] + [w], V[i] + [v]
+        
+f = [0] * (mxW + 1) 
+for i in range(1, N + 1):
+    for j in range(mxW, -1, -1):
+        for k in range(len(W[i])):
+            if j - W[i][k] >= 0:
+                f[j] = max(f[j], f[j - W[i][k]] + V[i][k])     
+```
+
+## 线性dp
+
+### 最长上升子序列
+
+$O(n^2)$ 做法，$f[i] 表示以nums[i] 结尾的所有上升子序列中最长的长度。$
+
+```python
+for i, x in enumerate(nums):
+    for j in range(i):
+        if nums[j] < x:
+            f[i] = max(f[i], f[j] + 1)
+```
+
+$O(nlogn)$ 做法，$f[i] 表示长度为i的所有上升子序列中，子序列末尾的最小值$
+
+正序遍历 $nums$ 中每一个数$x$， 二分找出$x$ 在$f$ 中的插入位置（恰好大于$ x$ 的位置）。
+
+```python
+# f[i] 表示长度为i 的子序列的末尾元素的最小值
+f = []
+
+# 找到恰好大于x的位置
+def check(x, mid):
+    return f[mid] >= x
+for x in nums:
+    lo, hi = 0, len(f)
+    while lo < hi:
+        mid = (lo + hi) >> 1
+        if check(x, mid):
+            hi = mid 
+        else:
+            lo = mid + 1
+    if lo >= len(f):
+        f.append(x)
+    else:
+        f[lo] = x
+```
+
+
+
+### 最长公共子序列
+
+$ f[i][j] 表示从s[0: i] 和 s2[0: j] 中的最长公共子序列$
+
+时间复杂度：$O(mn)$
+
+可以证明：$f(i-1, j -1)+ 1 \ge \max(f(i-1,j), ~f(i,~j-1))$  
+
+```python
+#
+# f[n][m] 
+f = [[0] * (m + 1) for _ in range(n + 1)]
+for i in range(1, n + 1):
+    for j in range(1, m + 1):
+        if s1[i - 1] == s2[j - 1]:
+            f[i][j] = f[i - 1][j - 1] + 1
+        else:
+            f[i][j] = max(f[i - 1][j], f[i][j - 1])
+```
+
+
+
+### 编辑距离
+
+```python
+def getEditDist(s1, s2):
+    m, n = len(s1), len(s2)
+    f = [[inf] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1): f[i][0] = i
+    for i in range(1, n + 1): f[0][i] = i
+    f[0][0] = 0
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            a = f[i - 1][j] + 1
+            b = f[i][j - 1] + 1
+            c = f[i - 1][j - 1] + (1 if s1[i - 1] != s2[j - 1] else 0)
+            f[i][j] = min(a, b, c)
+    return f[m][n]
+```
+
+
+
+## 区间dp
+
+石子合并
+
+[AcWing 282. 石子合并 - AcWing](https://www.acwing.com/activity/content/problem/content/1007/)
+
+```python
+s = [0] * (n + 1)
+f = [[0] * n for _ in range(n)]
+for i in range(n):
+    s[i + 1] = s[i] + nums[i]
+for l in range(2, n + 1):
+    for i in range(n + 1 - l):
+        j = i + l - 1   
+        f[i][j] = inf
+        for k in range(i, j):
+            f[i][j] = min(f[i][j], f[i][k] + f[k + 1][j] + s[j + 1] - s[i])
+```
+
+
+
+[312. 戳气球 - 力扣（LeetCode）](https://leetcode.cn/problems/burst-balloons/description/?envType=featured-list&envId=PAkZSAkX?envType=featured-list&envId=PAkZSAkX)
+
+长度统一处理：对于 length = 1, $f[i][i-1]$ 是0，$f[j + 1][j]$也是0。等价于没有
+
+对于length = 2， $f[i][i+1] 其中一项 [i][i-1] + f[i+1][i+1]+...$  ，因此和长度大于等于3统一。
+
+```python
+    def maxCoins(self, nums: List[int]) -> int:
+        nums = [1] + nums + [1]
+        n = len(nums)
+        f = [[0] * n for _ in range(n)]
+        for l in range(1, n - 1):
+            for i in range(1, n - l):
+                j = i + l - 1
+                for k in range(i, j + 1):  
+                    f[i][j] = max(f[i][j], f[i][k - 1] + f[k + 1][j] + nums[k] * nums[i - 1] * nums[j + 1])
+        return f[1][n - 2]
+```
+
+[375. 猜数字大小 II - 力扣（LeetCode）](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/?envType=featured-list&envId=2UzczrXX?envType=featured-list&envId=2UzczrXX)
+
+$ f[a, b] 表示从[a : b] 一定能获胜的最小金额$。一定制胜的策略是当前位置一定答错，同时选择左右两边较大区间
+
+复杂度：$O(n^3)$
+
+```python
+    def getMoneyAmount(self, n: int) -> int:
+        # f[a, b] 表示从[a : b] 一定能获胜的最小金额
+        # 最多取到f[n + 1][n]
+        f = [[0] * (n + 1) for _ in range(n + 2)]
+        for l in range(2, n + 1):
+            for i in range(1, n + 2 - l):
+                j = i + l - 1
+                f[i][j] = inf
+                for k in range(i, j + 1):
+                    f[i][j] = min(f[i][j], k + max(f[i][k - 1], f[k + 1][j]))
+        return f[1][n]
+```
+
+[1039. 多边形三角剖分的最低得分 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/description/?envType=featured-list&envId=2UzczrXX?envType=featured-list&envId=2UzczrXX)
+
+![image.png](https://pic.leetcode.cn/1711619432-oDgIcO-image.png)
+
+```python
+    def minScoreTriangulation(self, values: List[int]) -> int:
+        # f[i: j] 表示从[i: j] 的最小得分
+        # f[0: n - 1]
+        n = len(values)
+        f = [[0] * (n + 1) for _ in range(n + 1)]
+        for l in range(3, n + 1):
+            for i in range(n + 1 - l):
+                j = i + l - 1
+                f[i][j] = inf
+                for k in range(i + 1, j):
+                    f[i][j] = min(f[i][j], f[i][k] + f[k][j] + values[i] * values[k] * values[j])
+        return f[0][n - 1]
+```
+
+[95. 不同的二叉搜索树 II - 力扣（LeetCode）](https://leetcode.cn/problems/unique-binary-search-trees-ii/description/?envType=featured-list&envId=M60EuZ6w?envType=featured-list&envId=M60EuZ6w)
+
+卡特兰数 + 区间dp，$f[i, j]$ 表示从 $i,i+1,~\cdots~, j$ 序列中构成的所有二叉搜索树的根节点（对应的列表）。
+
+最终问题：$f(1,n)$，对于每个区间，枚举中间节点 $k \in [i,j]$，分别从左右子树对应的列表中（$f(i,k-1)$ 和 $f(k+1,j)$），利用乘法原理进行构造。
+
+```python
+    def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
+        # f[i, j] 表示用 1 .. j 构建的二叉搜索树的所有根节点列表
+        # 枚举树根节点k in range(i, j + 1)
+        # f[i, k - 1] 为所有左子树可能的根节点列表
+        # f[k + 1, j] 为所有右子树可能的根节点列表
+        f = [[[None] for _ in range(n + 2)] for _ in range(n + 2)]
+        for l in range(1, n + 1):
+            for i in range(1, n + 2 - l):
+                j = i + l - 1
+                f[i][j] = []
+                for k in range(i, j + 1):
+                    for left in f[i][k - 1]:
+                        for right in f[k + 1][j]:
+                            f[i][j].append(TreeNode(k, left, right))
+        return f[1][n]
+```
+
+### 最长回文子序列
+
+**求最长回文子序列长度问题**
+
+$f[i: j]~ 表示s[i] \sim s[j] 中的最长回文子序列的长度$
+
+[516. 最长回文子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-palindromic-subsequence/)
+
+```python
+    def longestPalindromeSubseq(self, s: str) -> int:
+        # f[i: j] 表示s[i] ~ s[j] 中的最长回文子序列的长度
+        n = len(s)
+        f = [[0] * (n + 1) for _ in range(n + 1)]
+        for i in range(n):
+            f[i][i] = 1
+        for l in range(2, n + 1):
+            for i in range(n + 1 - l):
+                j = i + l - 1
+                if s[i] == s[j]:
+                    f[i][j] = f[i + 1][j - 1] + 2
+                else:
+                    f[i][j] = max(f[i + 1][j], f[i][j - 1])
+        return f[0][n - 1]
+                    
+```
+
+推论：对于长度为 $n$ 的字符串，其最长回文子序列长度为 $L$， 则最少添加 $n - L$ 个字符可以使原串变成回文串。
+
+[1312. 让字符串成为回文串的最少插入次数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-insertion-steps-to-make-a-string-palindrome/?envType=featured-list&envId=PAkZSAkX?envType=featured-list&envId=PAkZSAkX)
+
+[P1435 [IOI2000\] 回文字串 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P1435)
+
+```python
+    def minInsertions(self, s: str) -> int:
+        # f[i: j] 表示从s[i] ~ s[j] 的 最长回文子序列
+        n = len(s)
+        f = [[0] * (n + 1) for _ in range(n + 1)]
+        for i in range(n):
+            f[i][i] = 1
+        for l in range(2, n + 1):
+            for i in range(n + 1 - l):
+                j = i + l - 1
+                if s[i] == s[j]:
+                    f[i][j] = f[i + 1][j -  1] + 2
+                else:
+                    f[i][j] = max(f[i + 1][j], f[i][j - 1])
+        return n - f[0][n - 1]
+```
+
+### 最长回文子串
+
+[5. 最长回文子串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-palindromic-substring/description/)
+
+```python
+    def longestPalindrome(self, s: str) -> str:
+        # 定义f[i][j] 表示从 s[i] ~ s[j] 是否是回文字符串
+        left = right = 0
+        n = len(s)
+        f = [[True] * (n + 1) for _ in range(n + 1)]
+        for l in range(2, n + 1):
+            for i in range(n + 1 - l):
+                j = i + l - 1
+                f[i][j] = s[i] == s[j] and f[i + 1][j - 1]
+                if f[i][j]:
+                    left, right = i, j
+        return s[left: right + 1]
+```
+
+
+
+## 数位dp
+
+统计在 $[a, b]$ 区间各个数字出现的次数。
+
+需要实现 $count(n, x)$  函数统计 $[1, n]  $  区间中数字 $x$ 出现的次数
+
+```python
+def count(n, x):
+# 在 1 ~ n 中x数字出现的次数
+# 上界 abcdefg
+# yyyizzz , 考虑i位上x的出现次数
+# 
+# 1.1如果x不为0 yyy 为 000 ~ abc - 1, zzz 为 000 ~ 999
+# 1.2x为0，yyy 为 001 ~ abc - 1， zzz 为 000 ~ 999
+# 
+# 2. yyy 为 abc, 
+#     2.1 d < x时，0
+#       2.2 d = x 时，zzz为 000 ~ efg
+#       2.3 d > x 时，zzz为 000 ~ 999 
+    s = str(n)
+    res = 0
+    n = len(s)
+    for i in range(n):
+        pre = 0 if i == 0 else int(s[:i])
+        suf = s[i + 1:]
+        if x == 0: res += (pre - 1) * pow(10, len(suf))
+        else: res += pre * pow(10, len(suf))
+        d = int(s[i])
+        if d == x: res += (int(suf) if suf else 0) + 1 
+        elif d > x: res += pow(10, len(suf))
+    return res
+def get(a, b):
+    for i in range(10):
+        print(count(b, i) - count(a - 1, i), end = ' ')
+    print()
+```
+
+简化版：
+
+```python
+def count(n, x):
+    s = str(n)
+    n = len(s)
+    res = 0
+    for i in range(n):
+        pre = 0 if i == 0 else int(s[:i])
+        suf = s[i + 1:]
+        d = int(s[i])
+        if x == 0: pre -= 1
+        if d > x: pre += 1
+        if d == x: res += (int(suf) if suf else 0) + 1
+        res += pre * pow(10, len(suf))
+    return res
+def get(a, b):
+    for i in range(10):
+        print(count(b, i) - count(a - 1, i), end = ' ')
+    print()
+```
+
+
+
+
 
 ```python
 class Solution:
@@ -2200,7 +3825,7 @@ class Solution:
         return dfs(0, True, True)
 ```
 
-# 状态机dp
+## 状态机dp
 
 [3068. 最大节点价值之和 - 力扣（LeetCode）](https://leetcode.cn/problems/find-the-maximum-sum-of-node-values/)
 
@@ -2220,6 +3845,10 @@ $0 \rightarrow 1 或者 1 \rightarrow 0$： $ 加上x \oplus k$
             dp[i][1] = max(dp[i - 1][1] + x, dp[i - 1][0] + (x ^ k))
         return dp[n - 1][0]
 ```
+
+## 状压dp / 状态压缩dp
+
+
 
 # 贪心
 
@@ -2361,3 +3990,157 @@ def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]])
         return res
 ```
 
+# 贡献法
+
+经典问题：子数组的最小值之和，子数组的最大值之和，子数组的极差之和。
+
+1. 套娃式定义，如子数组的子数组，子序列的子序列
+2. 求某些的和，可以考虑成子子问题对总问题的贡献
+
+[2104. 子数组范围和 - 力扣（LeetCode）](https://leetcode.cn/problems/sum-of-subarray-ranges/description/?envType=featured-list&envId=ZZi8gf6w?envType=featured-list&envId=ZZi8gf6w)
+
+考虑每个值对子数组最大值，最小值的贡献情况，用单调栈维护。
+
+最大值用减小栈维护，贡献是$(i - t) \times (t - stk[-1]) \times nums[t]$
+
+```python
+    def subArrayRanges(self, nums: List[int]) -> int:
+        res = 0
+        stk = [-1]
+        total_mx = 0	# 贡献
+        nums.append(inf)
+        for i, x in enumerate(nums):
+            # 单调减
+            while len(stk) > 1 and x >= nums[stk[-1]]:
+                t = stk.pop()
+                total_mx += (i - t) * (t - stk[-1]) * nums[t]
+            stk.append(i)
+        stk = [-1]
+        nums[-1] = -inf
+        total_mn = 0
+        for i, x in enumerate(nums):
+            # 单调增
+            while len(stk) > 1 and x <= nums[stk[-1]]:
+                t = stk.pop()
+                total_mn += (i - t) * (t - stk[-1]) * nums[t]
+            stk.append(i)
+        return total_mx - total_mn
+```
+
+
+
+# 计算几何
+
+## 旋转与向量
+
+将点 $(x, ~y)$ 顺时针旋转 $\alpha$ 后，新的点坐标为 $(x \cos \alpha+y\sin\alpha,~~~ y \cos \alpha~ - x\sin\alpha  )$
+
+证明：
+$$
+点P(x, y) 表示为 半径为 r，极角为 \theta的坐标系下，
+\begin{cases}
+x = r \cos \theta
+\\
+y = r \sin \theta
+\end{cases}
+\\
+顺时针旋转 \alpha 后，\begin{cases}
+x' = r \cos (\theta - \alpha) = x \cos \alpha + y \sin \alpha
+\\
+y' = r \sin (\theta - \alpha) = y \cos \alpha - x \sin \alpha
+\end{cases}
+\\
+$$
+
+
+## 距离
+
+$A(x_1, ~y_1),~ B(x_2, ~y_2)$
+
+曼哈顿距离$ = |x_1 - x_2| + |y_1 - y_2|$
+
+切比雪夫距离$ = \max(|x_1 - x_2| ,~ |y_1 - y_2|)$
+
+### 曼哈顿距离转切比雪夫
+
+即将所有点顺时针旋转45°后再乘 $\sqrt{2}$。
+$$
+将P(x,~y)映射到 ~ P'(x+y,~x-y)坐标系下，d_{M} = d'_Q \\
+对于三维点 P(x,y,z) 映射到 P''(x+y+z, ~-x+y+z, ~x-y+z, ~x + y -z)坐标系下, d_M = d''_Q
+$$
+
+
+当需要求若干点之间的最大 $d_M$ 时，可以转换为
+$$
+\forall {i, j} \in P, \max(|x_i - x_j| + |y_i - y_j|) \iff \max(~\max(|x'_i - x'_j|, ~ |y'_i - y'_j|)~) \\
+\iff \forall {i, j} \in P , ~ \max(\max(|x'_i - x'_j|), ~\max(|y'_i - y'_j|))
+$$
+
+[3102. 最小化曼哈顿距离 - 力扣（LeetCode）](https://leetcode.cn/problems/minimize-manhattan-distances/description/)
+
+```python
+from sortedcontainers import SortedList
+class Solution:
+    def minimumDistance(self, points: List[List[int]]) -> int:
+        msx, msy = SortedList(), SortedList()
+        for x, y in points:
+            msx.add(x + y)
+            msy.add(x - y)
+        res = inf 
+        for x, y in points:
+            msx.remove(x + y)
+            msy.remove(x - y)
+            xmx = msx[-1] - msx[0]
+            ymx = msy[-1] - msy[0]
+            res = min(res, max(xmx, ymx))
+            msx.add(x + y)
+            msy.add(x - y)
+        return res            
+```
+
+
+
+### 切比雪夫转曼哈顿距离
+
+$$
+将 P(x, y) 映射到 P'(\frac{x + y}{2}, \frac{x-y}{2}) 坐标系下， d_Q = d'_M
+$$
+
+切比雪夫距离在计算的时候需要取max，往往不是很好优化，对于一个点，计算其他点到该的距离的复杂度为O(n)
+
+而曼哈顿距离只有求和以及取绝对值两种运算，我们把坐标排序后可以去掉绝对值的影响，进而用前缀和优化，可以把复杂度降为O(1)
+
+[P3964 [TJOI2013\] 松鼠聚会 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P3964)
+
+转换成切比雪夫距离。将x, y 分离，前缀和维护到各个xi 和 yi 的距离和，再相加
+
+```python
+def solve():
+    n = int(input())
+    points = []
+    res = inf
+    for _ in range(n):
+        x, y = map(int, input().split())
+        points.append(((x + y) / 2, (x - y) / 2))
+    numsx = [p[0] for p in points]
+    numsy = [p[1] for p in points]
+    def g(nums):
+        nums.sort()
+        curx = nums[0]
+        curd = sum(nums[i] - curx for i in range(1, n))
+        dic = {nums[0]: curd}
+        for i in range(1, n):
+            x = nums[i]
+            d = x - curx
+            curd = curd + i * d - (n - i) * d
+            dic[x] = curd
+            curx = x
+        return dic
+    dicx, dicy = g(numsx), g(numsy)
+    for x, y in points:
+        ans = dicx[x] + dicy[y]
+        res = min(res, ans)
+    print(int(res))
+```
+
+7
