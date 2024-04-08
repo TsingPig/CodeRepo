@@ -312,17 +312,8 @@ class Solution:
 二分写法
 
 ```python
-sorted_nums = sorted(nums)
+sorted_nums = sorted(set(nums))
 nums = [bisect.bisect_left(sorted_nums, x) + 1 for x in nums]
-```
-
-二分 + 还原
-
-```python
-tmp = nums.copy()
-sorted_nums = sorted(nums)
-nums = [bisect.bisect_left(sorted_nums, x) + 1 for x in nums]
-mp_rev = {i: x for i, x in zip(nums, tmp)}
 ```
 
 字典写法
@@ -331,6 +322,15 @@ mp_rev = {i: x for i, x in zip(nums, tmp)}
     sorted_nums = sorted(set(nums))
     mp = {x: i + 1 for i, x in enumerate(sorted_nums)}
     nums = [mp[x] for x in nums]
+```
+
+二分 + 还原
+
+```python
+tmp = nums.copy()
+sorted_nums = sorted(set(nums))
+nums = [bisect.bisect_left(sorted_nums, x) + 1 for x in nums]
+mp_rev = {i: x for i, x in zip(nums, tmp)}
 ```
 
 
@@ -432,12 +432,6 @@ return -1 if res > m else res
     return lo
 ```
 
-# 前缀异或
-
-```python
-pre = list(accumulate(nums, xor, initial = 0))
-```
-
 
 
 ## 自定义比较规则
@@ -452,7 +446,27 @@ class node():
         return self.need < other.need
 ```
 
-# 单调结构
+# 单调结构 / 滑动窗口
+
+## 滑动窗口
+
+[2009. 使数组连续的最少操作数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-operations-to-make-array-continuous/description/?envType=daily-question&envId=2024-04-08)
+
+定长滑动窗口 + 正难则反：需要操作最少次数 = n - 能够不操作的最多的数字。这些数字显然是不重复的，所以首先去重。对于去重完的元素，每一个左边界$ nums[left]$, 在去重数组中 ，$[nums[left] ,~ nums[left] + n -  1]$   区间在数组中出现的次数即为当前可以保留的数字的个数。
+
+```python
+def minOperations(self, nums: List[int]) -> int:
+    n = len(nums)
+    nums = sorted(set(nums))
+    res = left = 0
+    for i, x in enumerate(nums):
+        while x > nums[left] + n - 1:
+            left += 1
+        res = max(res, i - left + 1)
+    return n - res 
+```
+
+
 
 ## 单调栈
 
@@ -762,6 +776,12 @@ class Solution:
                 if pre[i + 1][j + 1] <= k:
                     res += 1
         return res
+```
+
+**前缀异或 / 自定义前缀操作**
+
+```python
+pre = list(accumulate(nums, xor, initial = 0))
 ```
 
 
@@ -1339,19 +1359,43 @@ $$
 
 **路径压缩**
 
+递归写法
+
 ```python
-    fa = list(range(n)
+    fa = list(range(n))
     # 查找x集合的根
     def find(x):
         if fa[x] != x:
             fa[x] = find(fa[x])
         return fa[x]
 
-    # v并向u中
+    # v并向u中Z
     def union(u, v):
         if find(u) != find(v):
 	        fa[find(v)] = find(u)
 ```
+
+迭代写法
+
+```python
+fa = list(range(n))
+
+def find(x):
+    root = x
+    while fa[root] != root:
+        root = fa[root]
+    while fa[x] != x: # 路径压缩
+        x, fa[x] = fa[x], root
+    return root
+
+def union(u, v):
+    root_u = find(u)
+    root_v = find(v)
+    if root_u != root_v:
+        fa[root_v] = root_u
+```
+
+
 
 常用拓展：
 
@@ -1399,6 +1443,143 @@ $$
             # 不在位元素，需要看是否在同一连通分量
             if find(u) != find(v): return False
         return True
+```
+
+[952. 按公因数计算最大组件大小 - 力扣（LeetCode）](https://leetcode.cn/problems/largest-component-size-by-common-factor/description/?envType=featured-list&envId=GklvgyNg?envType=featured-list&envId=GklvgyNg)
+
+```python
+    def largestComponentSize(self, nums: List[int]) -> int:
+        n = len(nums)
+        m = max(nums)
+        fa = list(range(m + 1))
+        def find(x):
+            if fa[x] != x: 
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):
+            if find(u) != find(v):
+                fa[find(u)] = find(v)
+        for x in nums:
+            xx = x
+            for j in range(2, int(sqrt(x)) + 1):
+                if x % j == 0:
+                    union(xx, j)
+                    while x % j == 0:
+                        x //= j
+            if x > 1:
+                union(xx, x)
+        for x in nums:
+            find(x)
+        cnt = Counter()
+        for x in nums: cnt[fa[x]] += 1
+        return max(cnt.values())    
+```
+
+
+
+**并查集维护集合 / 连通块大小 ** 
+
+[2334. 元素值大于变化阈值的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/description/?envType=featured-list&envId=GklvgyNg?envType=featured-list&envId=GklvgyNg)
+
+$O(nlogn)$
+
+并查集：让每个子数组的默认树根是最右侧节点$i$ 再 + 1，即$i + 1$。
+
+对$nums$ 中每一个元素和对应的下标 按照降序排序，每次向右合并，当前的 $x$ 一定是子数组中最小的。返回合并后并查集大小$k - 1$（ 减一使得不包含哨兵根节点）。不断向右侧合并直到出现符合的。在返回并查集大小时，只需要保证集合大小和树根节点进行绑定即可。
+
+```python
+    def validSubarraySize(self, nums: List[int], threshold: int) -> int:
+        n = len(nums)
+        fa = list(range(n + 1))  # n是哨兵树根
+        siz = [1] * (n + 1)
+        def find(x):
+            if fa[x] != x: fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):    # u 合并进 v
+            if find(u) != find(v):
+                siz[find(v)] += siz[find(u)]
+                fa[find(u)] = find(v)
+            return siz[find(v)]
+        for x, i in sorted(zip(nums, range(n)), reverse = True):
+            k = union(i, i + 1) - 1
+            if x > (threshold // k):
+                return k
+        return -1
+```
+
+[2867. 统计树中的合法路径数目 - 力扣（LeetCode）](https://leetcode.cn/problems/count-valid-paths-in-a-tree/description/?envType=featured-list&envId=4eH5fI7k?envType=featured-list&envId=4eH5fI7k)
+
+并查集维护所有非质数子连通块的大小。
+
+```python
+    def countPaths(self, n: int, edges: List[List[int]]) -> int:
+        primes = []
+        N = n + 10
+        is_prime = [True] * N
+        is_prime[0] = is_prime[1] = False
+        for i in range(2, N):
+            if is_prime[i]:
+                primes.append(i)
+            for p in primes:
+                if i * p >= N:
+                    break
+                is_prime[i * p] = False
+                if i % p == 0:
+                    break
+        e = [[] for _ in range(n + 1)]
+        fa = list(range(n + 1))
+        siz = [1] * (n + 1)
+        def find(x):
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):    # u 合并到 v
+            if find(u) != find(v):
+                siz[find(v)] += siz[find(u)]
+                fa[find(u)] = find(v)
+        
+        for u, v in edges:
+            e[u].append(v)
+            e[v].append(u)
+            if not is_prime[u] and not is_prime[v]:
+                union(u, v)
+        res = 0
+        vis = [False] * (n + 1) 
+        for u in range(1, n + 1):
+            if not vis[u] and is_prime[u]:
+                # 遍历 u 的所有非质数连通块
+                vis[u] = True
+                cur_siz = 0
+                for v in e[u]:
+                    if not is_prime[v]:
+                        sz = siz[find(v)]
+                        res += sz + sz * cur_siz 
+                        cur_siz += sz 
+        return res
+
+```
+
+**并查集维护连通块按位与的值**
+
+[100244. 带权图里旅途的最小代价 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-cost-walk-in-weighted-graph/description/)
+
+```python
+def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
+        fa = list(range(n))
+        cc_and = [-1] * n
+        def find(x):
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v, w):    # v 合并到 u 中
+            if find(u) != find(v):
+                cc_and[find(u)] &= cc_and[find(v)]
+                fa[find(v)] = find(u)
+        for u, v, w in edges:
+            # 各自连通块内更新，只要更新其一即可
+            cc_and[find(u)] &= w
+            union(u, v, w)
+        return [0 if u == v else (-1 if find(u) != find(v) else cc_and[find(u)]) for u, v in query]
 ```
 
 
@@ -2166,7 +2347,17 @@ for u, v, w in roads:
     e[v].append((u, w))
 ```
 
+去重边建图
 
+[100244. 带权图里旅途的最小代价 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-cost-walk-in-weighted-graph/description/)
+
+这道题需要在建图的时候取AND运算的最小值。
+
+```python
+        e = [defaultdict(lambda: -1) for _ in range(n)]
+        for u, v, w in edges:
+            e[v][u] = e[u][v] = e[u][v] & w
+```
 
 ## Floyd
 
@@ -2773,6 +2964,109 @@ Bfs染色：
         return True
 ```
 
+## 连通块问题
+
+[2867. 统计树中的合法路径数目 - 力扣（LeetCode）](https://leetcode.cn/problems/count-valid-paths-in-a-tree/description/?envType=featured-list&envId=4eH5fI7k?envType=featured-list&envId=4eH5fI7k)
+
+**DFS + 字典维护节点所在连通块大小**
+
+ `cc_siz` 用来记录连通块的大小。`vis`数组对质数节点进行记录，dfs的起始节点一定是质数节点的非质数子节点。
+
+使用 `cc_node` 记录一次连通分量dfs得到的节点列表，更新对应 `cc_siz` 的值。这样后续在遍历到已经遍历过的非质数连通块时，可以直接得到结果。
+
+```python
+def countPaths(self, n: int, edges: List[List[int]]) -> int:
+        primes = []
+        N = n + 10
+        is_prime = [True] * N
+        is_prime[0] = is_prime[1] = False
+        for i in range(2, N):
+            if is_prime[i]:
+                primes.append(i)
+            for p in primes:
+                if i * p >= N:
+                    break
+                is_prime[i * p] = False
+                if i % p == 0:
+                    break
+        e = [[] for _ in range(n + 1)]
+        for u, v in edges:
+            e[u].append(v)
+            e[v].append(u)
+        vis = [False] * (n + 1)
+        cc_siz = {}
+        cc_node = []
+        def dfs(u, fa):
+            siz = 1
+            cc_node.append(u)
+            for v in e[u]:
+                if v != fa and not is_prime[v]:
+                    siz += dfs(v, u)
+            return siz
+        res = 0
+        for u in range(1, n + 1):
+            if not vis[u] and is_prime[u]:
+                vis[u] = True
+                cur_siz = 0
+                for v in e[u]:
+                    if is_prime[v]:
+                        continue
+                    # 对于每一个子连通分量
+                    if v in cc_siz:
+                        siz = cc_siz[v]
+                    else:
+                        cc_node.clear()
+                        siz = dfs(v, u)
+                        for node in cc_node:
+                            cc_siz[node] = siz
+                    res += siz + siz * cur_siz
+                    cur_siz += siz
+        return res
+
+```
+
+**DFS + 字典维护连通块的 AND 值 和 节点对应的连通块下标**
+
+[100244. 带权图里旅途的最小代价 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-cost-walk-in-weighted-graph/description/)
+
+通过字典中连通块下标，判断两个节点是否在同一连通块内。
+
+```python
+    def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
+        cc_and = {}     # 键为节点，值为 (cc_cnt, and_ans)，即对应的连通块编号 和 连通块的and值
+        cc_cnt = 0      # 计数，记录当前统计到第几个连通块
+        cc_node = []
+        e = [{} for _ in range(n)]
+        for u, v, w in edges:
+            if v not in e[u]:
+                e[v][u] = e[u][v] = w 
+            else:
+                 e[v][u] = e[u][v] = e[u][v] & w
+        vis = [False] * n 
+        
+        def dfs(u):
+            vis[u] = True 
+            cc_node.append(u)
+            and_ans = -1
+            for v in e[u]:
+                w = e[u][v]
+                and_ans &= w
+                if not vis[v]:
+                    and_ans &= dfs(v)
+            return and_ans
+        for u in range(n):
+            if not vis[u]:
+                and_ans = dfs(u)
+                for node in cc_node:
+                    cc_and[node] = (cc_cnt, and_ans)
+                cc_node.clear()
+                cc_cnt += 1
+        return [0 if u == v else (cc_and[u][1] if cc_and[u][0] == cc_and[v][0] else -1) 
+                for u, v in query]
+```
+
+
+
 # 树论
 
 ## 倍增LCA
@@ -2814,6 +3108,63 @@ $f[u][i] 表示 u 节点 向上跳2^i\space 的节点$，$dep[u] \space 表示�
                 u, v = f[u][i], f[v][i]
         return f[u][0]
 ```
+
+
+
+[P3379 【模板】最近公共祖先（LCA） - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P3379)
+
+```python
+from math import log
+import sys
+input = lambda: sys.stdin.readline().strip()
+n, m, s = map(int, input().split())
+
+# f[n][mx]
+mx = int(log(n, 2))
+f = [[0] * (mx + 1) for _ in range(n + 10)]
+e = [[] for _ in range(n + 10)]
+dep = [0] * (n + 10)
+dep[s] = 1
+
+
+for _ in range(n - 1):
+    u, v = map(int, input().split())
+    e[u].append(v)
+    e[v].append(u)
+    
+
+
+def dfs(u, fa):
+    dep[u] = dep[fa] + 1
+    f[u][0] = fa
+    for i in range(1, mx + 1):
+        f[u][i] = f[f[u][i - 1]][i - 1]
+    for v in e[u]:
+        if v != fa:
+            dfs(v, u)
+for v in e[s]:
+    dfs(v, s)
+
+def lca(u, v):
+    # 让u 往上跳
+    if dep[u] < dep[v]: u, v = v, u
+    for i in range(mx, -1, -1):
+        if dep[f[u][i]] >= dep[v]:
+            u = f[u][i]
+    if u == v: return u
+    # 一定是在lca的下一层
+    # 一起跳
+    for i in range(mx, -1, -1):
+        if f[u][i] != f[v][i]:
+            u, v = f[u][i], f[v][i]
+    return f[u][0]
+for _ in range(m):
+    a, b = map(int, input().split())
+    print(lca(a, b))
+
+```
+
+
 
 ## 树上差分
 
@@ -2998,6 +3349,21 @@ class Solution:
 ```
 
 # 位运算
+
+**十进制 int 转换 对应二进制的 int**
+
+```python
+def bin(x):
+    res = 0
+    i = 0
+    while x:
+        res = res + pow(10, i) * (x % 2)
+        x >>= 1
+        i += 1
+    return res
+```
+
+
 
 ## 1.二维矩阵 压缩为一维二进制串
 
@@ -3737,6 +4103,8 @@ $f[i: j]~ 表示s[i] \sim s[j] 中的最长回文子序列的长度$
 
 ## 数位dp
 
+**模板1：统计各位数字出现次数**
+
 统计在 $[a, b]$ 区间各个数字出现的次数。
 
 需要实现 $count(n, x)$  函数统计 $[1, n]  $  区间中数字 $x$ 出现的次数
@@ -3775,55 +4143,180 @@ def get(a, b):
 简化版：
 
 ```python
-def count(n, x):
-    s = str(n)
-    n = len(s)
+def count(n, x): # 统计 1 ~ n 中 数字 x 的出现次数
     res = 0
-    for i in range(n):
-        pre = 0 if i == 0 else int(s[:i])
-        suf = s[i + 1:]
+    s = str(n)
+    m = len(s)
+    for i in range(m):
+        pre = 0 if i == 0 else int(s[: i])
         d = int(s[i])
+        sufs = s[i + 1: ]
         if x == 0: pre -= 1
         if d > x: pre += 1
-        if d == x: res += (int(suf) if suf else 0) + 1
-        res += pre * pow(10, len(suf))
-    return res
+        if d == x: res += (int(sufs) if sufs else 0) + 1
+        res += pre * pow(10, len(sufs))
+    return res 
 def get(a, b):
     for i in range(10):
         print(count(b, i) - count(a - 1, i), end = ' ')
     print()
 ```
 
-
-
-
+[233. 数字 1 的个数 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-digit-one/description/?envType=featured-list&envId=30QHpYGW?envType=featured-list&envId=30QHpYGW)
 
 ```python
-class Solution:
-    def numberOfPowerfulInt(self, start: int, finish: int, limit: int, s: str) -> int:
-        low = str(start)
-        high = str(finish)
-        n = len(high)
-        low = '0' * (n - len(low)) + low # 补全前导0
-        diff = n - len(s)
-
-        @lru_cache(maxsize = None)
-        def dfs(i, limit_low: bool, limit_high: bool) -> int:
-            if i == n:
-                return 1
-            lo = int(low[i]) if limit_low else 0
-            hi = int(high[i]) if limit_high else 9
+        def count(n, x): # 统计 1 ~ n 中 数字 x 的出现次数
             res = 0
-            if i < diff:    # 枚举这个位填什么
-                for d in range(lo, min(hi, limit) + 1):
-                    res += dfs(i + 1, limit_low and d == lo, limit_high and d == hi)
-            else:
-                x = int(s[i - diff])
-                if lo <= x <= min(hi, limit):
-                    res = dfs(i + 1, limit_low and x == lo, limit_high and x == high)
-            return res
-        return dfs(0, True, True)
+            s = str(n)
+            m = len(s)
+            for i in range(m):
+                pre = 0 if i == 0 else int(s[: i])
+                d = int(s[i])
+                sufs = s[i + 1: ]
+                if x == 0: pre -= 1
+                if d > x: pre += 1
+                if d == x: res += (int(sufs) if sufs else 0) + 1
+                res += pre * pow(10, len(sufs))
+            return res 
+        return count(n, 1)
 ```
+
+**模板2：带限制数位dp 统计问题**
+
+通用模板 v1.0：统计 $[1, ~n]$ 区间中，符合限制条件的数字个数。
+
+$f(i,~mask,~is\_limit,~is\_num)$ 表示 前导数字集合为 $mask$，从第 $i$ 位开始往后填，能满足限制条件的数字个数。
+
+其中， $is\_limit$ 表示前导是否恰好全都取到上界。为$True$ 时，$i$ 的上界 $hi = int(s[i])$ 否则 为9；
+
+$is\_num$ 表示前导是否有数字。为 $True$ 时，$i$  的下界从$0$ 开始；否则可以继续不填数字，或者下界从 $1$ 开始。 
+
+```python
+        @lru_cache(maxsize = None)
+        def f(i: int, mask: int, is_limit: bool, is_num: bool):
+            if i == m: 
+                if is_num: return 1
+                return 0
+            res = 0
+            lo, hi = 0, 9
+            if not is_num:
+                lo = 1
+                res += f(i + 1, mask, False, False)
+            if is_limit:
+                hi = int(s[i])
+            for j in range(lo, hi + 1):
+                # j 没有在mask 的集合中出现过
+                if (mask >> j) & 1 == 0:
+                    res += f(i + 1, mask | (1 << j), is_limit and j == hi, True)
+            return res 
+        return f(0, 0, True, False)
+```
+
+简化版本：
+
+```python
+        @lru_cache(None)
+        def f(i, mask, is_limit, is_num):
+            if i == len(s): return int(is_num)
+            res = 0 if is_num else f(i + 1, mask, False, False)
+            lo, hi = 0 if is_num else 1, int(s[i]) if is_limit else 9
+            for j in range(lo, hi + 1):
+                if (mask >> j) & 1 == 0:
+                    res += f(i + 1, mask | (1 << j), is_limit and j == hi, True)
+            return res 
+```
+
+时间复杂度：记$D = 10$，由于每个状态只会被计算一次，每个状态的复杂度是 $O(D)$；每一个 $(i, mask)$ 能够唯一确定 $(i,~mask,~is\_limit,~is\_num)$ 四元组（因此在记忆化的时候只需要$(i, mask)$ 维度），所以状态个数为 $m\cdot2^D$，其中 $m$ 表示 $n$ 的二进制长度。所以复杂度为： $O(D\cdot m \cdot 2^D)$
+
+实际上某些问题中， $is\_num$ 可以 被简化掉，因为 $not(mask ==0)$  和 $is\_num$  是 等价的。
+
+
+
+[2376. 统计特殊整数 - 力扣（LeetCode）](https://leetcode.cn/problems/count-special-integers/)
+
+统计 $1 \sim n$  中各个数位都不相同的数字的个数。限制条件：$mask$ 前导中出现过的数字是不可以填的。
+
+```python
+    def countSpecialNumbers(self, n: int) -> int:
+        s = str(n)
+        @lru_cache(None)
+        def f(i, mask, is_limit, is_num):
+            if i == len(s): return int(is_num)
+            res = 0 if is_num else f(i + 1, mask, False, False)
+            lo, hi = 0 if is_num else 1, int(s[i]) if is_limit else 9
+            for j in range(lo, hi + 1):
+                if (mask >> j) & 1 == 0:
+                    res += f(i + 1, mask | (1 << j), is_limit and j == hi, True)
+            return res 
+        return f(0, 0, True, False)
+```
+
+[788. 旋转数字 - 力扣（LeetCode）](https://leetcode.cn/problems/rotated-digits/description/?envType=featured-list&envId=30QHpYGW?envType=featured-list&envId=30QHpYGW)
+
+统计区间：$1 \sim N$ 中的所有数字，每个数位都被旋转。
+
+限制条件：旋转后不等于自身，且合法的数字。只需要在数字中包含至少 一个 $[2, 5, 6, 9]$ 且不包含 $[3, 4, 7]$。
+
+```python
+    def rotatedDigits(self, n: int) -> int:
+        s = str(n)
+        m = len(s)
+        # 合法情况：包含至少一个 [2, 5, 6, 9] 且 不包含 [3, 4, 7]
+        nums = [0, 0, 1, -1, -1, 1, 1, -1, 0, 1]
+        @lru_cache(None)
+        def f(i, has_mir, is_limit, is_num):
+            if i == m: return int(has_mir and is_num)
+            res = 0 if is_num else f(i + 1, has_mir, False, False)
+            lo, hi = 0 if is_num else 1, int(s[i]) if is_limit else 9
+            for j in range(lo, hi + 1):
+                if nums[j] != -1:
+                    res += f(i + 1, has_mir or nums[j] == 1, is_limit and j == hi, True)
+            return res
+        return f(0, False, True, False)
+```
+
+[902. 最大为 N 的数字组合 - 力扣（LeetCode）](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/description/?envType=featured-list&envId=30QHpYGW?envType=featured-list&envId=30QHpYGW)
+
+```python
+    def atMostNGivenDigitSet(self, digits: List[str], n: int) -> int:
+        s = str(n)
+        ss = set([int(ch) for ch in digits])
+        m = len(s)
+        @lru_cache(None)
+        def f(i, is_limit, is_num):
+            if i == m: return int(is_num)
+            res = 0 if is_num else f(i + 1, False, False)
+            lo, hi = 0 if is_num else 1, int(s[i]) if is_limit else 9
+            for j in range(lo, hi + 1):
+                if j in ss:
+                    res += f(i + 1, is_limit and j == hi, True)
+            return res
+        return f(0, True, False)
+```
+
+[2827. 范围中美丽整数的数目 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/description/)
+
+运用模运算的性质：整个数字 模 $k$ 的结果，比如 $1234 \mod 17$ ，可以看成 $(1000 \mod 17) + (200 \mod 17)+(30 \mod 17 )+ (4 \mod 17)$，所以最后模数 的结果只需要等价成不断 $mod\_res \times 10 + j$ 即可。
+
+```python
+    def numberOfBeautifulIntegers(self, low: int, high: int, k: int) -> int:
+        def cal(x):
+            s = str(x)
+            m = len(s)
+            @lru_cache(None)
+            def f(i, mod_res, odd_even_delta, is_limit, is_num):
+                if i == m: return int(odd_even_delta == 0 and mod_res == 0 and is_num)
+                res = 0 if is_num else f(i + 1, mod_res, odd_even_delta, False, False)
+                lo, hi = 0 if is_num else 1, int(s[i]) if is_limit else 9
+                for j in range(lo, hi + 1):
+                    res += f(i + 1, (mod_res * 10 + j) % k, odd_even_delta + (1 if j & 1 else -1), is_limit and j == hi, True)
+                return res
+            return f(0, 0, 0, True, False)
+        return cal(high) - cal(low - 1)
+            
+```
+
+
 
 ## 状态机dp
 
@@ -4143,4 +4636,3 @@ def solve():
     print(int(res))
 ```
 
-7

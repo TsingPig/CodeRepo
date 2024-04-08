@@ -137,6 +137,66 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 ## 并查集
 
 ```c++
+        vector<int> fa(mx + 1);
+        for(int i = 0; i < mx + 1; i++) fa[i] = i;
+        
+        function<int(int)> Find = [&](int x) -> int {
+            if (fa[x] != x) fa[x] = Find(fa[x]);
+            return fa[x];
+        };
+
+        function<void(int, int)> Union = [&](int u, int v) -> void {
+            if (Find(u) != Find(v)) fa[Find(u)] = Find(v);
+        };
+```
+
+
+
+[1998. 数组的最大公因数排序 - 力扣（LeetCode）](https://leetcode.cn/problems/gcd-sort-of-an-array/description/)
+
+```c++
+class Solution {
+public:
+    bool gcdSort(vector<int>& nums) {
+        int mx = *max_element(nums.begin(), nums.end());
+        int n = nums.size();
+        vector<int> fa(mx + 1);
+        for(int i = 0; i < mx + 1; i++) fa[i] = i;
+        
+        // find(x) -> int 
+        function<int(int)> Find = [&](int x) -> int {
+            if (fa[x] != x) fa[x] = Find(fa[x]);
+            return fa[x];
+        };
+
+        // Union(int u, int v) -> void
+        function<void(int, int)> Union = [&](int u, int v) -> void {
+            if (Find(u) != Find(v)) fa[Find(u)] = Find(v);
+        };
+
+        for (auto& x : nums) {
+            int xx = x;
+            for (int j = 2; j <= x / j; j++) {
+                if (x % j == 0) Union(xx, j);
+                while (x % j == 0) {
+                    x /= j;
+                }
+            }
+            if (x > 1) Union(xx, x);
+            x = xx;
+        }
+
+        vector<int> sorted_nums(nums);
+        sort(sorted_nums.begin(), sorted_nums.end());
+
+        for (int i = 0; i < n; i++) {
+            int u = sorted_nums[i], v = nums[i];
+            if (u == v) continue;
+            if (Find(u) != Find(v)) return false;
+        }
+        return true;
+    }
+};
 ```
 
 
@@ -181,6 +241,64 @@ for (int& num : h) {
 }
 auto tree_right = FenwickTree(n);
 ```
+
+
+
+[P1908 逆序对 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P1908)
+
+
+
+```c++
+#define lowbit(x) (x & -x)
+const int N = 5e5 + 10;
+int n;
+int a[N];
+int tr[N];
+
+int query(int idx)
+{
+    int ans = 0;
+    while (idx > 0)
+    {
+        ans += tr[idx];
+        idx -= lowbit(idx);
+    }
+    return ans;
+}
+
+void update(int idx, int val)
+{
+    while (idx <= n)
+    {
+        tr[idx] += val;
+        idx += lowbit(idx);
+    }
+}
+
+ll solve()
+{
+    unordered_set<int> s(a, a + n);
+    vector<int> b(s.begin(), s.end());
+    sort(b.begin(), b.end());
+    unordered_map<int, int> d;
+    for (int i = 0; i < b.size(); i++)
+        d[b[i]] = i + 1;
+    for (int i = 0; i < n; i++)
+        a[i] = d[a[i]];
+    
+    ll res = 0;
+    for (int i = 0; i < n; i++)
+    {
+        int x = a[i];
+        int q = query(x);
+        res += i - q;
+        update(x, 1);
+    }
+    return res;
+}
+```
+
+
 
 ## 字典树
 
@@ -309,7 +427,7 @@ int main() {
 }
 ```
 
-# 图论 / 树
+# 图论
 
 ## 换根DP
 
@@ -343,6 +461,8 @@ public:
 	}
 };
 ```
+
+# 树论
 
 ## 倍增LCA
 
