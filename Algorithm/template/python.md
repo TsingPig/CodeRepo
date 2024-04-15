@@ -1,6 +1,6 @@
 [TOC]
 
-# Python基础语法
+# 常用数据结构API 
 
 ## 1.列表
 
@@ -166,6 +166,69 @@ SortedList 相当于 multiset
 
 # 字符串
 
+## KMP / 模式匹配
+
+**暴力匹配所有起始位置**
+
+时间复杂度：$O(mn)$
+
+```python
+    for i in range(len_s - len_p + 1):
+        ii, j = i, 0
+        while j < len_p:
+            if s[ii] == p[j]: ii, j = ii + 1, j + 1
+            else: break
+        if j == len_p: res.append(i)
+```
+
+**前缀函数 / next数组** 
+
+时间复杂度：$O(n)$，在线算法
+
+对于一个长度为 $n$ 的字符串，其前缀函数是一个长度为 $n$ 的数组 $\pi$，其中 $\pi(i)$ 定义：子串 $s[0] \sim s[i]$ 中存在的、相等的最长真前缀和真后缀的长度。如果不存在则为0。规定：$\pi[0]=0$，因为其不存在真前后缀。
+
+> 例如：'aabaaab' 的 $\pi$ 数组为 [0, 1, 0, 1, 2, 2, 3]
+
+求解前缀函数：
+
+- 相邻的前缀函数值，至多 + 1。$\pi(i-1)$表示着前一个状态匹配的最长真前后缀，也是下一个待匹配真前缀的最右元素下标。当且仅当 $s[i]=s[\pi(i-1)]$，有$\pi(i) = \pi(i-1)+1$ 。
+- 考虑 $s[i] \ne s[\pi(i-1)]$，失配时，希望找到 $s[0] \sim s[i-1]$ 中，仅次于 $\pi[i-1]$ 的第二长度 $j$，使得在位置 $i-1$ 的前后缀性质仍然保持，即  $s[0] \sim s[j-1] = s[i-j] \sim s[i-1]$。
+
+​		实际上，第二长真后缀也完整存在于 当前真前缀 $s[0] \sim s[j-1]$ 中，即有转移方程：$j^{(n-1)}=\pi(j^n-1)$。所以如此往复，要么直到 $s[i]=s[j'] $ ，然后转移到第一种情况；要么直到 $j'=0$ 。两种情况，通过判断 $s[i] $ 是否 $s[j']$ 来确定要不要让 $j'+1$ 统一，最后 $s[i]=s[j']$。
+
+![image.png](https://pic.leetcode.cn/1712915633-ojIXWM-image.png)
+
+```python
+def get_pi(s):
+    n = len(s)
+    pi = [0] * n
+    for i in range(1, n):
+        j = pi[i - 1] 
+        while j > 0 and s[i] != s[j]:
+            j = pi[j - 1]
+        if s[i] == s[j]: j += 1
+        pi[i] = j
+    return pi
+```
+
+**KMP算法：找出 $p$ 在 $s$ 中的所有出现**
+
+时间复杂度：$O(n+m)$，其中 $m=len(p),~n=len(s)$
+
+构造字符串 $t=p\#s$，计算其前缀函数 $\pi$。考虑前缀函数 $\pi[m+1]\sim \pi[n+m]$，其中 $\pi(i)=m $ 的地方，一定完成对模式串 $p$ 的匹配。此时，$i$ 位于 $t $  中$s$ 的最后位置，所以原始位置为 $i-m+1-m-1 = i - 2 * m$。
+
+```python
+def kmp(p, s):
+    res = []
+    m, n = len(p), len(s)
+    pi = get_pi(p + '#' + s)
+    for i in range(m + 1, len(pi)):
+        if pi[i] == m: res.append(i - 2 * m)
+    return res
+```
+
+
+
 ## 字符串排序
 
 ```python
@@ -222,6 +285,12 @@ for i in range(1, n):
      return j == m
 ```
 
+## 字符串哈希
+
+[49. 字母异位词分组 - 力扣（LeetCode）](https://leetcode.cn/problems/group-anagrams/description/)
+
+[2430. 对字母串可执行的最大删除数 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-deletions-on-a-string/description/)
+
 ## 字符串API
 
 - s1.startswith(s2, beg = 0, end = len(s2))
@@ -271,39 +340,306 @@ class Solution:
             r = max(ir, r)
 ```
 
+[452. 用最少数量的箭引爆气球 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/description/)
+
+等价于区间选点问题：[905. 区间选点 - AcWing题库](https://www.acwing.com/problem/content/907/)
+
+首先按照左端点排序。实际上，当前区间左端点是不需要维护的，因为选点总是贪心的放在区间右端点上。
+
+当且仅当新区间左端点 $il$  大于当前区间右端点 $r$ 时，需要新的选点，同时产生新的区间右端点（区间左端点介于 旧$r$ 和 新 $il$ 之间，但是我们并不关心）；否则说明左端点在当前区间内部，只需要更新区间右端点为更小的即可（意味着选点跟着移动）。
+
+```python
+def findMinArrowShots(self, nums: List[List[int]]) -> int:
+        nums.sort()
+        r = nums[0][1]
+        res = 0
+        for il, ir in nums:
+            if il > r:
+                res += 1
+                r = ir
+            else:
+                r = min(r, ir)
+        return res + 1
+```
 
 
-# 回溯/递归
 
-套路：
+# 回溯 / 递归 / dfs
 
-1. 当前子问题？
-2. 当前操作？
-3. 下一个子问题？
+## 子集型回溯
+
+**可重复组合问题：枚举子集，$O(n\cdot2^n)$**
+
+[78. 子集 - 力扣（LeetCode）](https://leetcode.cn/problems/subsets/description/?envType=featured-list&envId=L2JxWeVS?envType=featured-list&envId=L2JxWeVS)
+
+位运算写法：
+
+```python
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        s = (1 << n) - 1
+        res = [[]]
+        sub = s
+        while sub:
+            res.append([nums[j] for j in range(n) if ((sub >> j) & 1)])
+            sub = (sub - 1) & s
+        return res
+```
+
+回溯写法：选  / 不选
+
+```python
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        res, path = [], []
+        def dfs(i):
+            if i == n: 
+                res.append(path.copy())
+                return 
+            path.append(nums[i])
+            dfs(i + 1)
+            path.pop()
+            dfs(i + 1)
+        dfs(0)
+        return res
+```
+
+**枚举子集 转换成 枚举下一个位置型：判断字符串分隔子串合法性问题** 
 
 [LCR 086. 分割回文串 - 力扣（LeetCode）](https://leetcode.cn/problems/M99OJA/)
+
+分割字符串，判断子字符串合法性 转换成 对分割位置（断开位置）的子集的枚举。一种方法是通过二进制枚举，另一种再将子集枚举转换成下一个位置枚举 + 循环。
+
+```python
+    def partition(self, s: str) -> List[List[str]]:
+        res = []
+        path = []
+        n = len(s)
+        def dfs(i):
+            # 当前切割位置
+            if i == n:
+                res.append(path.copy())
+                return 
+            # 枚举下一个切割位置
+            for j in range(i + 1, n + 1):
+                t = s[i: j]
+                if t == t[:: -1]:
+                    path.append(t)
+                    dfs(j)
+                    path.pop()
+        dfs(0)
+        return res
+
+```
+
+二进制写法：
 
 ```python
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
         res = []
-        cur = []
-        n = len(s)
-        # 枚举当前位置
-        def dfs(i):
-            # 当前子问题：从下标 >= i中构造分割串
-            # 当前操作：遍历 j \in [i + 1, n], 枚举s[i: j] 是否是回文串
-            # 下一个子问题：从下标 >= j 中构成回文子串
+        n = len(s) - 1
+        S = (1 << n) - 1
+        sub = S
+        while sub:
+            pre = 0
+            cur = []
+            flag = True
+            cut = sub | (1 << n)
+            for j in range(n + 1):
+                if (cut >> j) & 1:
+                    t = s[pre: j + 1]
+                    if t == t[::-1]:
+                        cur.append(t)
+                        pre = j + 1
+                    else:
+                        flag = False
+                        break
+            if flag: res.append(cur)
+            sub = (sub - 1) & S
+        if s == s[::-1]: res.append([s])
+        return res
+```
+
+**从大到小枚举一个$s$ 的所有非空子集**
+
+暴力做法是从 $s$ 出发，不断减1。但是中途需要规避不是 $s$ 子集的情况，相当于做 ”压缩版“ 的二进制减法：普通的二进制减法会把最低位的 1 变成 0，同时 1右边的 0 变成 1（例如 $101000 \rightarrow1 00111$）；”压缩版“ 的二进制减法只保留原集合中的的、右边的1，其余仍然是0。（例如 $101000 \rightarrow 100101，假设 s = 111101)$。保留的方法，就是 $\& s$。
+
+```python
+sub = s
+while sub:
+    # 处理 sub 的逻辑
+    sub = (sub - 1) & s
+```
+
+
+
+## 排列型回溯
+
+**全排列：排列元素无重复**
+
+[46. 全排列 - 力扣（LeetCode）](https://leetcode.cn/problems/permutations/description/)
+
+写法1：$dfs(i, S)$ 表示枚举到 第 $i$ 位，没有枚举过的集合为 $S$。外层 $path$ 表示当前回溯的路径。
+
+其中 $path$ 可以使用 $path[i] = j$ 的写法，覆盖当前走到哪一步；也可以使用 $append / pop$ 写法，覆盖和恢复现场。但是不可以在外层增加哈希集合维护没有枚举过的，这是因为集合添加操作的乱序性，外层的集合无法正确恢复现场（恢复后遍历顺序不正确）。
+
+时间复杂度：当有 $N$ 个数时，所有状态个数 $M = A_N^N+A_N^{N-1}+~\cdots~+A_N^0=\sum_{k=0}^{N}\frac{N!}{k!} =N! \cdot \sum_{k=0}^{N}\frac{1}{k!}= e\cdot N!$。（麦克劳林展开）。每个状态时间复杂度，可以将集合的复制下方到下一个状态，所以是 $O(n)$。故总复杂度：$O(N \cdot N!)$
+
+```python
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        path = [0] * n 
+        res = []
+        # 当前枚举到 位置 i，没有枚举过的集合为 S
+        def dfs(i, S):
             if i == n:
-                res.append(cur.copy())
+                res.append(path.copy())    
                 return 
-            for j in range(i + 1, n + 1):
-                t = s[i: j]
-                if t == t[::-1]:
-                    cur.append(s[i: j])
-                    dfs(j)
-                    cur.pop()
+            for j in S:
+                path[i] = j
+                dfs(i + 1, S - {j})
+        dfs(0, set(nums))
+        return res
+```
+
+写法2：更偏向于回溯。外层$path$ 表示当前回溯的路径，外层 $on\_path$ 维护节点是否已经出现在回溯的路径中。
+
+```python
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        path = []
+        on_path = [False] * n
+        res = []
+        # 当前枚举到 位置 i，on_path 记录是否已经出现在回溯路径path中
+        def dfs(i):
+            if i == n:
+                res.append(path.copy())    
+                return 
+            for pj, on in enumerate(on_path):
+                if not on:
+                    on_path[pj] = True
+                    path.append(nums[pj])
+                    dfs(i + 1)
+                    on_path[pj] = False
+                    path.pop()
         dfs(0)
+        return res
+            
+```
+
+**全排列：排列元素有重复：只能用$on\_path$ 回溯 / 位运算压缩**
+
+[47. 全排列 II - 力扣（LeetCode）](https://leetcode.cn/problems/permutations-ii/description/)
+
+相同元素，在 $i$处视为一个，加一个集合维护已经出现过的数字。
+
+```python
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        n, res = len(nums), []
+        path, on_path = [0] * n, [0] * n
+        def dfs(i):
+            if i == n:
+                res.append(path.copy())
+                return 
+            S = set()       # 相同元素，在i 处视为一个
+            for j, on in enumerate(on_path):
+                if not on and nums[j] not in S:
+                    S.add(nums[j])
+                    path[i] = nums[j]
+                    on_path[j] = 1
+                    dfs(i + 1)
+                    on_path[j] = 0
+        dfs(0)
+        return res
+```
+
+[2850. 将石头分散到网格图的最少移动次数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/description/)
+
+暴力枚举可重复全排列匹配 + 位运算压缩。用石头个数大于1 和 没有石头的位置，构造两个列表，进行全排列暴力匹配。
+
+```python
+def minimumMoves(self, grid: List[List[int]]) -> int:
+        frm, to = [], []
+        for i, row in enumerate(grid):
+            for j, x in enumerate(grid[i]):
+                if x == 0: to.append((i, j))
+                elif x > 1: frm.extend((i, j) for _ in range(x - 1))
+        res = inf 
+        n = len(frm)
+        path = [None] * n
+        def dfs(i, S):
+            nonlocal res
+            if i == n:
+                cst = sum(abs(x1 - x2) + abs(y1 - y2) for (x1, y1), (x2, y2) in zip(path, to))
+                res = min(res, cst)
+                return 
+            for j in range(n):
+                if (S >> j) & 1:
+                    path[i] = frm[j]
+                    dfs(i + 1, S ^ (1 << j))
+        dfs(0, (1 << n ) - 1)
+        return res
+
+```
+
+
+
+**N皇后问题**
+
+皇后之间不同行，不同列，且不能在同一斜线。如果只满足不同行不同列，等价于每行每列恰好一个皇后。如果用 $col$ 表示皇后的位置，$col[i]$ 表示 第 $i$ 行的皇后在第$col[i]$ 列，则 "每行每列恰好一个皇后" 等价于 枚举 $col$ 的全排列。
+
+加上斜线上不能有皇后的条件，如果从上往下枚举，则左上方向、右上方向不能有皇后。所以问题变成，当前枚举到 第 $i$ 行，可以枚举的列号的集合 $S$ 。枚举列$j \in S$ ，合法情况即在 $\forall r \in [0 ,~ i-1]$ ，其列值 $c = col[r]$ 都不满足 $i+j=r+c$ 或者 $i-j=r-c$。
+
+![image.png](https://pic.leetcode.cn/1712744334-oWlDrA-image.png)
+
+写法1：$ dfs(i, S)$ 枚举当前到第 $i$ 行（选第$i$ 个数），可以选择的列号的集合是 $S$ （没选择过的数字集合S）
+
+```python
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        res = []
+        path = [0] * n
+        # 当前枚举到第 i 行，可以继续枚举的列号集合是 S
+        def valid(i, j):
+            for r in range(i):
+                c = path[r]
+                if r + c == i + j or r - c == i - j:
+                    return False 
+            return True
+        def dfs(i, S):
+            if i == n:
+                res.append(['.' * j + 'Q' + (n - j - 1) * '.' for j in path])
+                return 
+            for j in S:
+                if valid(i, j):
+                    path[i] = j
+                    dfs(i + 1, S - {j})
+        dfs(0, set(range(n)))
+        return res
+```
+
+写法2：回溯全排列 + 位运算 + 集合优化$O(1)$ 判断斜线方向
+
+由于判断 $i+j$ 和 $i - j$ 是否在之前回溯中出现过需要$O(n)$的时间，实际上只需要用集合记录出现过的 $i+j$ 和 $i - j$ 即可。对于出现过$i+j$ 和 $i-j$ 分别（防止相互干扰）放进集合 $lu$ 和$ru$ 中（由于 位运算中 $i-j$ 可能出现负值，所以存放的元素改成 $i-j+10$）。
+
+```python
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        res = []
+        path = [0] * n
+        lu = ru = 0
+        # 当前枚举到第 i 行，可以继续枚举的列号集合是 S
+        def dfs(i, S):
+            nonlocal lu, ru
+            if i == n:
+                res.append(['.' * j + 'Q' + (n - j - 1) * '.' for j in path])
+                return 
+            for j in range(n):
+                if (S >> j) & 1 and (lu >> (i + j)) & 1 == 0 and (ru >> (i - j + 10)) & 1 == 0:
+                        path[i] = j
+                        lu, ru = lu | (1 << (i + j)), ru | (1 << (i - j + 10))
+                        dfs(i + 1, S & ~(1 << j))
+                        lu, ru = lu ^ (1 << (i + j)), ru ^ (1 << (i - j + 10))
+        dfs(0, (1 << n) - 1)
         return res
 ```
 
@@ -348,14 +684,14 @@ print(bisect_right(l, 10))
 print(bisect_left(l, 10)) # 14
 ```
 
-## 1.多维二分
+## 多维二分
 
 ```python
 a = [(1, 20), (2, 19), (4, 15), (7,12)]
 idx = bisect_left(a, (2, ))
 ```
 
-## 2.二分答案
+## 二分答案
 
 **正难则反思想**，二分答案一般满足两个条件：
 
@@ -417,7 +753,7 @@ return -1 if res > m else res
         return bisect.bisect_left(range(n), True, key = check) - 1
 ```
 
-## 3. 朴素二分
+## 朴素二分
 
 在 闭区间[a, b]上二分
 
@@ -431,6 +767,52 @@ return -1 if res > m else res
             lo = mid + 1
     return lo
 ```
+
+**实现bisect_left**
+
+注意：查找范围为$[lo, hi]$；当 $x>max(nums[lo:hi +1])$  时，结果 $lo$ 值 等于 $hi$ 。
+
+$bisect\_left(nums, x + 1, lo, hi)-1$ 查找闭区间$[lo,hi]$内，恰好大于 $x$ 的首个位置。如果不存在时，$lo = hi$ ，注意需要特判。
+
+当$hi = n$ 时，兼容了存在和不存在两种情况。当不存在时，$lo=n$。
+
+```python
+def bisect_left(nums, x, lo, hi):
+    def check(pos):
+        return nums[pos] >= x
+    while lo < hi:
+        # 查找恰好比x大于等于的位置
+        mid = (lo + hi) >> 1
+        if check(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+print(bisect_left(nums, val, 0, len(nums)))
+```
+
+[2563. 统计公平数对的数目 - 力扣（LeetCode）](https://leetcode.cn/problems/count-the-number-of-fair-pairs/description/)同 [Problem - 1538C - Codeforces](https://codeforces.com/problemset/problem/1538/C)
+
+```python
+def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        n = len(nums)
+        nums.sort()
+        res = 0
+        L, R = lower, upper
+        def bisect_left1(nums, x, lo, hi):
+            while lo < hi:
+                mid = (lo + hi) >> 1
+                if nums[mid] >= x:
+                    hi = mid
+                else:
+                    lo = mid + 1
+            return lo
+        for i, x in enumerate(nums):
+            res += bisect_left1(nums, R - x + 1, i + 1, n) - 1 -  bisect_left1(nums, L - x, i + 1, n) + 1
+        return res
+```
+
+
 
 
 
@@ -790,20 +1172,17 @@ pre = list(accumulate(nums, xor, initial = 0))
 
 ## 取整函数性质
 
-### (1). 上下取整转换
-
+**上下取整转换**
 $$
 \left\lceil \frac{n}{m} \right\rceil = \left\lfloor \frac{n - 1}{m}  \right\rfloor + 1 = \left\lfloor \frac{n + m -1}{m} \right\rfloor
 $$
 
-### (2). 取余性质
-
+**取余性质**
 $$
 n \mod m = n - m \cdot \left\lfloor \frac{n}{m}\right\rfloor
 $$
 
-### (3). 幂等律
-
+**幂等律**
 $$
 \big\lfloor \left\lfloor x \right\rfloor \big\rfloor = \left\lfloor x \right\rfloor \\
 \big\lceil \left\lceil x \right\rceil  \big\rceil = \left\lceil x \right\rceil
@@ -954,6 +1333,36 @@ def solve(x):
 
 > 例如 $N = 2^5 \cdot 3^1, 约数个数为 (2^0 + 2^1 + \cdots + 2^5) \times (3^0 + 3^1)$。展开结果实际上，各个互不相同，每一项都是一个约数，总个数就是约数个数。
 
+[871. 约数之和 - AcWing题库](https://www.acwing.com/problem/content/873/)
+
+```python
+from collections import Counter
+from math import *
+moder = 10 ** 9 + 7
+res = 1
+t = int(input())
+cnt = Counter()
+for _ in range(t):
+    x = int(input())
+    for i in range(2, int(sqrt(x)) + 1):
+        if x % i == 0:
+            c = 0
+            while x % i == 0:
+                c += 1
+                x //= i 
+            cnt[i] += c 
+    if x > 1: cnt[x] += 1
+def S(a, n):
+    s0 = 1 
+    for _ in range(n):
+        s0 = (a * s0 + 1) % moder 
+    return s0
+for a, n in cnt.items():
+    res = (res * S(a, n)) % moder
+print(res % moder)
+
+```
+
 ### 4. 欧几里得算法
 
 算法原理：$gcd(a, b) = gcd(b,a\mod b)$
@@ -1046,7 +1455,7 @@ def solve(n):
     return res
 ```
 
-#### 筛法求欧拉函数
+#### 1. 筛法求欧拉函数
 
 对于$N$ 的最小质因子$p_1$， $N' = \frac{N}{p_1}$，我们希望筛法中，$N$ 通过$N' \cdot p_1$ 筛掉。
 
@@ -1084,7 +1493,30 @@ for i in range(2, n + 1):
         phi[i * p] = (p - 1) * phi[i]
 ```
 
-## 容斥原理
+#### 2. 欧拉定理
+
+$$
+若 a 与 n互质，则 a^{\phi(n)} \mod n ~ =1
+$$
+
+> 例如：$5^ {\phi(6)} \mod 6=5^2 \mod 6=25 \mod 6=1$。
+
+证明：考察$1\sim n$ 中与$n$ 互质的 $\phi(n)$ 个数：$p_1, ~p_2,~\cdots,~p_{\phi(n)}$。将他们乘上 $a$ ，再逐个对 $n$ 取模，得到另一组数 $ap_1 \mod n, ~~ap_2 \mod n,\cdots,~~ap_{\phi(n)} \mod n$。
+
+可以证明这一组数两两不相同（反证法，若$ap_i \equiv ap_j(\mod n)$，则$ap_i - ap_j \equiv 0(\mod n)$，由于 $a,~n$ 互质，则一定有 $p_i = p_j$，矛盾），同时这一组每个数都和 $n$ 互质（因为 $a$ 和 $p_i$ 都与 $n$ 互质）。
+
+则可以得到，新的这组数集 和 原先与 $n$ 互质的数集完全相同。有：$p_1 \cdot p_2 \cdots p_{\phi(n)} \mod n = \prod a p_i \mod n$，即：
+$$
+a^{\phi(n)} \equiv 0~~ (mod~ n)
+$$
+
+#### 3. 费马小定理
+
+若 $a$ 与 素数 $p$ 互质，则 $a^{p-1} \equiv 1 (\mod ~ p)$。
+
+
+
+## 容斥
 
 [2652. 倍数求和 - 力扣（LeetCode）](https://leetcode.cn/problems/sum-multiples/description/?envType=daily-question&envId=2023-10-17)
 
@@ -1103,6 +1535,66 @@ class Solution:
         def f(x):
             return x * (1 + n // x) * (n // x) // 2
         return f(3) + f(5) + f(7) - f(15) - f(21) - f(35) + f(105)
+```
+
+[3116. 单面值组合的第 K 小金额 - 力扣（LeetCode）](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/description/)
+
+容斥 + 预处理最小公倍数：给定无重复集合 $coins'$，$1 \sim x$ 中，能对任意一个 $coins'$ 中元素整除的个数 为 $check(x)$。
+
+将问题转换成，恰好能有 不少于 $k$  个数被任意一个 $coins'$ 中元素整除的 $x$ 的值，使用二分答案。回溯法枚举子集，预处理所有$coins'$ 子集的最小公倍数，所有相同长度、为$l$ 的子集的最小公倍数存放在 $dic[l]$ 中。 对于任意一个数 $y$ ，$1 \sim x$ 中能被它整除的个数为 $int(x/y)$。
+
+```python
+   def findKthSmallest(self, coins: List[int], k: int) -> int:
+        coins.sort()
+        if coins[0] == 1: return k
+        c = set(coins)
+        n = len(coins)
+        for i in range(n):
+            for j in range(i + 1, n):
+                x, y = coins[i], coins[j]
+                if y % x == 0 and y in c:
+                    n -= 1
+                    c.remove(y)
+        coins = list(c)
+
+        # 预处理：dic[i] 表示 从coins 中选出 i个数的子集的最小公倍数
+        dic = defaultdict(list)
+        dic[1] = coins
+
+        # 回溯枚举子集
+        path = []
+        def dfs(i):
+            l = len(path)
+            if i == n:
+                if l >= 2:
+                    lcm_ = path[0]
+                    for j in range(1, l):
+                        lcm_ = lcm(lcm_, path[j])
+                    dic[l].append(lcm_)
+                return 
+            dfs(i + 1)
+            path.append(coins[i])
+            dfs(i + 1)
+            path.pop()
+        dfs(0)
+  
+        def check(x):
+            # 检查 1 ~ x 中，能被任意一个c 整除的个数res和k的关系
+            res = 0
+            for l in range(1, n + 1):
+                plus = l & 1
+                for d in dic[l]:    
+                    res = res + (1 if plus else -1) * (x // d)
+            return res >= k
+
+        lo, hi = 0, 5 * 10 ** 10 + 10
+        while lo < hi:
+            mid = (lo + hi) >> 1
+            if check(mid):
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo
 ```
 
 
@@ -1190,6 +1682,26 @@ a ^ b % p = ((a % p)^b) % p
 (a+b) % p = ( a % p + b % p ) % p
 ((a +b)% p * c) % p = ((a * c) % p + (b * c) % p) % p
 
+### 数列
+
+**等比数列求和公式**
+$$
+S_n = \frac{a_1(1-q^n)}{1-q},~q \ne1
+$$
+**递推方法求等比数列求和（带模运算）**
+
+希望求：$S(a,n) \mod p=(a^0+a^1+\cdots+a^n) \mod p$，不难发现$S(a,n)=a\cdot \big(S(a,n-1) \big) + 1$。
+
+时间复杂度：$O(n)$
+
+```python
+def S(a, n):
+    s0 = 1 
+    for _ in range(n):
+        s0 = (a * s0 + 1) % moder 
+    return s0
+```
+
 ## 组合数学
 
 $A_m^n = \frac{m!}{n!}, ~ C_m^n = \frac{m!}{n!(m-n)!}$
@@ -1214,7 +1726,9 @@ $$
 \\
 H(n) = C_{2n}^n-C_{2n}^{n-1} = \frac{C_{2n}^n}{n+1} = \frac{(2n)!}{(n + 1)!n!}
 $$
-![image.png](https://pic.leetcode.cn/1712072728-MZfRtq-image.png)
+![image.png](https://pic.leetcode.cn/1712921693-mUZiol-image.png)
+
+
 
 证明方法：
 
@@ -1263,11 +1777,25 @@ $$
 
 
 
-## 矩阵乘法/矩阵快速幂/快速幂
+## 快速幂
+
+**欧拉降幂 / 快速幂**
+
+```python
+def pow(a, n, moder):
+    res = 1
+    while n:
+        if n & 1: res = (res * a) % moder
+        n >>= 1
+        a = (a * a) % moder
+    return res
+```
+
+
 
 > 矩阵乘法时间复杂度：$O(n^3)$
 
-矩阵乘法
+**矩阵乘法**
 
 ```python
 moder = 10**9 + 7
@@ -1287,7 +1815,7 @@ def mul(a, b):
     return res
 ```
 
-矩阵快速幂
+**矩阵快速幂**
 
 ```python
 moder = 10**9 + 7
@@ -1319,23 +1847,36 @@ def pow(a, n):
     return res
 ```
 
-快速幂
+## 乘法逆元
 
-```python
-def pow(a, n, moder):
-    res = 1
-    while n:
-        if n & 1: res = (res * a) % moder
-        n >>= 1
-        a = (a * a) % moder
-    return res
-```
+**同余**
+
+两个整数$a$,$b$,若它们除以正整数$m$ 所得的余数相等，则称$a$, $b$对于模$m$ 同余， 读作$a$同余于$b$ 模$m$,或读作$a$与$b$关于模$m$ 同余。
+
+**同余性质**
+
+- 保持基本运算：
+
+$$
+a\equiv b\quad(\mathrm{mod~}m)\Rightarrow\begin{cases}an\equiv bn&\mathrm{(mod~}m),\forall n\in\mathbb{Z}\\a^n\equiv b^n&\mathrm{(mod~}m),\forall n\in\mathbb{N}^0&\end{cases}.
+$$
+
+- 除法原理：若$ka\equiv kb\quad({\mathrm{mod}}\quad m)$且$k,m$ 互质，则$a\equiv b\quad({\mathrm{mod}}\quad m)$
+
+**逆元**
+
+如果$b$ 与$p$ 互质，对于$\forall ~a，$如果$a /b$  是整数，则一定存在乘法逆元 $x$，使得 $\frac{a}{b} \equiv a \cdot x (mod~p)$。 $x$ 是 $b$ 的乘法逆元，记为$b^{-1}$（$b$ 的逆元）。$b$ 的乘法逆元存在的充要条件：$b$  和 $p$ 互质。
+
+**逆元性质**
+
+- $b \cdot b^{-1} \equiv1(mod~p)$ （证明：对定义式两边同乘 $b$，得到 $a\equiv a\cdot b ^{-1} \cdot b (mod ~p)$，由于 $a$ 是 $b$ 的倍数，且$b$ 与 $p$ 互质，所以$a$ 与 $p$ 互质，满足同余的除法原理。）
+- 当模数 $p$ 为素数时，$b^{-1}=b^{p-2}$。（证明：特殊情况下，对于质数 $p$，由费马小定理得 $b^{p-1}\equiv1(mod~p)$，则可知，要求与其互质的数 $b$ 的逆元 $x$ 满足 $bx \equiv 1(mod~p)$，$b^{-1} =x=b^{p-2}$，可以使用快速幂求。
 
 
 
 ## 高等数学
 
-### (1). 调和级数
+### 调和级数
 
 $$
 \sum_{i=1}^{n} \frac{1}{k} 是调和级数，其发散率表示为\sum_{i=1}^{n} \frac{1}{k} = \ln n + C
@@ -1344,10 +1885,31 @@ $$
  经典应用：求一个数的约数的个数期望值
 
 - 考虑 1~n 所有的数的约数个数。
-
 - 从筛法的角度来看，拥有约数2的所有的数，是 1 ~ n中所有2的倍数，大约是 n // 2个。
 - 所以 1~n所有的数的约数个数和 可以看成 所有的倍数的个数 = $n/1 + n / 2 + n /3 + \cdots + n / n = n \sum_{i=1}^n\frac{1}{i} = n \ln n。$
 - 所以=，从期望角度来讲，一个数$n$ 的约束个数的期望约是 $\ln n$
+
+### 泰勒展开式
+
+$$
+f(x)=f(x_0)+\frac{f'(x_0)}{1!}(x-x_0)+\frac{f''(x_0)}{2!}(x-x_0)^2+\cdots+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n
+$$
+
+**麦克劳林公式：$x_0 = 0$** 
+$$
+f(x) = \sum_{k=0}^{n} \frac{f^{(k)}(0)}{k!} \cdot x^k + o(x^n) = f(0) + \frac{f'(0)}{1!} \cdot x + \frac{f''(0)}{2!} \cdot x^2 + \cdots+\frac{f^{(n)}(0)}{n!} \cdot x^n + o(x^n)
+$$
+常用展开：
+$$
+e^x = 1+\frac{1}{1!} \cdot x + \frac{1}{2!} \cdot x^2 + \cdots +\frac{1}{n!} \cdot x^n + o(x^n)
+$$
+所以有：
+$$
+e = \frac{1}{0!} + \frac{1}{1!} + \frac{1}{2!} + \cdots + \frac{1}{n!} 
+$$
+
+
+
 
 # 数据结构
 
@@ -2258,13 +2820,6 @@ for i in range(2, n + 1):
 模板
 
 ```python
-import math
-import sys
-input=lambda:sys.stdin.readline().strip()
-write=lambda x:sys.stdout.write(str(x)+'\n')
-n, m = map(int, input().split())
-a = list(map(int, input().split()))
-# 2 ^ j
 def opt(a, b):
     return max(a, b)
 lenj = math.ceil(math.log(n, 2)) + 1
@@ -2272,20 +2827,40 @@ f = [[0] * lenj for _ in range(n)]
 log = [0] * (n + 1)
 for i in range(2, n + 1):
     log[i] = log[i >> 1] + 1
-for i in range(n):
-    f[i][0] = a[i]
+for i in range(n): f[i][0] = a[i]
 for j in range(1, lenj):
-    # i + 2 ^ j < n + 1
     for i in range(n + 1 - (1 << j)):
         f[i][j] = opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
 def qry(l, r):
     k = log[r - l + 1]
     return opt(f[l][k], f[r - (1 << k) + 1][k])
-for _ in range(m):
-    l, r = map(int, input().split())
-    # 调用write
-    write(qry(l - 1, r - 1))
 ```
+
+类模板
+
+```python
+class ST:
+    def opt(self, a, b):
+        return a & b
+    def __init__(self, nums):
+        n = len(nums)
+        log = [0] * (n + 1)
+        for i in range(2, n + 1):
+            log[i] = log[i >> 1] + 1
+        lenj = ceil(math.log(n, 2)) + 1
+        f = [[0] * lenj for _ in range(n)]
+        for i in range(n): f[i][0] = nums[i]
+        for j in range(1, lenj):
+            for i in range(n + 1 - (1 << j)):
+                f[i][j] = self.opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+        self.f = f 
+        self.log = log 
+    def qry(self, L, R):
+        k = self.log[R - L + 1]
+        return self.opt(self.f[L][k], self.f[R - (1 << k) + 1][k])
+```
+
+
 
 [2104. 子数组范围和 - 力扣（LeetCode）](https://leetcode.cn/problems/sum-of-subarray-ranges/?envType=featured-list&envId=ZZi8gf6w?envType=featured-list&envId=ZZi8gf6w)
 
@@ -3365,6 +3940,7 @@ class Solution:
 |       删除最小元素       | $A\&(A-1)$                |
 |           差集           | $A\& \sim B$              |
 |  差集（子集） / 对称差   | $A\oplus B$               |
+|          包含于          | $A\&B=A$                  |
 
 (1). 把b位置为1
 
@@ -3416,14 +3992,13 @@ num = sum((ch == '.') << i for i, ch in enumerate(s))	# 010110
 print(bin(num))	# 0b 010110
 ```
 
-**枚举一个二进制串的子集**
+**从大到小枚举一个$s$ 的所有非空子集**
 
 ```python
-s = 19
-j = s
-while j:
-    # print(format(j, '06b'))
-    j = (j - 1) & s
+sub = s
+while sub:
+    # 处理 sub 的逻辑
+    sub = (sub - 1) & s
 ```
 
 **判断是否有两个连续（相邻）的1**
@@ -3833,6 +4408,8 @@ print(f[mxW])
 ```
 
 ### 分组背包
+
+[9. 分组背包问题 - AcWing题库](https://www.acwing.com/problem/content/9/)
 
 有$N$ 组物品，容量为$mxW$ 的背包，每组物品最多只能选其中一个。 例如，水果（苹果，香蕉，橘子）只能选一个或者不选。
 
@@ -4438,6 +5015,44 @@ def solve():
     return f[(1 << n) - 1][n - 1]
 ```
 
+## 划分dp
+
+**约束划分个数**
+
+将数组分成 (恰好/至多) $k$ 个连续子数组，计算与这些子数组有关的最优值。
+
+类型1： $f[i][j]$ 当前考虑完前缀 $a[:i]$，且$a[:i]$ 恰好划分成 $j$ 个连续子数组所得到的最优解。 枚举最后一个子数组的左端点 $L$, 从 $f[L][j-1]$ 转移到 $f[i][j]$，并考虑 $a[L:i]$ 对最优解的影响。 $f(i,j)=\min(f(L,j-1))$
+
+类型2：$f(i,j, pre)$ 表示当前考虑到 $a[i]$， 且$a[:i]$ 的前缀中包含 $j$ 个连续子数组所得的最优解，其中 $pre$ 表示当前待划分的这段的状态。 考虑是否在 $i$ 处划分，并考虑前一段状态 $pre$ 是否允许划分。$f(i,j,pre)=\min \{~f(i+1,j,pre),~f(i+1,j+1,pre')~\}$ 
+
+
+
+[3117. 划分数组得到最小的值之和 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/description/)
+
+$f(i, j, pre\_and):$ 表示当前考虑到$nums[i]$，且前缀中包含 $j$ 段，$pre\_and$ 表示当前待划分的这段的AND。
+
+```python
+    def minimumValueSum(self, nums: List[int], andValues: List[int]) -> int:
+        n, m = len(nums), len(andValues)
+        @lru_cache(None)
+        def f(i, j, pre_and):
+            # 表示当前考虑到nums[i]，且前缀中包含j 段，pre_and表示当前待划分的这段的AND
+            if i == n and j == m: return 0
+            if i < n and j == m: return inf 
+            if i == n and j < m: return inf
+            pre_and &= nums[i]
+            # 在i处不划分，
+            res = f(i + 1, j, pre_and)
+            # 在i处划分，条件是这一段 pre_and == andValues[j]
+            if pre_and == andValues[j]:
+                res = min(res, f(i + 1, j + 1, -1) + nums[i])
+            return res
+        res = f(0, 0, -1)
+        return res if res < inf else -1
+```
+
+
+
 # 贪心
 
 ## 多维贪心 + 排序
@@ -4731,3 +5346,8 @@ def solve():
     print(int(res))
 ```
 
+
+
+
+
+[灵茶の试炼 (qq.com)](https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz?tab=BB08J2)
