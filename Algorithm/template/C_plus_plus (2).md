@@ -1820,8 +1820,6 @@ $$
 
 ### 扩展欧几里得
 
-[877. 扩展欧几里得算法 - AcWing题库](https://www.acwing.com/problem/content/879/)
-
 求解 $ax+by=gcd(a,b)$ 的一组整数解。
 
 当 $b=0$，$(x,y)=(1,0)$；否则 $gcd(a,b)=gcd(b, a \bmod b)$，向下递归一层，得到下一层的$(x',y')$。由裴蜀定理，$bx'+(a \%b)y'=bx'+(a-a//b \times b)y'=ax+by$，所以 $a(y')+b(x'-a//b \times y') = ax+by$，可得解为$(y', x'-a//b \times y')$，再回代到上一层，最终可以得到**特解$(x_0, y_0)$**。构造通解：$(x_0+k\times \frac{b}{gcd(a,b)},~y_0-k\times \frac{a}{gcd(a,b)})$。
@@ -1837,15 +1835,13 @@ def exgcd(a, b):
 
 ### 线性同余方程
 
-[878. 线性同余方程 - AcWing题库](https://www.acwing.com/problem/content/880/)
-
 **线性同余方程**
 
 - 给定$a,b, m(a\bmod m \ne0)$， 求一个特解$ x$， 使得 $ax \equiv b (\bmod m)$。
 
 - 求方程 $ax+my=b$ 的特解。
 
-无解条件：$b\bmod gcd(a,m) \ne 0$
+无解条件：$b\bmod gcd(a,m) = 0$
 
 > 例如 $2x \equiv 3 (\bmod 6)$，无解；$4x \equiv 3 (\bmod 5)$，解的形式是$5k+2$。
 
@@ -1886,84 +1882,38 @@ $$
 
 ### 乘法逆元
 
-**快速幂求逆元**
-
-条件： 1. 模数 $b$  是质数。2. $a \bmod b \ne0$
-
-$a$ 模 $b$  的乘法逆元是 $a^{b-2} \bmod b$
-
-[876. 快速幂求逆元 - AcWing题库](https://www.acwing.com/problem/content/description/878/)
-
-```python
-def qmi(a, n, p):
-    res = 1
-    while n:
-        if n & 1: res = res * a % p
-        a = a * a % p 
-        n >>= 1
-    return res
-def inv(a, b):	# 确保 b 是素数且 a % b != 0
-    return qmi(a, b - 2, b)
-```
-
-
-
-**扩展欧几里得求逆元**
-
-条件：1. $gcd(a,b)=1$  。 2. $a \bmod b \ne0$
-
 - 求 $a$ 在模 $b$ 意义下的逆元
 - 求线性同余方程 $ax\equiv1 (\bmod b)$ 的解 $a^{-1}$
 
 转化为方程$ax+by=1$ 的解 $x$, 时间复杂度：$ O(log(min(a, b)))$
 
-```python
-def exgcd(a, b):
-    if b == 0: return 1, 0, a
-    x, y, d = exgcd(b, a % b)
-    return y, x - a // b * y, d
+```c++
+// 扩展欧几里得算法
+tuple<int, int, int> exgcd(int a, int b) {
+    if (b == 0)
+        return {1, 0, a};
+    auto [x, y, d] = exgcd(b, a % b);
+    return {y, x - a / b * y, d};
+}
 
-# 求 ax + by = c 的特解
-def liEu(a, b, c):
-    x, y, d = exgcd(a, b)
-    if c % d != 0: return None
-    return x * (c // d) % (b // d), y * (c // d) % (a // d)
+// 求 ax + by = c 的特解
+pair<int, int> liEu(int a, int b, int c) {
+    auto [x, y, d] = exgcd(a, b);
+    if (c % d != 0)
+        return {0, 0}; 
+    a /= d;
+    c /= d;
+    b /= d;
+    return {(x * c % b + b) % b, (y * c % a + a) % a};
+}
 
-def inv(a, b):
-    # ax mod b = 1
-    # ax + by = 1
-    x, y = liEu(a, b, 1)
-    return x
+int inv(int a, int b) {
+    // ax mod b = 1
+    // ax + 1y = b
+    auto [x, y] = liEu(a, b, 1);
+    return x;
+}
 ```
-
-#### 线性求逆元
-
-[P3811 【模板】模意义下的乘法逆元 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P3811)
-
-求$1,2, \cdots, n$ 中每个数关于 $p$  的逆元。
-
-已知 $1\times 1\equiv1(\bmod b)$ 恒成立。对于 $i$ 的逆元 $i^{-1}$，考察模数 $p$ 关于 $i$ 的倍数 $k = \lfloor \frac{p}{i} \rfloor$，$j=p \bmod i$，有 $p=ki+j$。放到模$p$ 意义下，$ki+j \equiv0 (\bmod p)$，同乘 $i^{-1} \times j ^{-1}$，得 $kj^{-1} + i^{-1} \equiv 0(\bmod p)$，移项 $i^{-1} \equiv-kj^{-1} (\bmod p) \equiv - \lfloor \frac{p}{i} \rfloor (p \bmod i)^{-1} (\bmod p)$
-
-递推式：
-$$
-\text{inv}[i] = 
-\begin{cases}
-1, & \text{if} ~i = 1
-\\
--(p //i) \times \text{inv}[p \%i],&\text{otherwise}
-
-\end{cases} 
-~(\bmod p)
-$$
-
-```python
-inv = [1] * (n + 1)
-for i in range(2, n + 1):
-    k, j = (p // i), p % i
-    inv[i] = -k * inv[j] % p
-```
-
-
 
 
 
@@ -1980,13 +1930,14 @@ for i in range(2, n + 1):
 
 ### 中国剩余定理 
 
-条件：整数 $m_1,m_2,\ldots,m_n$ **两两互质**
+$引理：\text{寻找整数 }y_1\text{ 满足 }y_1\text{ 除以3余1、除以5余0、除以7余}0;$
 
-> $引理：\text{寻找整数 }y_1\text{ 满足 }y_1\text{ 除以3余1、除以5余0、除以7余}0;$
->
-> $y1$ 一定是 $5 \times 7 = 35$ 的倍数，设 $y1 = 35k$ ，则有 $35k \equiv 1 (\bmod 3)$，此时 $k$ 是 $35$ 模3的逆元
+$y1$ 一定是 $5 \times 7 = 35$ 的倍数，设 $y1 = 35k$ ，则有 $35k \equiv 1 (\bmod 3)$，此时 $k$ 是 $35$ 模3的逆元
 
-对于任意的整数$a_1,a_2,\ldots,a_n$ ,方程组
+[中国剩余定理（CRT ） - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/44591114)
+
+设整数 $m_1,m_2,\ldots,m_n$ **两两互质**，则对于任意的整数$a_1,a_2,\ldots,a_n$ ,方程组
+
 $$
 \begin{cases}
 x \equiv a_1(\bmod m_1) \\
@@ -1995,112 +1946,10 @@ x \equiv a_2(\bmod m_2) \\
 x \equiv a_n(\bmod m_n) \\
 \end{cases}
 $$
-的最小非负整数解：$x
-\equiv
-\sum_{i=1}^na_i
-\times\frac M{m_i}
-\times \text{inv}(\frac{M}{m_i},~m_i)\pmod{N}，
-其中 M=\prod_{i=1}^nm_i 。$记 $c_i=\frac{M}{m_i}, x=\sum a_ic_i \cdot \text{inv}(c_i,~m_i)$。
-
-[P1495 【模板】中国剩余定理（CRT）/ 曹冲养猪 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P1495)
-
-```python
-def exgcd(a, b):
-    if b == 0: return 1, 0, a
-    x, y, d = exgcd(b, a % b)
-    return y, x - a // b * y, d
-def liEu(a, b, c):
-    # ax + by = c 的解
-    x, y, d = exgcd(a, b)
-    a //= d
-    b //= d
-    c //= d
-    return x * c % b, y * c % a
-def inv(a, b):
-    x, _ = liEu(a, b, 1)
-    return x
-def CRT(a, m):
-    M = 1
-    res = 0
-    for mi in m: M *= mi
-    for ai, mi in zip(a, m):
-        ci = M // mi
-        res = (res + ai * ci * inv(ci, mi)) % M
-    return res
-```
-
-#### 扩展中国剩余定理
-
-[204. 表达整数的奇怪方式 - AcWing题库](https://www.acwing.com/problem/content/206/)
-
-[P4777 【模板】扩展中国剩余定理（EXCRT） - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P4777)
-
-删去条件$m_i$ 两两互质。
-
-前两个方程：$x\equiv a_1(\bmod m_1),x\equiv a_2(\bmod m_2)$，转换成不定方程 $x=pm_1 +a_1=qm_2+a_2$，移项得到 $pm_1-qm_2=a_2-a_1$，由裴蜀定理，当$a_2-a_1$ 不是 $gcd(m_1,m_2)$ 的倍数时，整个方程无解；否则得到$gcd$ 方程的特解$(p_0,q_0)$，由扩展欧几里得，原方程其通解为$(P=p_0 \times\frac{a_2-a_1}{gcd(m_1, m_2)} \bmod \frac{m_2}{gcd(m_1, m_2)}+ k\frac{m_2}{gcd(m_1, m_2)},~~~~Q=q_0\times \frac{a_2-a_1}{gcd(m_1,m_2)} \bmod \frac{m_1}{gcd(m_1, m_2)} - k\frac{m_1}{gcd(m_1, m_2)}) $。
-
-代入有$x=Pm_1+a_1=p'_0m_1+a_1+k\times \frac{m_1m_2}{gcd(m_1,m_2)}=p_0'm_1+a_1+k \cdot \text{lcm}(m_1, m_2)$，所以可以写成$x\equiv a_1' (\bmod m_1')，a_1'=p_0'm_1+a_1,m'_1=\text{lcm}(m_1,m_2)$。每一次合并可以使得方程数量减少1，只需要合并 $n-1$ 次。
-
-每一次将$m_1 \leftarrow abs(\frac{m_1m_2}{gcd(m_1,m_2)}),~a_1 \leftarrow p'_0m_1 + a1$。
-
-```python
-def exgcd(a, b):
-    if b == 0: return 1, 0, a
-    x, y, d = exgcd(b, a % b)
-    return y, x - a // b * y, d
-def liEu(a, b, c):
-    x, y, g = exgcd(a, b)
-    a, b, c = a // g, b // g, c // g
-    return x * c % b, y * c % a, g
-def ex_CRT(a, m):
-    a1, m1 = a[0], m[0]
-    for i in range(1, len(a)):
-        a2, m2 = a[i], m[i]
-        # 构造p * m1 + a1 = q * m2 + a2
-        p, q, g = liEu(m1, -m2, a2 - a1)
-        if (a2 - a1) % g != 0: return -1
-        a1 = p * m1 + a1
-        m1 = abs(m1 * m2 // g)
-    return a1
-```
-
-[P8807 [蓝桥杯 2022 国 C\] 取模 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P8807)
-
-给定 $n,m$, 问是否存在两个不同的数 $x,y$ 使得 $1\leq x<y\leq m$ 且$n\bmod x=n\bmod y$。
-
-考虑反面情况，当且仅当对于任意 $[1,m]$ 的数 $x$ ，$n \bmod x$  两两不相等，则不成立。由于对于任意的 $n$，$n \bmod 1=0$，所以$n \bmod 2$ 只能取1，同理 $n \bmod 3 $只能取2，可以得到 $n \bmod k$ 必须取 $k-1$。所以当且仅当 $\forall k \in [1, m] 有 n \bmod k =k-1$恒成立，才不存在。
-
-```python
-def solve():
-    n, m = map(int, input().split())
-    for k in range(1, m + 1):
-        if n % k != k - 1:
-            return 'Yes'
-    return 'No'
-```
-
-由扩展中国剩余定理，$m_1 = 1, a_1=0$，每一次将$m_1 \leftarrow abs(\frac{m_1m_2}{gcd(m_1,m_2)}),~a_1 \leftarrow p'_0m_1 + a1$。最终 $m_1 = lcm(1,2,\cdots,m)$，$a_1 = -1$，有方程$x\equiv -1(\bmod m_1)$，所以必然有当 $ n \bmod L=-1 即L-1$  时，不存在返回 'NO'。由于当 $m$ 比较大的时候，其 $L$ 值增长速度快，值已经超过 $n$，此时$n \bmod L = n < L-1$ 一定返回 'Yes'。
-
-```python
-def gcd(a, b):
-    return gcd(b, a % b) if b else a
-    
-def lcm(a, b):
-    return a * b // gcd(a, b)
-    
-Lcm = [1] * 21
-for i in range(2, 21):
-    Lcm[i] = lcm(i, Lcm[i - 1])
-def solve():
-    n, m = map(int, input().split())
-    if m > 20: return 'Yes'
-    L = Lcm[m]
-    if n % L == L - 1: return 'No'
-    return 'Yes'
-
-```
-
-
+ 都存在整数解。若$X,Y$ 都满足该方程组，则必有 $X\equiv Y({\mathrm{mod}}N)$ ,其中 $N=\prod_{i=1}^nm_i$ 。
+$$
+x\equiv\sum_{i=1}^na_i\times\frac N{m_i}\times\left[\left(\frac N{m_i}\right)^{-1}\right]_{m_i}\pmod{N}。
+$$
 
 ## 离散数学
 
@@ -2210,19 +2059,22 @@ class Solution:
 
 
 
-**隔板法**
+[P8807 [蓝桥杯 2022 国 C\] 取模 - 洛谷 | 计算机科学教育新生态 (luogu.com.cn)](https://www.luogu.com.cn/problem/P8807)
 
-[Problem - 1205 (hdu.edu.cn)](https://acm.hdu.edu.cn/showproblem.php?pid=1205)
+给定 $n,m$, 问是否存在两个不同的数 $x,y$ 使得 $1\leq x<y\leq m$ 且$n\bmod x=n\bmod y$。
 
-> Gardon 有$1\leq K\leq10^6$种糖果，第$i$种糖果有$1\leq a_i\leq10^6$个，Gradon 不喜欢连续两次吃同样种类的糖果，问是否存在可行的吃糖方案。
+考虑反面情况，当且仅当对于任意 $[1,m]$ 的数 $x$ ，$n \bmod x$  两两不相等，则不成立。由于对于任意的 $n$，$n \bmod 1=0$，所以$n \bmod 2$ 只能取1，同理 $n \bmod 3 $只能取2，可以得到 $n \bmod k$ 必须取 $k-1$。所以当且仅当 $\forall k \in [1, m] 有 n \bmod k =k-1$恒成立，才不存在。
 
-即给定 $K$ 组物品，各组物品个数有 $a_i$ 个，每次从任意一组种拿出一个，要求连续两个物品不能属于同一组。是否存在一种方案能拿完所有物品？
+```python
+def solve():
+    n, m = map(int, input().split())
+    for k in range(1, m + 1):
+        if n % k != k - 1:
+            return 'Yes'
+    return 'No'
+```
 
-找到最大个数的数量 $N$, 其余物品数量之和为 $S$， 通过隔板法，当且仅当形成的$N-1$ 个右侧隔间每个至少有一个其他物品时满足条件。所以当 $S \ge N-1$ 成立，反之不成立。
-
-
-
-
+由中国剩余定理，
 
 ## 数学公式
 
