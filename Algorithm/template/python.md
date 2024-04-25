@@ -1436,6 +1436,10 @@ $$
 
 ### 素数
 
+**素数计数函数近似值**
+
+小于等于$x$ 的素数个数记为 $\pi(x)$，$\pi (x) 近似于 \frac{x}{\ln x}$。
+
 #### **(1). 埃氏筛**
 
 时间复杂度：$O(nloglogn)$
@@ -1538,9 +1542,85 @@ def breakdown(N):
     return result
 ```
 
-**素数计数函数近似值**
+统计质因子及其出现次数
 
-小于等于$x$ 的素数个数记为 $\pi(x)$，$\pi (x) 近似于 \frac{x}{\ln x}$。
+```python
+# 统计质因子及其出现次数
+def breakdown(n):
+    res = []
+    for i in range(2, int(sqrt(n)) + 1):
+        if n % i == 0:
+            cnt = 0
+            while n % i == 0:
+                n //= i
+                cnt += 1
+            res.append((i, cnt))
+    if n > 1: res.append((n, 1))
+    return res
+```
+
+
+
+#### (4). 阶乘分解质因子
+
+**求 $n!$ 中 质因子 $p$ 的出现次数问题**
+
+> 例如 $9!$ 中 $2$ 的出现次数，$9!$ 中有$2,4,6,8$ 分别提供 $1,2,1,3$ 个 $2$ ，出现次数为 $7$ 。
+
+$n!$ 中 $p$ 出现次数，$[1,n]$ 中是 $p$ 的倍数的数各自提供1个$p$，有 $n // p$ 个数；这些数都除$p$ 表示各拿走一个$p$，之后最大的数是 $n//p$，更新上界 $n' \leftarrow n//p$ ，在$[1,n'$] 中 $p$ 的倍数的数各自提供1个$p$ ，有 $n' // p $ 个数，重复上面操作，直到 $n=0$ 。
+
+```python
+# 统计 n!中质因子p出现的次数
+def fpf(n, p):   # factorial_prime_factor 
+    res = 0
+    while n:
+        res += n // p
+        n //= p
+    return res
+```
+
+
+
+**求 $n!$ 转换为 $b$ 进制数字后的末尾0的个数。**
+
+> 例如：$(9!)_{10}=(720)_{10}=(880)_{9} = 8 \times 9^2 + 8 \times 9^1+0\times 1=3^4\times 2^3+2^3 \times 3^2=3^2\times 2^4\times 5$；
+>
+> $5!=(120)_{10}=1111000_{2}=2^3\times 3^1\times5^1$。
+
+$x$ 在 $b$ 进制下的表示是 $x = \sum d_i b^{i}$，最低非0位 $k$对应 $d_k\times b^k$, 一定能将$x$ 表示成 $b^k \times (\sum d_i\times b^{i-k})$，实际上由于 $x$ 可以表示成标准分解式 $x=p_0^{k_0} \times p_1^{k_1}\cdots$，将 $b$ 分解成 $p_0^{k'_0} \times \cdots$，实际上 $k$ 等于 $\min \frac{k_i}{k_i'}$。转换为：$k_i$ 为 $b$ 的质因子在 $n!$ 中出现的次数。
+
+[Problem - C - Codeforces](https://codeforces.com/contest/1114/problem/C)
+
+```python
+# 统计 n!中质因子p出现的次数
+def fpf(n, p):   # factorial_prime_factor 
+    res = 0
+    while n:
+        res += n // p
+        n //= p
+    return res
+# 统计质因子及其出现次数
+def breakdown(n):
+    res = []
+    for i in range(2, int(sqrt(n)) + 1):
+        if n % i == 0:
+            cnt = 0
+            while n % i == 0:
+                n //= i
+                cnt += 1
+            res.append((i, cnt))
+    if n > 1: res.append((n, 1))
+    return res
+def solve():
+    n, b = map(int, input().split())
+    pf = breakdown(b)
+    res = inf
+    for f, c in pf:
+        res = min(res, fpf(n, f) // c)
+    return res
+```
+
+
 
 ### 约数
 
@@ -1600,37 +1680,6 @@ for a, n in cnt.items():
 print(res % moder)
 
 ```
-
-#### **欧几里得算法**
-
-算法原理：$gcd(a, b) = gcd(b,a\mod b)$
-
-证明：
-
-- 对于任意一个能整除$a$ 且 能整除 b 的数 $d$， $a \mod b $ 可以写成 $a - k \cdot b$ ，其中 $k = a // b$ ，所以 $d$ 一定能够整除 $b, a \mod b$；
-- 对于任意一个能整除 $b$  且能整除 $a - k \cdot b$  的数 $d$， 一定能整除$a-k\cdot b + k\cdot b  = a$，所以二者的公约数的集合是等价的。
-- 所以二者的最大公约数等价
-
-```python
-def gcd(a, b):
-    return gcd(b, a % b) if b else a
-```
-
-**时间复杂度：$O(\log (\max(a,~b)))$**
-
-证明：
-
-引理1： $a\mod b \in[0,~ b-1]$。例如，$38 \mod 13 = 12$
-
-引理2：取模，余数至少折半。
-
-如果$ b > a//2,~a \mod ~b = a - b < a//2$。例如，a = 9, b = 5, a mod b = 9 - 5 = 4
-
-如果 $b \le a//2, ~ a \mod b \le b - 1 \le a//2 -1$。
-
-情况1：当每次执行 gcd时，如果 $a < b$ ，则交换；情况2：否则$a \ge b$，一定发生引理2的情况，即对 $a$ 取模，一定会让 $a$ 折半。最坏情况下，每两次让 $a$ 折半，所以时间复杂度为 ：
-
-$O(T) =  O(T /2) + 2 = O(T/4) + 4 = O(\frac {T}{2^k}) + k\times2 = 2\log k$，即 $O(\log(\max(a, b)))$
 
 
 
@@ -1818,7 +1867,40 @@ $$
 
 
 
-### 扩展欧几里得
+### **欧几里得算法**
+
+算法原理：$gcd(a, b) = gcd(b,a\mod b)$
+
+证明：
+
+- 对于任意一个能整除$a$ 且 能整除 b 的数 $d$， $a \mod b $ 可以写成 $a - k \cdot b$ ，其中 $k = a // b$ ，所以 $d$ 一定能够整除 $b, a \mod b$；
+- 对于任意一个能整除 $b$  且能整除 $a - k \cdot b$  的数 $d$， 一定能整除$a-k\cdot b + k\cdot b  = a$，所以二者的公约数的集合是等价的。
+- 所以二者的最大公约数等价
+
+```python
+def gcd(a, b):
+    return gcd(b, a % b) if b else a
+```
+
+**时间复杂度：$O(\log (\max(a,~b)))$**
+
+证明：
+
+引理1： $a\mod b \in[0,~ b-1]$。例如，$38 \mod 13 = 12$
+
+引理2：取模，余数至少折半。
+
+如果$ b > a//2,~a \mod ~b = a - b < a//2$。例如，a = 9, b = 5, a mod b = 9 - 5 = 4
+
+如果 $b \le a//2, ~ a \mod b \le b - 1 \le a//2 -1$。
+
+情况1：当每次执行 gcd时，如果 $a < b$ ，则交换；情况2：否则$a \ge b$，一定发生引理2的情况，即对 $a$ 取模，一定会让 $a$ 折半。最坏情况下，每两次让 $a$ 折半，所以时间复杂度为 ：
+
+$O(T) =  O(T /2) + 2 = O(T/4) + 4 = O(\frac {T}{2^k}) + k\times2 = 2\log k$，即 $O(\log(\max(a, b)))$
+
+
+
+#### 扩展欧几里得
 
 [877. 扩展欧几里得算法 - AcWing题库](https://www.acwing.com/problem/content/879/)
 
@@ -4464,6 +4546,10 @@ def minMalwareSpread(self, graph: List[List[int]], initial: List[int]) -> int:
             if sz == mx: res = min(res, u)
         return res
 ```
+
+
+
+## 最小费用最大流
 
 
 
