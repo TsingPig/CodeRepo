@@ -2528,7 +2528,7 @@ def pow(a, n, moder):
 
 
 
-> 矩阵乘法时间复杂度：$O(n^3)$
+> 矩阵乘法时间复杂度：$O(M_1N_2N_1)$
 
 **矩阵乘法**
 
@@ -2553,33 +2553,87 @@ def mul(a, b):
 **矩阵快速幂**
 
 ```python
-moder = 10**9 + 7
+moder = 10 ** 9 + 7
 
 def mul(a, b):
-    m_a, n_a = len(a), len(a[0])
-    m_b, n_b = len(b), len(b[0])
-    c = n_a  # 可以加一个n_a和m_b的判等
-    res = [[0]*n_b for _ in range(m_a)]
-    for i in range(m_a):
-        for j in range(n_b):
+    ma, na = len(a), len(a[0])
+    mb, nb = len(b), len(b[0])
+    # ma * nb 
+    c = na 
+    res = [[0] * nb for _ in range(ma)]
+    for i in range(ma):
+        for j in range(nb):
             tmp = 0
-            for k in range(c):
-                # tmp = (tmp + (a[i][k] * b[k][j]) % moder) % moder  # 如果需要取模
-                tmp += a[i][k] * b[k][j]
-            res[i][j] = tmp
-    return res
+            for k in range(na):
+                tmp = (tmp + a[i][k] * b[k][j] % moder) % moder 
+            res[i][j] = tmp 
+    return res 
 
-def pow(a, n):
-    res = [  # 其他形状的改成nxn的E矩阵
-        [1, 0],
-        [0, 1]
-    ]
+def mat_pow(a, n):
+    res = [[6, 6]]
     while n:
-        if n & 1:
-            res = mul(res, a)
+        if n & 1: res = mul(res, a)
         a = mul(a, a)
         n >>= 1
     return res
+```
+
+
+
+[1411. 给 N x 3 网格图涂色的方案数 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-ways-to-paint-n-3-grid/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+递推方程：$f(0)=(6, 6),~f(i)=(f(i-1,0) \times 2+f(i-1,1)\times 2,~~f(i-1,0) \times 2 + f(i-1,1)\times3)$。
+
+即：
+$$
+\left[\begin{array}{c}
+f(n,0) \\
+f(n,1)
+\end{array}\right]
+
+=
+\left[\begin{array}{c}
+6 \\
+6
+\end{array}\right]
+\cdot 
+
+\left[\begin{array}{c}
+2 & 2 \\
+2 & 3
+\end{array}\right]^{n-1}
+$$
+
+```python
+moder = 10 ** 9 + 7
+
+def mul(a, b):
+    ma, na = len(a), len(a[0])
+    mb, nb = len(b), len(b[0])
+    # ma * nb 
+    c = na 
+    res = [[0] * nb for _ in range(ma)]
+    for i in range(ma):
+        for j in range(nb):
+            tmp = 0
+            for k in range(na):
+                tmp = (tmp + a[i][k] * b[k][j] % moder) % moder 
+            res[i][j] = tmp 
+    return res 
+
+def mat_pow(a, n):
+    res = [[6, 6]]
+    while n:
+        if n & 1: res = mul(res, a)
+        a = mul(a, a)
+        n >>= 1
+    return res
+class Solution:
+    def numOfWays(self, n: int) -> int:
+        m = [[2, 2],
+             [2, 3]]
+        x = mat_pow(m, n - 1)
+        return sum(x[0]) % moder
 ```
 
 
@@ -4851,7 +4905,7 @@ class Solution:
 |       删除最小元素       | $A\&(A-1)$                |
 |           差集           | $A\& \sim B$              |
 |  差集（子集） / 对称差   | $A\oplus B$               |
-|          包含于          | $A\&B=A$                  |
+|      $A$ 包含于 $B$      | $A\&B=A$                  |
 
 (1). 把b位置为1
 
@@ -4901,6 +4955,17 @@ num = sum((ch == '.') << i for i, ch in enumerate(s))	# 010110
 s = ["#", ".", ".", "#", ".", "#"]
 num = sum((ch == '.') << i for i, ch in enumerate(s))	# 010110
 print(bin(num))	# 0b 010110
+```
+
+**预处理所有子集的和**
+
+时间复杂度：$O(n\cdot 2^n)$
+
+```python
+    sum_ = defaultdict(int)
+    for i, x in enumerate(nums):
+        for s in range(1 << i):
+            sum_[(1 << i) | s] = sum_[s] + x
 ```
 
 **从大到小枚举一个$s$ 的所有非空子集**
@@ -5603,13 +5668,13 @@ $f[i: j]~ 表示s[i] \sim s[j] 中的最长回文子序列的长度$
 [516. 最长回文子序列 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-palindromic-subsequence/)
 
 ```python
-    def longestPalindromeSubseq(self, s: str) -> int:
-        # f[i: j] 表示s[i] ~ s[j] 中的最长回文子序列的长度
+    def mx_pal_subseq(self, s: str) -> int:
+        # f(i, j) 表示 s[i] ~ s[j] 的最长回文子序列的长度
         n = len(s)
-        f = [[0] * (n + 1) for _ in range(n + 1)]
-        for i in range(n):
-            f[i][i] = 1
+        f = [[0] * n for _ in range(n)]
+        for i in range(n): f[i][i] = 1
         for l in range(2, n + 1):
+            # i + l < n + 1
             for i in range(n + 1 - l):
                 j = i + l - 1
                 if s[i] == s[j]:
@@ -5617,7 +5682,6 @@ $f[i: j]~ 表示s[i] \sim s[j] 中的最长回文子序列的长度$
                 else:
                     f[i][j] = max(f[i + 1][j], f[i][j - 1])
         return f[0][n - 1]
-                    
 ```
 
 推论：对于长度为 $n$ 的字符串，其最长回文子序列长度为 $L$， 则最少添加 $n - L$ 个字符可以使原串变成回文串。
@@ -5642,6 +5706,38 @@ $f[i: j]~ 表示s[i] \sim s[j] 中的最长回文子序列的长度$
                     f[i][j] = max(f[i + 1][j], f[i][j - 1])
         return n - f[0][n - 1]
 ```
+
+[2002. 两个回文子序列长度的最大乘积 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-subsequences/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+二进制枚举，将集合划分成互不相交的两部分。求各自最长回文子序列长度的乘积。$O(2^n\cdot n^2)$。
+
+```python
+    def maxProduct(self, s1: str) -> int:
+        n, res = len(s1), 0
+        s = (1 << n) - 2
+        sub = s 
+        def mx_pal_subseq(ss):
+            m = len(ss)
+            f = [[0] * m for _ in range(m)]
+            for i in range(m): f[i][i] = 1 
+            for l in range(2, m + 1):
+                for i in range(m + 1 - l):
+                    j = i + l - 1
+                    if ss[i] == ss[j]:
+                        f[i][j] = f[i + 1][j - 1] + 2 
+                    else: 
+                        f[i][j] = max(f[i + 1][j], f[i][j - 1])
+            return f[0][m - 1]
+        while sub:      
+            s2 = ''.join([s1[j] for j in range(n) if (sub >> j) & 1])
+            s3 = ''.join([s1[j] for j in range(n) if (sub >> j) & 1 == 0])
+            cur = mx_pal_subseq(s2) * mx_pal_subseq(s3)
+            if cur > res: res = cur 
+            sub = (sub - 1) & s 
+        return res 
+```
+
+
 
 ### 最长回文子串
 
@@ -6034,6 +6130,89 @@ class Solution:
         return f[m]
 ```
 
+### 划分成 $k$ 个子集的问题
+
+$f(i,s)$ 表示划分到第 $i$ 个子集，划分的状态为 $s$ 情况下的某个值。$f(i,s)=F((f(i-1,s-sub),~G(sub) ))$。
+
+时间复杂度： $O(n\cdot 3^n)$。由于元素个数为 $i$ 的集合个数有 $C(n,i)$个，其子集个数为$2^i$ ，根据二项式定理 $(a + b) ^n = \sum_{i=0}^n C_n^ia^ib^{n-i}$，所以$\sum_{i=0}^{n} C(n,i)\cdot 2^i = (2+1)^n=3^n$，每次需要 $O(n)$ 时间计算 $G$的情况下，时间复杂度为 $O(n\cdot 3^n)$
+
+[2305. 公平分发饼干 - 力扣（LeetCode）](https://leetcode.cn/problems/fair-distribution-of-cookies/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+最小化 $k$ 个子集和中的最大值问题。$f(i,s)$ 表示划分到第 $i$ 个子集，划分的状态为 $s$ 情况下的 $i$ 个子集中和最大值的最小值。
+
+考虑 $s$ 的所有子集$sub$ ，$f(i,s)=\min \{ \max(f(i-1,s-sub),~\sum sub)\}$。最终答案为 $f(k,1$<<$n-1)$，初始值 $f(0,0)=0$。
+
+```python
+    def distributeCookies(self, cookies: List[int], k: int) -> int:
+        # f[i][s] 表示当前划分状态为s,s为1表示已经分配
+        # 划分完第i 个集合，所有集合的最大值 的最小值
+        # f[i][s] = min(max(f[i - 1][s ^ sub], sum(sub)))
+        # f[k][1 << n - 1]
+        n = len(cookies)
+        f = [[inf] * (1 << n) for _ in range(k + 1)]
+        f[0][0] = 0
+        for i in range(1, k + 1):
+            for s in range(1, 1 << n):
+                sub = s 
+                while sub:
+                    tot = sum(cookies[j] for j in range(n) if (sub >> j) & 1)
+                    f[i][s] = min(f[i][s], max(f[i - 1][s ^ sub], tot))
+                    sub = (sub - 1) & s
+        return f[k][(1 << n) - 1]
+```
+
+[1723. 完成所有工作的最短时间 - 力扣（LeetCode）](https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/description/)
+
+此题是上一题的数据增强版，优化方法：预处理所有子集的和 + 一维滚动状压dp。复杂度：$O(3^n+ n\cdot 2^n)$
+
+```python
+    def minimumTimeRequired(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [inf] * (1 << n) 
+        f[0] = 0
+        sum_ = defaultdict(int)
+        for i, x in enumerate(nums):
+            for s in range(1 << i):
+                sum_[(1 << i) | s] = sum_[s] + x
+
+        for _ in range(1, k + 1):
+            for s in range((1 << n) - 1, 0, -1):
+                sub = s
+                while sub:
+                    tot = sum_[sub]
+                    if f[s ^ sub] > tot: tot = f[s ^ sub]
+                    if f[s] > tot: f[s] = tot
+                    sub = (sub - 1) & s
+        return f[(1 << n) - 1]
+```
+
+**划分集合每个和不超过 $k$ 的最少划分数**
+
+[1986. 完成任务的最少工作时间段 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-work-sessions-to-finish-the-tasks/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+$f(s)$ 表示到达这个状态需要的最少划分段数。枚举每个子集 $sub$ ，$f(s)=\min \{f(s-sub)+1\},~\forall \sum sub\le k$。时间复杂度：$O(3^n+n\cdot 2^n)$
+
+```python
+    def minSessions(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [inf] * (1 << n)
+        f[0] = 0 
+        # 预处理所有子集的和
+        sum_ = defaultdict(int)
+        for i, x in enumerate(nums):
+            for sub in range(1 << i):
+                sum_[sub | (1 << i)] = sum_[sub] + x 
+        for s in range(1, 1 << n):
+            sub = s
+            while sub:
+                if sum_[sub] <= k: 
+                    f[s] = min(f[s], f[s ^ sub] + 1)
+                sub = (sub - 1) & s 
+        return f[(1 << n) - 1]
+```
+
+
+
 **集合是否能划分成 k 个相等子集**
 
 [698. 划分为k个相等的子集 - 力扣（LeetCode）](https://leetcode.cn/problems/partition-to-k-equal-sum-subsets/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
@@ -6075,8 +6254,6 @@ class Solution:
 类型1： $f[i][j]$ 当前考虑完前缀 $a[:i]$，且$a[:i]$ 恰好划分成 $j$ 个连续子数组所得到的最优解。 枚举最后一个子数组的左端点 $L$, 从 $f[L][j-1]$ 转移到 $f[i][j]$，并考虑 $a[L:i]$ 对最优解的影响。 $f(i,j)=\min(f(L,j-1))$
 
 类型2：$f(i,j, pre)$ 表示当前考虑到 $a[i]$， 且$a[:i]$ 的前缀中包含 $j$ 个连续子数组所得的最优解，其中 $pre$ 表示当前待划分的这段的状态。 考虑是否在 $i$ 处划分，并考虑前一段状态 $pre$ 是否允许划分。$f(i,j,pre)=\min \{~f(i+1,j,pre),~f(i+1,j+1,pre')~\}$ 
-
-
 
 [3117. 划分数组得到最小的值之和 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/description/)
 
@@ -6302,6 +6479,65 @@ def findOriginalArray(self, changed: List[int]) -> List[int]:
                 else: y = 4 * y
         return res
 ```
+
+### 贪心集合划分
+
+**划分集合和不超过 $k$ 的最少划分数：排序+回溯贪心**
+
+[1986. 完成任务的最少工作时间段 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-work-sessions-to-finish-the-tasks/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+一种做法是$O(3^n+n\cdot 2^n)$ 的状压dp，实际上可以给出 最坏情况下 $O(2^n)$做法。
+
+**首先按照从到大小排序。**对于$a[i]$，选择1：分配到新的组中；选择2：分配到已经存在的、不超载的组。最坏情况下不超过 $O(2^n)$，实际上由于剪枝操作，接近于线性复杂度。
+
+```python
+    def minSessions(self, nums: List[int], k: int) -> int:
+        nums.sort(reverse = True)
+        n = len(nums)
+        cnt = [0] * n 
+        res = inf
+        def dfs(i, cur):
+            nonlocal res 
+            if cur >= res: return 
+            if i == n: 
+                res = cur 
+                return 
+            x = nums[i]
+            for j in range(cur):
+                if cnt[j] + x <= k:
+                    cnt[j] += x
+                    dfs(i + 1, cur)
+                    cnt[j] -= x
+            cnt[cur] += x 
+            dfs(i + 1, cur + 1)
+            cnt[cur] -= x
+        dfs(0, 0)
+        return res
+            
+```
+
+**划分集合和不超过 $k$ 的最少划分数：集合长度不超过2**
+
+排序 + 双指针贪心。
+
+[881. 救生艇 - 力扣（LeetCode）](https://leetcode.cn/problems/boats-to-save-people/description/)
+
+```python
+    def numRescueBoats(self, nums: List[int], k: int) -> int:
+        nums.sort(reverse = True)
+        n = len(nums)
+        i, j = 0, n - 1
+        res = 0
+        while i <= j:
+            lft = k - nums[i]
+            i += 1
+            if lft >= nums[j]:
+                j -= 1
+            res += 1
+        return res
+```
+
+
 
 
 

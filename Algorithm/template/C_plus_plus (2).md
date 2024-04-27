@@ -1889,7 +1889,8 @@ $$
 
 ```c++
 // 扩展欧几里得算法
-tuple<int, int, int> exgcd(int a, int b) {
+tuple<ll, ll, ll> exgcd(ll a, ll b)
+{
     if (b == 0)
         return {1, 0, a};
     auto [x, y, d] = exgcd(b, a % b);
@@ -1897,17 +1898,19 @@ tuple<int, int, int> exgcd(int a, int b) {
 }
 
 // 求 ax + by = c 的特解
-pair<int, int> liEu(int a, int b, int c) {
+pair<ll, ll> liEu(ll a, ll b, ll c)
+{
     auto [x, y, d] = exgcd(a, b);
     if (c % d != 0)
-        return {0, 0}; 
+        return {0, 0};
     a /= d;
     c /= d;
     b /= d;
     return {(x * c % b + b) % b, (y * c % a + a) % a};
 }
 
-int inv(int a, int b) {
+ll inv(ll a, ll b)
+{
     // ax mod b = 1
     // ax + 1y = b
     auto [x, y] = liEu(a, b, 1);
