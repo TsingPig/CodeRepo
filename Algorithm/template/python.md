@@ -156,6 +156,10 @@ heapq.heappop(nums)			#弹出顶部
 
 **SortedList** 
 
+```python
+from sortedcontainers import SortedList
+```
+
 SortedList 相当于 multiset
 
 添加元素：$O(\log ~n)$；`s.add(val)`
@@ -163,6 +167,245 @@ SortedList 相当于 multiset
 添加一组可迭代元素：$O(k \log n)$；`s.upadte(*iterable*)`
 
 查找元素：$O(\log n)$；`s.count(val)`，返回元素的个数
+
+```python
+class SortedList:
+    def __init__(self, iterable=[], _load=200):
+        """Initialize sorted list instance."""
+        values = sorted(iterable)
+        self._len = _len = len(values)
+        self._load = _load
+        self._lists = _lists = [values[i:i + _load] for i in range(0, _len, _load)]
+        self._list_lens = [len(_list) for _list in _lists]
+        self._mins = [_list[0] for _list in _lists]
+        self._fen_tree = []
+        self._rebuild = True
+ 
+    def _fen_build(self):
+        """Build a fenwick tree instance."""
+        self._fen_tree[:] = self._list_lens
+        _fen_tree = self._fen_tree
+        for i in range(len(_fen_tree)):
+            if i | i + 1 < len(_fen_tree):
+                _fen_tree[i | i + 1] += _fen_tree[i]
+        self._rebuild = False
+ 
+    def _fen_update(self, index, value):
+        """Update `fen_tree[index] += value`."""
+        if not self._rebuild:
+            _fen_tree = self._fen_tree
+            while index < len(_fen_tree):
+                _fen_tree[index] += value
+                index |= index + 1
+ 
+    def _fen_query(self, end):
+        """Return `sum(_fen_tree[:end])`."""
+        if self._rebuild:
+            self._fen_build()
+ 
+        _fen_tree = self._fen_tree
+        x = 0
+        while end:
+            x += _fen_tree[end - 1]
+            end &= end - 1
+        return x
+ 
+    def _fen_findkth(self, k):
+        """Return a pair of (the largest `idx` such that `sum(_fen_tree[:idx]) <= k`, `k - sum(_fen_tree[:idx])`)."""
+        _list_lens = self._list_lens
+        if k < _list_lens[0]:
+            return 0, k
+        if k >= self._len - _list_lens[-1]:
+            return len(_list_lens) - 1, k + _list_lens[-1] - self._len
+        if self._rebuild:
+            self._fen_build()
+ 
+        _fen_tree = self._fen_tree
+        idx = -1
+        for d in reversed(range(len(_fen_tree).bit_length())):
+            right_idx = idx + (1 << d)
+            if right_idx < len(_fen_tree) and k >= _fen_tree[right_idx]:
+                idx = right_idx
+                k -= _fen_tree[idx]
+        return idx + 1, k
+ 
+    def _delete(self, pos, idx):
+        """Delete value at the given `(pos, idx)`."""
+        _lists = self._lists
+        _mins = self._mins
+        _list_lens = self._list_lens
+ 
+        self._len -= 1
+        self._fen_update(pos, -1)
+        del _lists[pos][idx]
+        _list_lens[pos] -= 1
+ 
+        if _list_lens[pos]:
+            _mins[pos] = _lists[pos][0]
+        else:
+            del _lists[pos]
+            del _list_lens[pos]
+            del _mins[pos]
+            self._rebuild = True
+ 
+    def _loc_left(self, value):
+        """Return an index pair that corresponds to the first position of `value` in the sorted list."""
+        if not self._len:
+            return 0, 0
+ 
+        _lists = self._lists
+        _mins = self._mins
+ 
+        lo, pos = -1, len(_lists) - 1
+        while lo + 1 < pos:
+            mi = (lo + pos) >> 1
+            if value <= _mins[mi]:
+                pos = mi
+            else:
+                lo = mi
+ 
+        if pos and value <= _lists[pos - 1][-1]:
+            pos -= 1
+ 
+        _list = _lists[pos]
+        lo, idx = -1, len(_list)
+        while lo + 1 < idx:
+            mi = (lo + idx) >> 1
+            if value <= _list[mi]:
+                idx = mi
+            else:
+                lo = mi
+ 
+        return pos, idx
+ 
+    def _loc_right(self, value):
+        """Return an index pair that corresponds to the last position of `value` in the sorted list."""
+        if not self._len:
+            return 0, 0
+ 
+        _lists = self._lists
+        _mins = self._mins
+ 
+        pos, hi = 0, len(_lists)
+        while pos + 1 < hi:
+            mi = (pos + hi) >> 1
+            if value < _mins[mi]:
+                hi = mi
+            else:
+                pos = mi
+ 
+        _list = _lists[pos]
+        lo, idx = -1, len(_list)
+        while lo + 1 < idx:
+            mi = (lo + idx) >> 1
+            if value < _list[mi]:
+                idx = mi
+            else:
+                lo = mi
+ 
+        return pos, idx
+ 
+    def add(self, value):
+        """Add `value` to sorted list."""
+        _load = self._load
+        _lists = self._lists
+        _mins = self._mins
+        _list_lens = self._list_lens
+ 
+        self._len += 1
+        if _lists:
+            pos, idx = self._loc_right(value)
+            self._fen_update(pos, 1)
+            _list = _lists[pos]
+            _list.insert(idx, value)
+            _list_lens[pos] += 1
+            _mins[pos] = _list[0]
+            if _load + _load < len(_list):
+                _lists.insert(pos + 1, _list[_load:])
+                _list_lens.insert(pos + 1, len(_list) - _load)
+                _mins.insert(pos + 1, _list[_load])
+                _list_lens[pos] = _load
+                del _list[_load:]
+                self._rebuild = True
+        else:
+            _lists.append([value])
+            _mins.append(value)
+            _list_lens.append(1)
+            self._rebuild = True
+ 
+    def discard(self, value):
+        """Remove `value` from sorted list if it is a member."""
+        _lists = self._lists
+        if _lists:
+            pos, idx = self._loc_right(value)
+            if idx and _lists[pos][idx - 1] == value:
+                self._delete(pos, idx - 1)
+ 
+    def remove(self, value):
+        """Remove `value` from sorted list; `value` must be a member."""
+        _len = self._len
+        self.discard(value)
+        if _len == self._len:
+            raise ValueError('{0!r} not in list'.format(value))
+ 
+    def pop(self, index=-1):
+        """Remove and return value at `index` in sorted list."""
+        pos, idx = self._fen_findkth(self._len + index if index < 0 else index)
+        value = self._lists[pos][idx]
+        self._delete(pos, idx)
+        return value
+ 
+    def bisect_left(self, value):
+        """Return the first index to insert `value` in the sorted list."""
+        pos, idx = self._loc_left(value)
+        return self._fen_query(pos) + idx
+ 
+    def bisect_right(self, value):
+        """Return the last index to insert `value` in the sorted list."""
+        pos, idx = self._loc_right(value)
+        return self._fen_query(pos) + idx
+ 
+    def count(self, value):
+        """Return number of occurrences of `value` in the sorted list."""
+        return self.bisect_right(value) - self.bisect_left(value)
+ 
+    def __len__(self):
+        """Return the size of the sorted list."""
+        return self._len
+ 
+    def __getitem__(self, index):
+        """Lookup value at `index` in sorted list."""
+        pos, idx = self._fen_findkth(self._len + index if index < 0 else index)
+        return self._lists[pos][idx]
+ 
+    def __delitem__(self, index):
+        """Remove value at `index` from sorted list."""
+        pos, idx = self._fen_findkth(self._len + index if index < 0 else index)
+        self._delete(pos, idx)
+ 
+    def __contains__(self, value):
+        """Return true if `value` is an element of the sorted list."""
+        _lists = self._lists
+        if _lists:
+            pos, idx = self._loc_left(value)
+            return idx < len(_lists[pos]) and _lists[pos][idx] == value
+        return False
+ 
+    def __iter__(self):
+        """Return an iterator over the sorted list."""
+        return (value for _list in self._lists for value in _list)
+ 
+    def __reversed__(self):
+        """Return a reverse iterator over the sorted list."""
+        return (value for _list in reversed(self._lists) for value in reversed(_list))
+ 
+    def __repr__(self):
+        """Return string representation of sorted list."""
+        return 'SortedList({0})'.format(list(self))
+  
+```
+
+
 
 # 字符串
 
@@ -670,6 +913,35 @@ class Solution:
         return res
 ```
 
+[996. 正方形数组的数目 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-squareful-arrays/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+相同值的排列视为同一个：在枚举 $i$ 位置放谁的时候加一个集合维护已经出现过的数字。
+
+```python
+    def numSquarefulPerms(self, nums: List[int]) -> int:
+        n = len(nums)
+        res = 0
+        def is_sqr(x):
+            return x == int(sqrt(x)) ** 2
+        def dfs(i, S, pre):
+            nonlocal res 
+            if i == n: 
+                res += 1
+                return 
+            # i 位置放谁
+            s = set()
+            for j in range(n):
+                x = nums[j]
+                if (S >> j) & 1 == 1 or x in s: continue 
+                s.add(x)
+                if pre == None or is_sqr(pre + x):
+                    dfs(i + 1, S | (1 << j), x)
+        dfs(0, 0, None)
+        return res 
+```
+
+
+
 [2850. 将石头分散到网格图的最少移动次数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/description/)
 
 暴力枚举可重复全排列匹配 + 位运算压缩。用石头个数大于1 和 没有石头的位置，构造两个列表，进行全排列暴力匹配。
@@ -896,7 +1168,7 @@ res = left + bisect.bisect_left(range(left, mx), True, key = check))
 
 [3048. 标记所有下标的最早秒数 I - 力扣（LeetCode）](https://leetcode.cn/problems/earliest-second-to-mark-indices-i/description/)
 
-求“至少”问题
+**求“至少”问题**
 
 ```python
 n, m = len(nums), len(changeIndices)
@@ -922,7 +1194,7 @@ res = left + bisect.bisect_left(range(left, m + 1), True, key = check)
 return -1 if res > m else res
 ```
 
-求“最多”问题
+**求“最多”问题**
 
 [1642. 可以到达的最远建筑 - 力扣（LeetCode）](https://leetcode.cn/problems/furthest-building-you-can-reach/)
 
@@ -936,6 +1208,45 @@ return -1 if res > m else res
             return not (ladders >= x or sum(t[ladders: ]) <= bricks)
         return bisect.bisect_left(range(n), True, key = check) - 1
 ```
+
+**中位数转化为第 $k$ 小问题**
+
+对于一个长度为 $n$ 的 由于数组，求中位数等价于求数组中第 $\frac{n-1}{2}$ 小的数问题（广义中位数）。
+
+[3134. 找出唯一性数组的中位数 - 力扣（LeetCode）](https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/description/)
+
+一共有 $(n + 1) \times  n / 2$ 个子数组，其对应的 $f=len (set(sub))$ 的值按照升序排列后，求其中位数。即转换为求数组中 第 $k$ 小问题。
+
+转换为二分查找：给定一个 $x$ ，能得出所有子数组中 $f$ 值小于等于 $x$ 的个数 $res$；可以发现 $x$ 越大，$res$ 越大；因此找到恰好让$res >k$ 的位置即可。这里需要使用到求**“不同元素个数小于等于 $k$ 的子数组个数”** 问题，这是一共广义上不定长滑动窗口问题。
+
+```python
+def get_set_subarrays_lower_k(nums, k):
+    l = res = 0
+    freq = Counter()
+    for r, x in enumerate(nums):
+        freq[x] += 1
+        while len(freq) > k:
+            freq[nums[l]] -= 1
+            if freq[nums[l]] == 0: freq.pop(nums[l])
+            l += 1
+        res += r - l + 1
+    return res 
+class Solution:
+    def medianOfUniquenessArray(self, nums: List[int]) -> int:
+        n = len(nums)
+        m = ((n + 1) * n // 2 - 1) // 2
+        lo, hi = 0, n // 2 + 10
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if get_set_subarrays_lower_k(nums, mid) > m:
+                hi = mid
+            else:
+                lo = mid + 1 
+        return lo
+
+```
+
+
 
 ## 朴素二分
 
@@ -1012,9 +1323,9 @@ class node():
         return self.need < other.need
 ```
 
-# 单调结构 / 滑动窗口
 
-## 滑动窗口
+
+# 滑动窗口
 
 [2009. 使数组连续的最少操作数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-operations-to-make-array-continuous/description/?envType=daily-question&envId=2024-04-08)
 
@@ -1032,7 +1343,93 @@ def minOperations(self, nums: List[int]) -> int:
     return n - res 
 ```
 
+## 不定长滑动窗口 / 双端队列
 
+**和大于等于 $k$ 的最短数组（最短长度）**
+
+[209. 长度最小的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-size-subarray-sum/description/)
+
+```python
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        l = s = 0
+        res = inf 
+        for r, x in enumerate(nums):
+            s += x 
+            while s >= target:
+                res = min(res, r - l + 1)
+                s, l = s - nums[l], l + 1
+        return res if res < inf else 0
+```
+
+**不包含重复元素的最长子数组（最长长度）**
+
+[3. 无重复字符的最长子串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/)
+
+使用 $d$ 字典维护元素出现的最新位置。当 $d[ch]$ 出现在 $[l,~r]$ 区间内表示需要更新 $l=d[ch]+1$。
+
+```python
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        d = defaultdict(lambda: -inf)
+        l = res = 0
+        for r, ch in enumerate(s):
+            if d[ch] >= l:
+                l = d.pop(ch) + 1
+            d[ch] = r 
+            res = max(res, r - l + 1)
+        return res 
+```
+
+
+
+
+
+**子数组合法方案数问题**
+
+先更新滑动窗口状态（广义上），检查、剔除不合法的元素（如窗口左边界右移、计数器减一等），累积上 $res$ 的方案数（等于窗口长度）。
+
+**乘积小于 $k$ 的子数组的个数（方案数）**
+
+[713. 乘积小于 K 的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/subarray-product-less-than-k/description/)
+
+```python
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        if k <= 1: return 0
+        res = 0
+        l, prod = 0, 1 
+        for r, x in enumerate(nums):
+            prod *= x 
+            while prod >= k:
+                prod, l = prod / nums[l], l + 1
+            res += r - l + 1
+        return res 
+```
+
+**不同值个数小于等于 $k$ 的子数组个数（方案数）**
+
+使用 $freq$ 计数器维护元素出现个数、左边界 $l$ 。当
+
+[3134. 找出唯一性数组的中位数 - 力扣（LeetCode）](https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/description/)
+
+```python
+# 计算不同值元素个数小于对于k 的子数组个数
+def get_set_subarrays_lower_k(nums, k):
+    l = res = 0
+    freq = Counter()
+    for r, x in enumerate(nums):
+        freq[x] += 1
+        while len(freq) > k:
+            freq[nums[l]] -= 1
+            if freq[nums[l]] == 0: freq.pop(nums[l])
+            l += 1
+        res += r - l + 1
+    return res 
+```
+
+
+
+
+
+# 单调结构 
 
 ## 单调栈
 
@@ -2550,7 +2947,7 @@ def mul(a, b):
     return res
 ```
 
-**矩阵快速幂**
+### 矩阵快速幂
 
 ```python
 moder = 10 ** 9 + 7
@@ -5037,6 +5434,26 @@ def bin(x):
     return res
 ```
 
+**十进制转 $-2$ 进制**
+
+[1017. 负二进制转换 - 力扣（LeetCode）](https://leetcode.cn/problems/convert-to-base-2/description/?envType=daily-question&envId=2024-04-28)
+
+![image-20240428234840741](C:\Users\TsingPig\AppData\Roaming\Typora\typora-user-images\image-20240428234840741.png)
+
+```python
+    def baseNeg2(self, n: int) -> str:
+        if n == 0: return '0'
+        res = []
+        while n:
+            if n & 1: x = 1
+            else: x = 0
+            n = (n - x) // -2
+            res.append(str(x))
+        return ''.join(res[::-1])
+```
+
+
+
 **最大异或**
 
 ```python
@@ -6087,9 +6504,51 @@ def solve():
     return f[(1 << n) - 1][n - 1]
 ```
 
-**约束全排列型状压**
+### 全排列型状压
 
-对于朴素的全排列问题，$f[i][s]$ 表示考虑完全排列 $p[0: i]$ ，已经选择集合状态为 $s$ 情况下的合法方案数。一般转移方程：$f[i][s]=\sum f[i-1][s-\{j\}],~ \forall ~valid(j)$，初始化 $f[0][0]=1$。时间复杂度为 $O(n^2 \times 2^n)$。
+**朴素 - 全排列状压**
+
+[1879. 两个数组最小的异或值之和 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-xor-sum-of-two-arrays/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+$O(n^2 \times 2^n )$ 做法：$f(i, s)$ 表示考虑完成 $nums[0: i]$ ，状态为 $s$ 之下，最小异或值之和。
+
+```python
+class Solution:
+    def minimumXORSum(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums2)
+        f = [[inf] * (1 << n) for _ in range(n + 1)]
+        for i in range(n + 1): f[i][0] = 0
+        for i in range(1, n + 1):
+            x = nums1[i - 1]
+            for s in range(1, 1 << n):
+                for j in range(n):
+                    if (s >> j) & 1 == 0: continue 
+                    f[i][s] = min(f[i][s], f[i - 1][s ^ (1 << j)] + (x ^ nums2[j]))
+        return f[n][(1 << n) - 1]
+```
+
+优化：省略前一维度，这是因为 $i$ 的信息隐含在 $s$ 所含1的个数之中。时间复杂度 $O(n\times 2^n)$
+
+```python
+class Solution:
+    def minimumXORSum(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums2)
+        f = [inf] * (1 << n) 
+        f[0] = 0
+        for s in range(1, 1 << n):
+            x = nums1[s.bit_count() - 1]
+            for j in range(n):
+                if (s >> j) & 1 == 0: continue 
+                f[s] = min(f[s], f[s ^ (1 << j)] + (x ^ nums2[j]))
+        return f[(1 << n) - 1]
+
+```
+
+
+
+**约束型 - 全排列状压**
+
+对于带有约束的全排列问题，$f[i][s]$ 表示考虑完全排列 $p[0: i]$ ，已经选择集合状态为 $s$ 情况下的合法方案数。一般转移方程：$f[i][s]=\sum f[i-1][s-\{j\}],~ \forall ~valid(j)$，初始化 $f[0][0]=1$。时间复杂度为 $O(n^2 \times 2^n)$。
 
 优化思路：由于 $s$ 中包含了 $i$ 的信息，即  $bin(s).count('1')$  ，所以第一维度可以省略。时间复杂度 $O(n\times 2^n)$
 
@@ -6129,6 +6588,42 @@ class Solution:
                     f[s] += f[s ^ (1 << j)]
         return f[m]
 ```
+
+
+
+[2741. 特别的排列 - 力扣（LeetCode）](https://leetcode.cn/problems/special-permutations/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+$f(s,i)$ 表示当前选择的状态为 $s$ ，最后一个位置选择的元素为 $nums[i]$ 。对所有在 $s$ 中的 $i$ ，考虑其所有可能的前一个位置的值 $nums[j]$。$f(s,i)=\sum f(s\oplus j,~j),~\forall \text{valid}(j)$。复杂度：$O(n^2\cdot 2^n)$。
+
+```python
+moder = 10 ** 9 + 7 
+class Solution:
+    def specialPerm(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * n for _ in range(1 << n)]
+        f[0][0] = 1
+        for s in range(1 << n):
+            for i in range(n):
+                if (s >> i) & 1 == 0: continue 
+                if (s ^ (1 << i)) == 0:
+                    f[s][i] = 1
+                    continue 
+                for j in range(n):
+                    if i == j or (s >> j) & 1 == 0: continue 
+                    x, y = nums[i], nums[j]
+                    if x % y == 0 or y % x == 0:
+                        f[s][i] = (f[s][i] + f[s ^ (1 << i)][j]) % moder   
+        res = 0
+        for i in range(n):
+            res = (res + f[s][i]) % moder  
+        return res 
+```
+
+
+
+
+
+
 
 ### 划分成 $k$ 个子集的问题
 
@@ -6243,6 +6738,90 @@ class Solution:
         return f[m] == 0
 ```
 
+### 多重状压：记忆化搜索
+
+当某些字符、数字可以使用 若干次时，传统的状压不方便表示使用状况。因此可以转用 $dfs$ 的记忆化搜索方式，配合 $Counter$ 计数器实现状压的代替品。
+
+[691. 贴纸拼词 - 力扣（LeetCode）](https://leetcode.cn/problems/stickers-to-spell-word/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+其中剪枝部分，要求 $s[0]$ 一定在 $word$中出现。这是因为如果当前 $word$ 中存在能消除 $s[0]$ 的，那么最终解一定至少包含这些部分。否则，没有能消除 $s[0]$ 的，表示当前 $dfs(s)$ 的结果不合法，返回 $inf$。这样实际上约束了每次一定转移到最优的方案。
+
+例如对于 $s=the$, 首先寻找所有包含 $t$ 的方案并向其转移。时间复杂度接近 $O(n\cdot m)$ ，$n$  为原始字符串大小，$m$  为可以考虑的字符串数量。
+
+```python
+    def minStickers(self, words: List[str], target: str) -> int:
+        words = [Counter(word) for word in words]
+        # dfs(s) 表示得到s 的最少数量
+        @lru_cache(None)
+        def dfs(s):
+            if s == '': return 0
+            cs = Counter(s)
+            res = inf 
+            for word in words:
+                # 如果word压根无法消除s[0] 可以直接跳过
+                # 因为再怎么使用也无法完全消除s
+                # 应该首先考虑将s[0] 能消除的方案
+                if s[0] not in word: continue 
+                ns = s
+                for k, v in word.items():
+                    ns = ns.replace(k, '', v)
+                res = min(res, dfs(ns) + 1)
+            return res 
+        res = dfs(target)
+        return res if res < inf else -1
+```
+
+### $k$ 进制状压
+
+ **$k$ 种颜色染色 $n \times m$ 网格（不允许出现空着的格子）问题**
+
+[1931. 用三种不同颜色为网格涂色 - 力扣（LeetCode）](https://leetcode.cn/problems/painting-a-grid-with-three-different-colors/description/?envType=featured-list&envId=ptud3zoQ?envType=featured-list&envId=ptud3zoQ)
+
+$k$ 进制预处理 + 合法状态预处理 + 枚举状压
+
+每一行使用长度为 $m$ 的 $k$ 进制的串来表示。通过预处理的方式记录在 $color$ 中，键为 $k$ 进制的串对应的十进制数，值为对应的 $k$ 进制串的列表。相邻两行的约束，通过枚举来预处理。转移方程：$f(i,s)= \sum f(i-1, ~e[s])$
+
+时间复杂度：$O(k^{2m}\times n)$
+
+```python
+moder = 10 ** 9 + 7
+class Solution:
+    def colorTheGrid(self, m: int, n: int) -> int:
+        # 三进制表示每一行的颜色
+        colors = {}
+        for b in range(3 ** m):
+            color = []
+            x = b
+            while x:
+                color.append(x % 3)
+                x //= 3
+            color.extend([0] * (m - len(color)))
+            if any(color[i] == color[i + 1] for i in range(len(color) - 1)):
+                continue 
+            colors[b] = color[::-1]
+        
+        e = defaultdict(list)
+        # 预处理每一种状态可以邻接的状态
+        for i, u in colors.items():
+            for j, v in colors.items():
+                flag = True 
+                for b in range(m):
+                    if u[b] == v[b]:
+                        flag = False 
+                        break 
+                if flag: e[i].append(j)
+                    
+        # f[i][s] 表示i行为s的方案数
+        f = [[0] * (3 ** m) for _ in range(n)]
+        for b in colors.keys():
+            f[0][b] = 1
+        for i in range(1, n):
+            for s in colors.keys():
+                for ps in e[s]:
+                    f[i][s] = (f[i - 1][ps] + f[i][s]) % moder 
+        return (sum(f[n - 1])) % moder 
+```
+
 
 
 ## 划分dp
@@ -6304,6 +6883,31 @@ $f(i, j, pre\_and):$ 表示当前考虑到$nums[i]$，且前缀中包含 $j$ 段
                 res.insert(k, p)
         return res
 ```
+
+[857. 雇佣 K 名工人的最低成本 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/description/?envType=daily-question&envId=2024-05-02)
+
+排序贪心 + 堆维护 $k$ 个最小和。对任意一个员工子集，按照比例支付费用、且任意一个员工不少于阈值，等价于支付费用 = $\max(\frac{w_i}{q_i}) \times \sum_{i=1}^{k}q_i$。按照$\frac{w_i}{q_i}$ 从大到小排序，维护对应的 $k$ 个最小$q$ 的和。
+
+```python
+    def mincostToHireWorkers(self, quality: List[int], wage: List[int], k: int) -> float:
+        n = len(quality)
+        nums = sorted([(w / q, q) for w, q in zip(wage, quality)])
+        hq, s = [], 0
+        for i in range(k):
+            heappush(hq, -nums[i][1])
+            s += nums[i][1]
+        res = nums[k - 1][0] * s 
+        for i in range(k, n):
+            mxw = -heappop(hq)
+            s -= mxw 
+            mxw = min(mxw, nums[i][1])
+            heappush(hq, -mxw)
+            s += mxw 
+            res = min(res, nums[i][0] * s)
+        return res
+```
+
+
 
 ## 反悔贪心
 
@@ -6480,7 +7084,7 @@ def findOriginalArray(self, changed: List[int]) -> List[int]:
         return res
 ```
 
-### 贪心集合划分
+## 贪心集合划分
 
 **划分集合和不超过 $k$ 的最少划分数：排序+回溯贪心**
 
@@ -6757,6 +7361,8 @@ $ f(i, j) =\min \{f(i - 1, j - 1) + d[i]/s,~ ceil(f(i - 1, j) + d[i]/s)\}$
             if f[n - 2][k] + d[-1] <= hoursBefore * s:
                 return k
 ```
+
+## 双指针
 
 
 
