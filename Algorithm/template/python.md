@@ -152,7 +152,7 @@ heapq.heappush(nums, val)	#插入
 heapq.heappop(nums)			#弹出顶部
 ```
 
-### 8. 有序列表 / 有序集合
+## 8. 有序列表 / 有序集合
 
 **SortedList** 
 
@@ -167,6 +167,10 @@ SortedList 相当于 multiset
 添加一组可迭代元素：$O(k \log n)$；`s.upadte(*iterable*)`
 
 查找元素：$O(\log n)$；`s.count(val)`，返回元素的个数
+
+删除元素：$O(\log n)$； $s.remove(val)$
+
+删除指定下标元素：$s.pop(index =- 1)$
 
 ```python
 class SortedList:
@@ -1097,6 +1101,52 @@ def minimumMoves(self, grid: List[List[int]]) -> int:
         return dfs(0, 0)
 ```
 
+# 排序
+
+## 计数排序
+
+**带修求第 $k$ 小 / 大的数**
+
+使用哈希表维护每个数值出现次数，适用于数值的值域较小的情况。
+
+例如：当 $nums[i] \in [a,~b]$，可以在 $O(b-a)$ 的时间复杂度内，找出第 $k$ 大的数（有时表现会比 SortedList更好）。
+
+```python
+def get_min_k(cnt, k):
+    cur = 0
+    for x in range(a, b):
+        if cnt[x] == 0: continue 
+        cur += cnt[x]
+        if cur >= k: return x
+    return b
+```
+
+
+
+[2653. 滑动子数组的美丽值 - 力扣（LeetCode）](https://leetcode.cn/problems/sliding-subarray-beauty/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+定长滑动窗口 + 哈希维护计数 + 计数排序。
+
+```python
+     def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        n = len(nums)
+        cnt = Counter(nums[:k])
+        def get_min_k():
+            cur = 0
+            for y in range(-50, 0):
+                cur += cnt[y]
+                if cur >= x: return y
+            return 0
+        res = [get_min_k()]
+        for r in range(k, n):
+            nl, nr = nums[r - k], nums[r]
+            cnt[nr] += 1
+            cnt[nl] -= 1
+            if cnt[nl] == 0: cnt.pop(nl)
+            res.append(get_min_k())
+        return res 
+```
+
 
 
 # 离散化
@@ -1327,6 +1377,88 @@ class node():
 
 # 滑动窗口
 
+## 定长滑动窗口
+
+**维护定长滑动窗口和**
+
+[1343. 大小为 K 且平均值大于等于阈值的子数组数目 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+```python
+    def numOfSubarrays(self, nums: List[int], k: int, t: int) -> int:
+        n = len(nums)
+        s = sum(nums[ :k])
+        res = 1 if s / k >= t else 0
+        for r in range(k, n):
+            s = s + nums[r] - nums[r - k]
+            if s / k >= t: res += 1
+        return res 
+```
+
+
+
+**维护定长滑动窗口 + 字典计数**
+
+[567. 字符串的排列 - 力扣（LeetCode）](https://leetcode.cn/problems/permutation-in-string/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+判断字符串 $s1$ 中是否包含 $s2$ 的一个排列：转化为判断是否存在两个字典计数情况相等。
+
+```python
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        k, n = len(s1), len(s2)
+        target = Counter(s1)
+        cur = Counter(s2[ :k])
+        if target == cur: return True 
+        for r in range(k, n):
+            rch, lch = s2[r], s2[r - k]
+            cur[rch] += 1
+            cur[lch] -= 1
+            if target == cur: return True
+        return False
+```
+
+[438. 找到字符串中所有字母异位词 - 力扣（LeetCode）](https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+找出字符串 $s1$ 中所有 $s2$ 的排列的下标。
+
+```python
+def findAnagrams(self, s: str, p: str) -> List[int]:
+        res = []
+        k, n = len(p), len(s)
+        target = Counter(p)
+        cur = Counter(s[ :k])
+        if cur == target: res.append(0)
+
+        for r in range(k, n):
+            lch, rch = s[r - k], s[r]
+            cur[rch] += 1
+            cur[lch] -= 1
+            if cur == target:
+                res.append(r - k + 1)
+        return res 
+```
+
+[2841. 几乎唯一子数组的最大和 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-sum-of-almost-unique-subarray/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+通过 $Counter()$ 维护滑动窗口中，不同元素的个数。（即 $len(set(win))$
+
+```python
+def maxSum(self, nums: List[int], m: int, k: int) -> int:
+        s = sum(nums[ :k]) 
+        cnt = Counter(nums[ :k])
+        res = s if len(cnt) >= m else 0
+        n = len(nums)
+        for r in range(k, n):
+            nl, nr = nums[r - k], nums[r]
+            s = s + nr - nl 
+            cnt[nr] += 1
+            cnt[nl] -= 1
+            if cnt[nl] == 0: cnt.pop(nl)
+            if len(cnt) >= m and s > res: res = s 
+        return res 
+```
+
+
+
 [2009. 使数组连续的最少操作数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-operations-to-make-array-continuous/description/?envType=daily-question&envId=2024-04-08)
 
 定长滑动窗口 + 正难则反：需要操作最少次数 = n - 能够不操作的最多的数字。这些数字显然是不重复的，所以首先去重。对于去重完的元素，每一个左边界$ nums[left]$, 在去重数组中 ，$[nums[left] ,~ nums[left] + n -  1]$   区间在数组中出现的次数即为当前可以保留的数字的个数。
@@ -1343,6 +1475,25 @@ def minOperations(self, nums: List[int]) -> int:
     return n - res 
 ```
 
+[1423. 可获得的最大点数 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-points-you-can-obtain-from-cards/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+定长滑动窗口 + 正难则反：要求前 + 后 的个数为定值 $k$ 个，转换为中间为 $n-k$ 个。
+
+```python
+    def maxScore(self, nums: List[int], k: int) -> int:
+        n, tot = len(nums), sum(nums)
+        if n == k: return tot 
+        k = n - k 
+        s = sum(nums[:k])
+        res = s 
+        for r in range(k, n):
+            s = s + nums[r] - nums[r - k]
+            res = min(res, s)
+        return tot - res 
+```
+
+
+
 ## 不定长滑动窗口 / 双端队列
 
 **和大于等于 $k$ 的最短数组（最短长度）**
@@ -1350,16 +1501,40 @@ def minOperations(self, nums: List[int]) -> int:
 [209. 长度最小的子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-size-subarray-sum/description/)
 
 ```python
-    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+    def minSubArrayLen(self, k: int, nums: List[int]) -> int:
         l = s = 0
         res = inf 
         for r, x in enumerate(nums):
             s += x 
-            while s >= target:
+            while s >= k:
                 res = min(res, r - l + 1)
                 s, l = s - nums[l], l + 1
         return res if res < inf else 0
 ```
+
+
+
+[2904. 最短且字典序最小的美丽子字符串 - 力扣（LeetCode）](https://leetcode.cn/problems/shortest-and-lexicographically-smallest-beautiful-string/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
+
+求包含恰好 $k$ 个 1的所有子串中，最短、字典序最小的：**转换为 和大于等于 $k$ 的最短数组问题。**
+
+```python
+    def shortestBeautifulSubstring(self, s1: str, k: int) -> str:
+        if s1.count('1') < k: return ''
+        n = len(s1)
+        l = s = 0
+        resl, resr = 0, n
+        for r, ch in enumerate(s1):
+            s += int(ch)
+            while s >= k:
+                width = r - l + 1
+                if width < resr - resl + 1 or (width == resr - resl + 1 and s1[l: r + 1] < s1[resl: resr + 1]):
+                    resl, resr = l, r 
+                s, l = s - int(s1[l]), l + 1
+        return s1[resl: resr + 1]
+```
+
+
 
 **不包含重复元素的最长子数组（最长长度）**
 
@@ -2817,10 +2992,10 @@ $\mathrm{A}_n^m=n\mathrm{A}_{n-1}^{m-1}$
 递推公式：可理解为“某特定位置”先安排，再安排其余位置。
 
 ```python
+@lru_cache(None)
 def A(n, m):
-    if m == 0:
-        return 1
-    return n * A(n-1, m-1)
+    if m == 0: return 1
+    return n * A(n - 1, m - 1)
 ```
 
 
@@ -2836,13 +3011,35 @@ $C_m^n = C_m^{m-n}$
 $C_m^n = C_{m -1}^n + C_{m-1}^{n-1}$
 
 ```python
+@lru_cache(None)
 def C(n, m):
-    if m == 0 or n == m:
-        return 1
-    return C(n-1, m-1) + C(n-1, m)
+    if m == 0 or n == m: return 1
+    return C(n - 1, m - 1) + C(n - 1, m)
 ```
 
 $C_n^0+C_n^1 + \cdots+ C_n^n = 2 ^ n$
+
+
+
+[62. 不同路径 - 力扣（LeetCode）](https://leetcode.cn/problems/unique-paths/description/)
+
+路径方案数 $= C(n+m-2,m-1)$
+
+```python
+@lru_cache(None)
+def C(n, m):
+    if m == 0 or n == m: return 1
+    return C(n - 1, m - 1) + C(n - 1, m)
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        m, n = m - 1, n - 1
+        return C(m + n, m)
+```
+
+
+
+
 
 ### 二项式定理
 
@@ -5971,6 +6168,62 @@ def getEditDist(s1, s2):
 
 
 
+## 网格图dp
+
+**最大 / 最小单趟路径和**
+
+[LCR 166. 珠宝的最高价值 - 力扣（LeetCode）](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/description/)
+
+求从左上角 $(0,0)$ 到右下角 $(m-1,~n-1)$ 能够获得的最大价值和。转移方程：$f(i,j)=g(i,j)+\max(f(i-1,j),~f(i,j-1))$。
+
+```python
+    def jewelleryValue(self, grid: List[List[int]]) -> int:
+        # f(i, j) 表示到达 (i, j) 网格的最高价值
+        m, n = len(grid), len(grid[0])
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                x = grid[i - 1][j - 1]
+                f[i][j] = x + max(f[i - 1][j], f[i][j - 1])
+        return f[m][n]
+```
+
+[64. 最小路径和 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-path-sum/)
+
+巧妙设计初值：$f(1,0)=f(0,1)=0,其余为 inf$
+
+```python
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[inf] * (n + 1) for _ in range(m + 1)]
+        f[0][1] = f[1][0] = 0
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                x = grid[i - 1][j - 1]
+                f[i][j] = x + min(f[i - 1][j], f[i][j - 1])
+        return f[m][n]
+```
+
+
+
+**求路径方案数**
+
+[63. 不同路径 II - 力扣（LeetCode）](https://leetcode.cn/problems/unique-paths-ii/description/)
+
+巧妙设计初值，避免特殊边界讨论。
+
+```python
+    def uniquePathsWithObstacles(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[0] * (n + 1) for _ in range(m + 1)]
+        f[0][1] = 1
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                x = grid[i - 1][j - 1]
+                f[i][j] = 0 if x else f[i - 1][j] + f[i][j - 1]
+        return f[m][n]
+```
+
 
 
 ## 区间dp
@@ -6826,7 +7079,7 @@ class Solution:
 
 ## 划分dp
 
-**约束划分个数**
+### 约束划分个数
 
 将数组分成 (恰好/至多) $k$ 个连续子数组，计算与这些子数组有关的最优值。
 
@@ -6859,6 +7112,42 @@ $f(i, j, pre\_and):$ 表示当前考虑到$nums[i]$，且前缀中包含 $j$ 段
 ```
 
 时间复杂度：$O(mn\log U)$，由于 $ pre\_and$ 表示当前待划分这段的按位与。记 $\log U$ 表示最大数对应的二进制位数。对于一个确定的 $i$，向前 AND 每次不变或者减少比特1的个数。所以不同的$pre\_and$ 数不超过 $logU$。总共有 $mn \log U$ 个状态，每个状态是 $O(1)$ 。
+
+### 不相交区间
+
+[1235. 规划兼职工作 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/?envType=featured-list&envId=pjhpmdeh?envType=featured-list&envId=pjhpmdeh)
+
+如果报酬等于区间长度（时间差），是一个贪心 + 排序问题：按照结束时间排序，结束早的优先考虑。本题的报酬与区间长度无关，因此需要 $dp$ 。
+
+原始问题是考虑 $ 0 \sim \max (endTime)$ 时间段内，能够获得的最大报酬。考虑子问题 $0 \sim endTime[i]$ 时间段内的最大报酬。
+
+$f[x]$  表示 $ 0 \sim endTime[x] $ 时间段内的最多报酬，一种转移是 $f[x-1]$，表示当前区间 $x$ 不考虑；另一种转移，考虑结束时间  $ \le startTime[x]$ 的最后一个位置 $idx$ ，有 $endTime[idx]\le startTime[x]$（可以发现 $f[x]$ 关于 $x$ 递增，最后一个位置一定是最大值），不妨同样按照结束时间从小到大排序，因此可以使用二分查找。
+
+实现时，在数组前面增加一个 $(0,0,0)$ 用于统一查找。
+
+时间复杂度：$O(n \log n)$ 
+
+```python
+    def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
+        # f[x] 表示 0 ~ endTime[x] 时间段内的最多报酬
+        n = len(startTime)
+        nums = [(0, 0, 0)] + sorted([(s, e, p) for s, e, p in zip(startTime, endTime, profit)], key = lambda x: x[1])
+        f = [0] * (n + 1)
+        def bisect_left(lo, hi, k):
+            while lo < hi:
+                mid = (lo + hi) >> 1
+                if nums[mid][1] > k:
+                    hi = mid 
+                else:
+                    lo = mid + 1
+            return lo - 1
+        for i in range(1, n + 1):
+            idx = bisect_left(0, i, nums[i][0])
+            f[i] = max(f[i - 1], f[idx] + nums[i][2])
+        return f[n]
+```
+
+
 
 # 贪心
 
