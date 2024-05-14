@@ -1,13 +1,45 @@
-#include<bits/stdc++.h>
+#include <iostream>
 using namespace std;
-int g[10][10];
-int main(){
-    memset(g,1,sizeof(g));
-    for(int i=0;i<10;i++){
-        for(int j=0;j<10;j++){
-            cout<<g[i][j] << " ";
-        }cout << endl;
-        cout<<endl;
+
+class A
+{
+    int *p;
+
+public:
+    A(int x = 0)
+    {
+        p = new int;
+        *p = x;
     }
+    A(A &obj)
+    {
+        p = new int;
+        *p = (*obj.p) + 1;
+    }
+    A operator+(int x)
+    {
+        A ans;
+        *ans.p = *p + x;
+        cout << *ans.p << endl;
+        return ans;
+    }
+    A& operator=(const A &obj)
+    {
+        if (this == &obj)
+            return *this;
+        *p = *obj.p + 2;
+        cout << *p << endl;
+        return *this;
+    }
+    virtual ~A()
+    {
+        cout << -(*p) << endl;
+        delete p;
+    }
+};
+int main()
+{
+    A a1(1), a2;
+    a2 = a1 + 3;
     return 0;
 }

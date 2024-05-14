@@ -637,7 +637,7 @@ def solve():
 
 
 
-# 回溯 / 递归 / dfs
+# 回溯 / 递归 / dfs / 分治
 
 ## 子集型回溯
 
@@ -1101,7 +1101,74 @@ def minimumMoves(self, grid: List[List[int]]) -> int:
         return dfs(0, 0)
 ```
 
+## 分治
+
+[395. 至少有 K 个重复字符的最长子串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/description/)
+
+$f(s, k)$ 表示字符串s 中所有字符不少于 $k$个的子串中的最大长度。考察所有在当前 $s$ 串中出现次数少于 $k$ 的字符（记作分割字符），最终最大串肯定不包含之。因此，每一层递归，以找到的第一个分割字符作为隔板，将 $s$ 分成 若干个小的子串，取其中最大值即可。
+
+时间复杂度：$O(26N)$，这是由于每一层递归必然完全删除一个小写字母，且每一层需要遍历整个字符串，时间复杂度是$O(N)$；所以总复杂度是 $O(26N)$。
+
+```python
+def f(s, k):
+    if len(s) < k: return 0
+    cnt = Counter(s)
+    for ch, freq in cnt.items():
+        if freq < k:
+            return max(f(sub, k) for sub in s.split(ch)) 
+    return len(s)
+
+class Solution(object):
+    def longestSubstring(self, s, k):
+        return f(s, k)
+```
+
+
+
+[1763. 最长的美好子字符串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-nice-substring/description/)
+
+$f(s)$ 表示字符串 $s$ 中所有字符出现大小写的最长子串。以 $s1$ 中只出现大写 / 小写的字母作为分割点，将问题分治，返回最大长度中出现最早的字符串。时间复杂度：$O(26 \times n)$，因为每一层需要 $O(n)$ 的复杂度，每一层递归至少减少一个字符。
+
+```python
+
+from string import ascii_lowercase
+def f(s1):
+    # s 中所有字符都包含大小写的最大长度
+    cnt = Counter(s1)
+    for l in ascii_lowercase:
+        u = l.upper()
+        if (cnt[l] > 0) ^ (cnt[u] > 0):
+            ans = [f(sub) for sub in s1.split(u if cnt[u] else l)][::-1]
+            mxl, mxs = 0, None 
+            for l, s in ans:
+                if l >= mxl:
+                    mxl, mxs = l, s 
+            return mxl, mxs
+    return len(s1), s1
+
+class Solution:
+    def longestNiceSubstring(self, s: str) -> str:
+        return f(s)[1]
+```
+
+
+
 # 排序
+
+**次最值问题**
+
+[1289. 下降路径最小和 II - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-falling-path-sum-ii/description/?envType=featured-list&envId=DuoJVDZI?envType=featured-list&envId=DuoJVDZI)
+
+其中需要维护上一层的最小值、次小值及其对应的坐标。
+
+```python
+	mn = mn_2 = (inf, -1)
+	if y < mn[0]: mn_2, mn = mn, (y, j)
+    elif y == mn[0]: mn_2 = (y, j)
+    elif y < mn_2[0]: mn_2 = (y, j)       
+```
+
+
 
 ## 计数排序
 
@@ -1125,7 +1192,7 @@ def get_min_k(cnt, k):
 
 [2653. 滑动子数组的美丽值 - 力扣（LeetCode）](https://leetcode.cn/problems/sliding-subarray-beauty/description/?envType=featured-list&envId=DMKTNBLj?envType=featured-list&envId=DMKTNBLj)
 
-定长滑动窗口 + 哈希维护计数 + 计数排序。
+定长滑动窗口 + 哈希维护计数 + 计数排序。时间复杂度：$O(nU),U$ 是值域极差。
 
 ```python
      def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
@@ -1394,6 +1461,24 @@ class node():
         return res 
 ```
 
+[2134. 最少交换次数来组合所有的 1 II - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-swaps-to-group-all-1s-together-ii/description/)
+
+将环形数组中所有1聚集到一起的最小交换位置次数，即长度为 $k$ (字符串中1的个数)的滑动窗口中，0个数最少的位置处。
+
+```python
+    def minSwaps(self, nums: List[int]) -> int:
+        k = nums.count(1)
+        if k == 0: return 0
+        nums = nums + nums 
+        n = len(nums)
+        s = sum(nums[:k])
+        res = k - s 
+        for r in range(k, n):
+            s = s + nums[r] - nums[r - k]
+            res = min(res, k - s)
+        return res 
+```
+
 
 
 **维护定长滑动窗口 + 字典计数**
@@ -1494,7 +1579,7 @@ def minOperations(self, nums: List[int]) -> int:
 
 
 
-## 不定长滑动窗口 / 双端队列
+## 不定长滑动窗口
 
 **和大于等于 $k$ 的最短数组（最短长度）**
 
@@ -1536,11 +1621,57 @@ def minOperations(self, nums: List[int]) -> int:
 
 
 
-**不包含重复元素的最长子数组（最长长度）**
+**和小于等于 $k$ 的最长子数组（最大长度）**
+
+[1493. 删掉一个元素以后全为 1 的最长子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/description/)
+
+$s$ 统计0的个数，转换为 $s \le 1 $ 的最长子数组长度。
+
+```python
+    def longestSubarray(self, nums: List[int]) -> int:
+        res = 0
+        l = s = 0
+        # s <= 1 的最长子数组
+        for r, x in enumerate(nums):
+            s += 1 if x == 0 else 0
+            while s > 1:
+                s -= 1 if nums[l] == 0 else 0
+                l += 1
+            if s <= 1:
+                res = max(res, r - l)
+        return res
+```
+
+[2730. 找到最长的半重复子字符串 - 力扣（LeetCode）](https://leetcode.cn/problems/find-the-longest-semi-repetitive-substring/description/)
+
+预处理相邻字符相等情况，转换为 $s \le 1$ 的最长字串。
+
+```python
+    def longestSemiRepetitiveSubstring(self, s1: str) -> int:
+        l = s = 0
+        res = 0
+        nums = [1 if s1[i] == s1[i - 1] else 0 for i in range(1, len(s1))]
+        # s <= 1 的最长子串
+        for r, x in enumerate(nums):
+            s += x 
+            while s > 1:
+                s -= nums[l]
+                l += 1
+            res = max(res, r - l + 1)
+        return res + 1
+```
+
+
+
+
+
+**不包含重复元素的子数组（最长长度 / 最大和）**
+
+**包含重复元素的条件是 $len(win) < r - l+1$。**
 
 [3. 无重复字符的最长子串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/)
 
-使用 $d$ 字典维护元素出现的最新位置。当 $d[ch]$ 出现在 $[l,~r]$ 区间内表示需要更新 $l=d[ch]+1$。
+方法一：使用 $d$ 字典维护元素出现的最新位置。当 $d[ch]$ 出现在 $[l,~r]$ 区间内表示需要更新 $l=d[ch]+1$。
 
 ```python
     def lengthOfLongestSubstring(self, s: str) -> int:
@@ -1554,7 +1685,70 @@ def minOperations(self, nums: List[int]) -> int:
         return res 
 ```
 
+方法二：
 
+不包含重复元素的条件是 $len(win) = r - l+1$。
+
+```python
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        res = 0
+        l = 0
+        cnt = Counter()
+        for r, ch in enumerate(s):
+            cnt[ch] += 1
+            while len(cnt) < r - l + 1:
+                lch = s[l]
+                cnt[lch] -= 1
+                if cnt[lch] == 0: cnt.pop(lch)
+                l += 1
+            res = max(res, r - l + 1)
+        return res 
+```
+
+
+
+[1695. 删除子数组的最大得分 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-erasure-value/description/)
+
+不包含重复元素的子数组的最大和。不包含重复元素的条件是 $len(win) = r - l+1$。
+
+```python
+    def maximumUniqueSubarray(self, nums: List[int]) -> int:
+        res = 0
+        l = s = 0
+        cnt = Counter()
+        for r, x in enumerate(nums):
+            cnt[x] += 1
+            s += x
+            while len(cnt) < r - l + 1:
+                nl = nums[l]
+                s -= nl 
+                cnt[nl] -= 1
+                if cnt[nl] == 0: cnt.pop(nl)
+                l += 1
+            res = max(res, s)
+        return res 
+```
+
+[2401. 最长优雅子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-nice-subarray/description/)
+
+不定长滑窗 + 位运算。
+
+子数组中所有数两两 $AND$都是 $0$，要求子数组所有比特位上是 $1$ 的个数最多是 $1$ 。用 $ors$ 维护滑窗中的 $OR$ 值， $r$ 能加入子数组需要满足 $r~ \& ~ors = 0$。（因为 $a | (b ~\&~ c) = (a \&~b) | (a \&~ c)=0   $，即与子数组中所有数相与都是0）。而从子数组中删去 $left$ 只需要做异或操作，因为已经确保了 $ors$ 比特位上面每个 $1$ 都是独属的。
+
+```python
+    def longestNiceSubarray(self, nums: List[int]) -> int:
+        # nums[i] <= 1e9，30个二进制bit位上 
+        ors = 0
+        l = 0 
+        res = 0 
+        for r, x in enumerate(nums):
+            while x & ors > 0:
+                ors ^= nums[l]
+                l += 1
+            ors |= x
+            res = max(res, r - l + 1)
+        return res 
+```
 
 
 
@@ -1601,6 +1795,192 @@ def get_set_subarrays_lower_k(nums, k):
 ```
 
 
+
+
+
+
+
+## 不定长滑窗 + 哈希表计数
+
+不定长滑窗哈希表：所有 $freq[x] \le k$ 的最长子数组，由于单次判断的时间复杂度是 $O(n)$，总复杂度是 $O(n^2) $。
+通过 $cnt$ 维护 $freq[x] > k$ 的个数，**在边界处增减1**。转换为 $cnt = 0$ 最长子数组 ，复杂度 $O(n) $
+
+[2958. 最多 K 个重复元素的最长子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/description/)
+
+```python
+    def maxSubarrayLength(self, nums: List[int], k: int) -> int:
+        # 所有freq[x] <= k 的最长子数组
+        # 转换为 cnt == 0 最长子数组 （cnt 为 freq[x] > k 的个数）
+        freq = Counter()
+        l = res = cnt = 0
+        for r, x in enumerate(nums):
+            cnt += int(freq[x] == k)
+            freq[x] += 1
+            while cnt > 0:
+                nl = nums[l]
+                cnt -= int(freq[nl] == k + 1)
+                freq[nl] -= 1
+                l += 1
+            res = max(res, r - l + 1)
+        return res 
+```
+
+[Problem - 1777C - Codeforces](https://codeforces.com/problemset/problem/1777/C)
+
+不定长滑窗 + 哈希计数。首先对 $nums$ 数组排序 + 去重，对于 $m=1$ 的情况直接返回 $0$ ；否则要求 $2 \sim m $ 中的每一个数，都在滑动窗口中的所有因子构成的集合中出现一次。因为需要维护滑窗集合，所以采用滑窗 + 哈希， $freq$  维护滑窗中所有数的因子的出现个数。由于需要 $2 \sim m $ 中均有 $freq[x] \ge 1$ ，每次判断需要 $O(n)$ 的复杂度，总体是 $O(mn)$ ，无法接受。因此使用 $cnt$ 统计 $freq[x] \ge 1$ 的个数，$cnt $ 在边界情况时增减1。
+
+```python
+from collections import *
+from math import *
+import sys
+input = lambda: sys.stdin.readline().strip()
+
+# 预处理 2 ~ mx中所有数的约数的列表
+mx = 100001
+factors = [[] for _ in range(mx)]
+for i in range(2, mx):
+    for j in range(i, mx, i):
+        factors[j].append(i)
+        
+t = int(input())
+def solve():
+    n, m = map(int, input().split())
+    nums = list(set(map(int, input().split())))
+    nums.sort()
+    if m == 1:
+        return 0
+    # 2, 3, ... , m
+    # 求所有滑窗中，freq[2...m] >= 1 的最小极差。
+    # 用cnt统计 freq[x] >= 1 的个数，求 cnt == m - 1 的滑窗的最小极差
+    freq = Counter()
+    l = cnt = 0
+    res = inf
+    for r, x in enumerate(nums):
+        for y in factors[x]:
+            if y > m: break
+            if freq[y] == 0: cnt += 1
+            freq[y] += 1
+        while cnt == m - 1:
+            nl = nums[l]
+            res = min(res, x - nl)
+            for y in factors[nl]:
+                if y > m: break
+                if freq[y] == 1: cnt -= 1
+                freq[y] -= 1
+            l += 1
+    return res if res < inf else -1
+
+for _ in range(t):
+    print(solve())
+
+```
+
+
+
+## 双指针
+
+**相向双指针**
+
+[2105. 给植物浇水 II - 力扣（LeetCode）](https://leetcode.cn/problems/watering-plants-ii/description/?envType=daily-question&envId=2024-05-09)
+
+```python
+    def minimumRefill(self, nums: List[int], A: int, B: int) -> int:
+        n = len(nums)
+        i, j = 0, n - 1
+        a, b = A, B
+        res = 0
+        while i <= j:
+            l, r = nums[i], nums[j]
+            if i < j:
+                if a < l: 
+                    a = A - l
+                    res += 1
+                else:
+                    a -= l 
+                if b < r:
+                    b = B - r
+                    res += 1
+                else: 
+                    b -= r
+            else:   
+                x = max(a, b)
+                if x < l:
+                    res += 1
+            i, j = i + 1, j - 1 
+        return res
+```
+
+**同向双指针**
+
+[1574. 删除最短的子数组使剩余数组有序 - 力扣（LeetCode）](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/submissions/490971133/)
+
+同向双指针 + 贪心。
+
+```python
+    def findLengthOfShortestSubarray(self, nums: List[int]) -> int:
+        n = len(nums)
+        l, r = 0, n - 1
+        while l + 1 < n and nums[l] <= nums[l + 1]:
+            l += 1
+        if l == n - 1: return 0
+        while r - 1 >= 0 and nums[r - 1] <= nums[r]:
+            r -= 1
+        res, mxl = r, l
+        for l in range(mxl + 1):
+            while r < n and nums[r] < nums[l]:
+                r += 1
+            res = min(res, r - l - 1)
+        return res
+```
+
+
+
+## 分组循环
+
+适用于：数组会被分割成若干组，且每一组的判断/处理逻辑是一样的。
+
+**核心思想**：
+
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
+
+模板：
+
+```python
+n = len(nums)
+i = 0
+while i < n:
+    start = i
+    while i < n and ...:
+        
+        i += 1
+    # 从 start 到 i-1 是一组
+    # 下一组从 i 开始，无需 i += 1
+	ans = max(ans, i - start)
+```
+
+
+
+时间复杂度：$O(n)$ 
+
+[2760. 最长奇偶子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/description/)
+
+```python
+    def longestAlternatingSubarray(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        i = res = 0
+        while i < n:
+            x = nums[i]
+            if x > k or x & 1: 
+                i += 1
+                continue 
+            start = i
+            i += 1
+            while i < n and nums[i] <= k and nums[i - 1] & 1 != nums[i] & 1: 
+                i += 1
+            res = max(res, i - start)
+        return res 
+```
 
 
 
@@ -1985,15 +2365,27 @@ $$
 \left\lceil \frac{n}{m} \right\rceil = \left\lfloor \frac{n - 1}{m}  \right\rfloor + 1 = \left\lfloor \frac{n + m -1}{m} \right\rfloor
 $$
 
+证明：由于有 $\left\lceil \frac{n}{m} \right\rceil =   \left\lfloor \frac{n}{m}  \right\rfloor$ 当且仅当 $n=k \cdot m$ 时成立，当 $n=k\cdot m-r,r\in(0,m)$，一定有  $k=\left\lceil \frac{k\cdot m}{m} \right\rceil =\left\lceil \frac{k\cdot m-r}{m} \right\rceil = \left\lceil \frac{k\cdot m-r+1}{m} \right\rceil = 1+ \left\lfloor \frac{k\cdot m-r}{m}  \right\rfloor$，显然 $k\cdot m-r+1 \in R$，令其等于$n$  时得证 $\left\lceil \frac{n}{m} \right\rceil =1+ \left\lfloor \frac{n-1}{m} \right\rfloor$。
 $$
 \left\lfloor \frac{n}{m} \right\rfloor =\left\lceil \frac{n+1}{m} \right\rceil-1
 $$
+
+灵神恒等式*
+
+$\left\lfloor\frac{\lfloor n/p\rfloor}q\right\rfloor=\left\lfloor\frac n{pq}\right\rfloor $
+
+[1553. 吃掉 N 个橘子的最少天数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/description/?envType=daily-question&envId=2024-05-12)
+
+实际上这个结论可以推广到任意个数，比如：$\left\lfloor\frac{\left\lfloor\frac{\left\lfloor\frac n{p_1}\right\rfloor}{p_2}\right\rfloor}{p_3}\right\rfloor=\left\lfloor\frac n{p_1\cdot p_2\cdot p_3}\right\rfloor $。
+
+[题目详情 - 数字游戏 - HydroOJ](https://hydro.ac/d/nnu_contest/p/LC2)
+
+
 
 **不等式**
 $$
 x-1<\lfloor x\rfloor\leqslant x\leqslant\lceil x\rceil<x+1
 $$
-
 
 **取余性质**
 $$
@@ -2251,6 +2643,20 @@ for a, n in cnt.items():
     res = (res * S(a, n)) % moder
 print(res % moder)
 
+```
+
+#### 约数筛 / 约数预处理
+
+求 $[1:mx]$ 范围内每个数的所有约数（包含1 和 自身）列表（**从小到大排列**）。
+
+时间复杂度： $O(n \sqrt n)$
+
+```python
+# mx = 10 ** 5 + 1
+factors = [[] for _ in range(mx)]
+for f in range(1, mx):
+    for x in range(f, mx, f):
+        factors[x].append(f)
 ```
 
 
@@ -6204,6 +6610,46 @@ def getEditDist(s1, s2):
         return f[m][n]
 ```
 
+[120. 三角形最小路径和 - 力扣（LeetCode）](https://leetcode.cn/problems/triangle/description/)
+
+将三角形转换成网格图：约束 $j \in [1,i]$。
+
+```python
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        m = n = len(triangle)
+        f = [[inf] * (n + 1) for _ in range(m + 1)]
+        f[0][1] = 0
+        for i in range(1, m + 1):
+            for j in range(1, i + 1):
+                x = triangle[i - 1][j - 1]
+                f[i][j] = x + min(f[i - 1][j], f[i - 1][j - 1])
+        return min(f[m][1: ])
+```
+
+
+
+[1289. 下降路径最小和 II - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-falling-path-sum-ii/description/?envType=featured-list&envId=DuoJVDZI?envType=featured-list&envId=DuoJVDZI)
+
+求从上一层列下标不同位置处转移的路径最小和**。维护上一层的最小值、次小值**。时间复杂度从 $O(n^3)$ 优化到 $O(n^2)$。
+
+```python
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        m = n = len(grid)
+        if m == 1: return min(grid[0])
+        f = [[inf] * (n + 1) for _ in range(m + 1)]
+        mn = mn_2 = (0, -1)
+        for i in range(1, m + 1):
+            pmn, pmn_2 = mn, mn_2 
+            mn = mn_2 = (inf, -1)
+            for j in range(1, n + 1):
+                x = grid[i - 1][j - 1]
+                y = f[i][j] = x + pmn[0] if pmn[1] != j else x + pmn_2[0]
+                if y < mn[0]: mn_2, mn = mn, (y, j)
+                elif y == mn[0]: mn_2 = (y, j)
+                elif y < mn_2[0]: mn_2 = (y, j)          
+        return min(f[m])
+```
+
 
 
 **求路径方案数**
@@ -6222,6 +6668,66 @@ def getEditDist(s1, s2):
                 x = grid[i - 1][j - 1]
                 f[i][j] = 0 if x else f[i - 1][j] + f[i][j - 1]
         return f[m][n]
+```
+
+
+
+### 多路线问题
+
+[1463. 摘樱桃 II - 力扣（LeetCode）](https://leetcode.cn/problems/cherry-pickup-ii/description/?envType=featured-list&envId=DuoJVDZI?envType=featured-list&envId=DuoJVDZI)
+
+双起点 + 双路线问题
+
+$f(t,i,j)$ 表示共同来到第 $t$ 行，分别在 $(t,i)$ 和 $(t,j)$。为了表示出两个初始位置分别在 $(0,0)$ 和  $(0, n- 1)$，所有初始值设置为 $-inf$，同时将 $ f[0][0][n + 1] = 0$。
+
+```python
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        # f(t, i, j)
+        res = 0
+        f = [[[-inf] * (n + 2) for _ in range(n + 2)] for _ in range(m + 1)]
+        f[0][0][n + 1] = 0
+        for t in range(1, m + 1):
+            for i in range(1, n + 1):
+                x = grid[t - 1][i - 1]
+                for j in range(1, n + 1):
+                    y = 0 if i == j else grid[t - 1][j - 1]
+                    mx = max(f[t - 1][i][j], f[t - 1][i - 1][j], f[t - 1][i + 1][j],\
+                             f[t - 1][i][j - 1], f[t - 1][i - 1][j - 1], f[t - 1][i + 1][j - 1],\
+                             f[t - 1][i][j + 1], f[t - 1][i - 1][j + 1], f[t - 1][i + 1][j + 1])
+                    f[t][i][j] = x + y + mx 
+                    if t == m: res = max(res, f[t][i][j])
+        return res 
+```
+
+
+
+[741. 摘樱桃 - 力扣（LeetCode）](https://leetcode.cn/problems/cherry-pickup/description/?envType=featured-list&envId=DuoJVDZI?envType=featured-list&envId=DuoJVDZI)
+
+同起点 + 双路线问题
+$ f(t, i, j)  $ 表示 $A, B$ 共同走了 $t$ 步，分别到达 $(i, t - i), ~ (j, t - j) $。
+
+为了区分没有采摘、不可达，初始值设定为 $-inf$；当 $i =j$时，表示当前 $A,B$ 在同一个位置，只能加一份价值 $grid[i][t-i]$，否则当前价值为 $grid[j][t - j] + grid[i][t-i]$ 。转移：$\max \{f(t-1,i,j),~f(t-1,i-1,j), ~f(t-1,i,j-1),~f(t-1,i-1,j-1)\}$。对于不可达的某个具体位置，检测到价值中有 $-1$ 时直接返回。
+
+同时需要注意 $t$ 会对 $i$ 和 $j$ 的取值范围约束。最终答案：$f(2n-2,~n-1,~n-1)$
+
+```python
+    def cherryPickup(self, grid: List[List[int]]) -> int:
+        # f(t, i, j) 表示走了t 步， 分别到达 (i, t - i) 和 (j, t - j) 获得的最大得分
+        n = len(grid)
+        f = [[[-inf] * (n) for _ in range(n)] for _ in range(2 * n - 1)]
+        f[0][0][0] = grid[0][0]
+        for t in range(1, 2 * n - 1):
+            for i in range(max(0, t - n + 1), min(n, t + 1)):
+                x = grid[i][t - i]
+                if x < 0: continue 
+                for j in range(max(0, t - n + 1), min(n, t + 1)):
+                    y = grid[j][t - j] if i != j else 0
+                    if y < 0: continue 
+                    mx = max(f[t - 1][i][j], f[t - 1][i - 1][j], f[t - 1][i][j - 1], f[t - 1][i - 1][j - 1])
+                    f[t][i][j] = mx + x + y 
+        res = f[2 * n - 2][n - 1][n - 1]
+        return res if res != -inf else 0
 ```
 
 
@@ -7651,7 +8157,7 @@ $ f(i, j) =\min \{f(i - 1, j - 1) + d[i]/s,~ ceil(f(i - 1, j) + d[i]/s)\}$
                 return k
 ```
 
-## 双指针
+## 
 
 
 
