@@ -1105,22 +1105,20 @@ def minimumMoves(self, grid: List[List[int]]) -> int:
 
 [395. 至少有 K 个重复字符的最长子串 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/description/)
 
-$f(s, k)$ 表示字符串s 中所有字符不少于 $k$个的子串中的最大长度。考察所有在当前 $s$ 串中出现次数少于 $k$ 的字符（记作分割字符），最终最大串肯定不包含之。因此，每一层递归，以找到的第一个分割字符作为隔板，将 $s$ 分成 若干个小的子串，取其中最大值即可。
+$f(s)$ 表示字符串s 中所有字符不少于 $k$ 个的子串中的最大长度。考察所有在当前 $s$ 串中出现次数少于 $k$ 的字符（记作分割字符），最终最大串肯定不包含之。因此，每一层递归，以找到的第一个分割字符作为隔板，将 $s$ 分成 若干个小的子串，取其中最大值即可。
 
 时间复杂度：$O(26N)$，这是由于每一层递归必然完全删除一个小写字母，且每一层需要遍历整个字符串，时间复杂度是$O(N)$；所以总复杂度是 $O(26N)$。
 
 ```python
-def f(s, k):
-    if len(s) < k: return 0
-    cnt = Counter(s)
-    for ch, freq in cnt.items():
-        if freq < k:
-            return max(f(sub, k) for sub in s.split(ch)) 
-    return len(s)
-
-class Solution(object):
-    def longestSubstring(self, s, k):
-        return f(s, k)
+    def longestSubstring(self, s1: str, k: int) -> int:
+        # s1中所有字符数量 >= k 个最长子串
+        def f(s1):
+            cnt = Counter(s1)
+            for ch, c in cnt.items():
+                if c < k:
+                    return max(f(sub) for sub in s1.split(ch))
+            return len(s1)
+        return f(s1)
 ```
 
 
@@ -1130,25 +1128,24 @@ class Solution(object):
 $f(s)$ 表示字符串 $s$ 中所有字符出现大小写的最长子串。以 $s1$ 中只出现大写 / 小写的字母作为分割点，将问题分治，返回最大长度中出现最早的字符串。时间复杂度：$O(26 \times n)$，因为每一层需要 $O(n)$ 的复杂度，每一层递归至少减少一个字符。
 
 ```python
-
-from string import ascii_lowercase
+from collections import *
+from string import ascii_lowercase, ascii_uppercase 
+L, U = ascii_lowercase, ascii_uppercase 
 def f(s1):
-    # s 中所有字符都包含大小写的最大长度
-    cnt = Counter(s1)
-    for l in ascii_lowercase:
-        u = l.upper()
-        if (cnt[l] > 0) ^ (cnt[u] > 0):
-            ans = [f(sub) for sub in s1.split(u if cnt[u] else l)][::-1]
-            mxl, mxs = 0, None 
-            for l, s in ans:
-                if l >= mxl:
-                    mxl, mxs = l, s 
-            return mxl, mxs
-    return len(s1), s1
+    s = set(s1)
+    for l, u in zip(L, U):
+        if (l in s) != (u in s):
+            ss = s1.split(l if l in s else u)
+            res = ''
+            for sub in ss:
+                cur = f(sub)
+                if len(cur) > len(res): res = cur 
+            return res 
+    return s1
 
 class Solution:
     def longestNiceSubstring(self, s: str) -> str:
-        return f(s)[1]
+        return f(s)
 ```
 
 
@@ -1798,9 +1795,7 @@ def get_set_subarrays_lower_k(nums, k):
 
 
 
-
-
-## 不定长滑窗 + 哈希表计数
+## 不定长滑窗 + 哈希计数
 
 不定长滑窗哈希表：所有 $freq[x] \le k$ 的最长子数组，由于单次判断的时间复杂度是 $O(n)$，总复杂度是 $O(n^2) $。
 通过 $cnt$ 维护 $freq[x] > k$ 的个数，**在边界处增减1**。转换为 $cnt = 0$ 最长子数组 ，复杂度 $O(n) $
@@ -1824,6 +1819,12 @@ def get_set_subarrays_lower_k(nums, k):
             res = max(res, r - l + 1)
         return res 
 ```
+
+
+
+
+
+
 
 [Problem - 1777C - Codeforces](https://codeforces.com/problemset/problem/1777/C)
 
@@ -1874,6 +1875,117 @@ for _ in range(t):
     print(solve())
 
 ```
+
+
+
+## 枚举型滑窗
+
+**枚举出现种类个数**
+
+枚举 + 不定长滑窗 + 哈希计数
+
+显然 $k=1$ 时，原串满足条件直接返回其长度。
+
+考虑 $k>1$，要求子串中所有字符个数 $\ge k$，假设 $s1[l\sim r]$ 满足条件，考虑 $s1[r+1]$，如果是在 $s1$ 中出现过的字符，一定满足；否则一定不满足条件，此时不确定滑窗的左边界 $l$ 是否需要右移，例如 $'bbaaacb'$，当 $r=4$ 时，由于后续的 $c$ 的出现会导致 无法凑出 $bbaaab$，因此需要左移。这实际上比较难以确定。
+
+然而，如果限制 / 约束了子串中不同字母的种类个数 $c$，并依次枚举 $c \in [1, 26]$，对于每个 $c$，采用不定长滑窗 + 哈希计数的方式，可以唯一确定是否需要左移左边界。实现时，需要维护子串中每个字符出现的频次 $freq$、出现且次数不够 $k$ 的字符的个数 $cnt$、字符的种类个数 $tcnt$。
+
+```python
+    def longestSubstring(self, s1: str, k: int) -> int:
+        if k == 1: return len(s1)
+        n = len(s1)
+        res = 0
+        # 枚举滑窗
+        for c in range(1, len(set(s1)) + 1):
+            # 滑窗中字母种类个数恰好为 c
+            freq = Counter()
+            cnt = 0     # 哈希计数
+            tcnt = 0    # 种类计数
+            l = 0
+            for r, ch in enumerate(s1):
+                if freq[ch] == 0:
+                    cnt += 1
+                    tcnt += 1
+                if freq[ch] == k - 1:
+                    cnt -= 1
+                freq[ch] += 1
+                
+                while tcnt > c:
+                    lch = s1[l]
+                    if freq[lch] == k: 
+                        cnt += 1
+                    if freq[lch] == 1:
+                        tcnt -= 1
+                        cnt -= 1
+                    freq[lch] -= 1
+                    l += 1
+                if tcnt == c and cnt == 0:
+                    res = max(res, r - l + 1)
+        return res 
+```
+
+时间复杂度：$O(26N)$
+
+[2953. 统计完全子字符串 - 力扣（LeetCode）](https://leetcode.cn/problems/count-complete-substrings/description/)
+
+定长滑窗 + 枚举
+
+```python
+    def countCompleteSubstrings(self, s1: str, k: int) -> int:
+        res = 0
+        # s 中每个字符恰好出现 k 次的子串个数
+        def f(s):
+            # 
+            # 枚举字符种类个数
+            m = len(set(s))
+            n = len(s)
+            res = 0
+            # 由于是恰好 k个，所以滑窗长度为 c * k
+            for c in range(1, m + 1):
+                K = c * k 
+                if K > n: break 
+                freq = Counter()
+                cnt = 0 # 等于 k 的个数
+                for i in range(K):
+                    ch = s[i]
+                    if freq[ch] == k - 1: cnt += 1
+                    elif freq[ch] == k: cnt -= 1
+                    freq[ch] += 1
+                res += int(cnt == c)
+                for r in range(K, n):
+                    ch, lch = s[r], s[r - K]
+                    if lch != ch:
+                        if freq[ch] == k - 1: cnt += 1
+                        elif freq[ch] == k: cnt -= 1
+
+                        if freq[lch] == k: cnt -= 1
+                        elif freq[lch] == k + 1: cnt += 1
+                        freq[ch] += 1
+                        freq[lch] -= 1
+
+                        if freq[lch] == 0: freq.pop(lch)
+                    res += int(cnt == c)
+            return res 
+        sub = ''
+        for ch in s1:
+            if sub and abs(ord(ch) - ord(sub[-1])) > 2:
+                res += f(sub) 
+                sub = ch 
+            else:
+                sub += ch 
+        res += f(sub)
+        return res 
+```
+
+时间复杂度：$O(26N)$
+
+
+
+**枚举多起点**
+
+
+
+
 
 
 
@@ -1959,9 +2071,9 @@ while i < n:
 	ans = max(ans, i - start)
 ```
 
-
-
 时间复杂度：$O(n)$ 
+
+
 
 [2760. 最长奇偶子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/description/)
 
