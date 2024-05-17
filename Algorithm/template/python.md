@@ -555,6 +555,49 @@ for i in range(1, n):
 
 # 区间问题
 
+## 区间选点问题
+
+**给定 $n$ 个区间，选出最少的点使得每个区间至少包含1个点。**
+
+[452. 用最少数量的箭引爆气球 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/description/)
+
+等价于区间选点问题：[905. 区间选点 - AcWing题库](https://www.acwing.com/problem/content/907/)
+
+首先按照左端点排序。实际上，当前区间左端点是不需要维护的，因为选点总是贪心的放在区间右端点上。
+
+当且仅当新区间左端点 $il$  大于当前区间右端点 $r$ 时，需要新的选点，同时产生新的区间右端点（区间左端点介于 旧$r$ 和 新 $il$ 之间，但是我们并不关心）；否则说明左端点在当前区间内部，只需要更新区间右端点为更小的即可（意味着选点跟着移动）。
+
+```python
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        res = 0
+        points.sort()
+        mxr = -inf
+        for l, r in points:
+            if l > mxr:
+                mxr, res = r, res + 1
+            elif r < mxr:
+                mxr = r 
+        return res 
+```
+
+## 最大不相交区间数量
+
+给定 $n$ 个区间，选出最多的区间，使得区间两两不相交（含端点）。
+
+[908. 最大不相交区间数量 - AcWing题库](https://www.acwing.com/problem/content/910/)
+
+```python
+def find_max_number_of_disjoint_interval(nums):
+    nums.sort()
+    mxr = -inf 
+    res = 0
+    for l, r in nums:
+        if l > mxr:
+            res, mxr = res + 1, r
+        mxr = min(mxr, r)
+    return res 
+```
+
 ## 合并区间
 
 先排序。
@@ -587,28 +630,6 @@ class Solution:
                 nranges.append([l, r])
                 l = il 
             r = max(ir, r)
-```
-
-[452. 用最少数量的箭引爆气球 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/description/)
-
-等价于区间选点问题：[905. 区间选点 - AcWing题库](https://www.acwing.com/problem/content/907/)
-
-首先按照左端点排序。实际上，当前区间左端点是不需要维护的，因为选点总是贪心的放在区间右端点上。
-
-当且仅当新区间左端点 $il$  大于当前区间右端点 $r$ 时，需要新的选点，同时产生新的区间右端点（区间左端点介于 旧$r$ 和 新 $il$ 之间，但是我们并不关心）；否则说明左端点在当前区间内部，只需要更新区间右端点为更小的即可（意味着选点跟着移动）。
-
-```python
-def findMinArrowShots(self, nums: List[List[int]]) -> int:
-        nums.sort()
-        r = nums[0][1]
-        res = 0
-        for il, ir in nums:
-            if il > r:
-                res += 1
-                r = ir
-            else:
-                r = min(r, ir)
-        return res + 1
 ```
 
 ## 区间交集
