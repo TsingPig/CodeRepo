@@ -555,48 +555,100 @@ for i in range(1, n):
 
 # 区间问题
 
-## 区间选点问题
+## 区间选点问题 / 最大不相交区间数量
 
-**给定 $n$ 个区间，选出最少的点使得每个区间至少包含1个点。**
+- **射气球问题**：给定 $n$ 个气球，用区间表示，选出最少的弓箭将所有气球都能射爆。
+
+- **区间选点问题**：给定 $n$ 个区间，选出最少的点使得每个区间至少包含1个点。
+
+- **最大不相交区间问题**：给定 $n$ 个区间，选出最多的区间，使得区间两两不相交（含端点）。
+
+这几个问题是等价的，最大不相交区间问题中，将区间集合 $U$ 划分成两两不相交的最多的区间集合 $S$ 和 $U-S$ 。任意 $U-S$ 中区间一定和 $S$ 中的区间相交，它们不需要额外占用更多的选点，因此 $|S|$ 就等于最少的弓箭数量、选点数量。
+
+对于 $mxr$ ，考察 $l, r$ 一共有三种情况：
+
+- $mxr <l$，区间个数加一，$mxr = r$
+
+- $l \le mxr <r$，不变
+- $r \le mxr$，$mxr =r$
+
+综上，只需要在 $l > mxr$ 时，更新$res, mxr$，否则在 $r < mxr$ 时，更新 $mxr$ 。
+
+复杂度：$O(n)$
 
 [452. 用最少数量的箭引爆气球 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/description/)
 
-等价于区间选点问题：[905. 区间选点 - AcWing题库](https://www.acwing.com/problem/content/907/)
-
-首先按照左端点排序。实际上，当前区间左端点是不需要维护的，因为选点总是贪心的放在区间右端点上。
-
-当且仅当新区间左端点 $il$  大于当前区间右端点 $r$ 时，需要新的选点，同时产生新的区间右端点（区间左端点介于 旧$r$ 和 新 $il$ 之间，但是我们并不关心）；否则说明左端点在当前区间内部，只需要更新区间右端点为更小的即可（意味着选点跟着移动）。
-
-```python
-    def findMinArrowShots(self, points: List[List[int]]) -> int:
-        res = 0
-        points.sort()
-        mxr = -inf
-        for l, r in points:
-            if l > mxr:
-                mxr, res = r, res + 1
-            elif r < mxr:
-                mxr = r 
-        return res 
-```
-
-## 最大不相交区间数量
-
-给定 $n$ 个区间，选出最多的区间，使得区间两两不相交（含端点）。
+[905. 区间选点 - AcWing题库](https://www.acwing.com/problem/content/907/)
 
 [908. 最大不相交区间数量 - AcWing题库](https://www.acwing.com/problem/content/910/)
 
 ```python
-def find_max_number_of_disjoint_interval(nums):
+def solve(nums):
     nums.sort()
     mxr = -inf 
     res = 0
     for l, r in nums:
         if l > mxr:
             res, mxr = res + 1, r
-        mxr = min(mxr, r)
+		elif r < mxr:
+            mxr = r
+        # 或者mxr = min(mxr, r)
     return res 
 ```
+
+## 区间分组
+
+给定 $n$ 个区间，要求将其分成最少的组，每个组各个区间之间两两不相交（含端点）。
+
+维护所有分组的 $mxr$，对于 $mxr_{\min}$ ，考察 $l$ 与之关系。
+
+- $l > mxr_{\min}$，可以放在这个分组中
+- $l \le mxr_{\min}$，需要开辟一个新的分组，最右端点是 $r$ 。
+
+时间复杂度：$O(n \log n)$
+
+[906. 区间分组 - AcWing题库](https://www.acwing.com/problem/content/908/)
+
+```python
+def solve(nums):
+    nums.sort()
+    hq = []
+    for l, r in nums:
+        if hq and l > hq[0]:
+            heappop(hq)
+        heappush(hq, r)
+    return len(hq)
+```
+
+## 区间覆盖
+
+给定 $n$ 个区间和 一个需要覆盖的线段区间 $[L, R]$，找出最少的区间使它们完全覆盖线段区间 $[L,R]$；如果无法完成输出 -1。
+
+[907. 区间覆盖 - AcWing题库](https://www.acwing.com/problem/content/909/)
+
+考察当前已经覆盖到的最远端 $mxr$ ，考察所有 $l \le mxr$，如果第一个 $l > mxr$，无法覆盖线段区间 $[mxr+1,]$记录这些区间的最远右端点 $nmxr$，然后更新 $mxr$ 。一旦超过 $R$ 表示完成覆盖。
+
+```python
+def solve(L, R, nums):
+    n = len(nums)
+    nums.sort()
+    mxr = L
+    i = res = 0
+    while i < n:
+        l, r = nums[i]
+        if l > mxr: return -1
+        nmxr = r
+        while i + 1 < n and nums[i + 1][0] <= mxr:
+            nmxr = max(nmxr, nums[i + 1][1])
+            i += 1
+        res += 1
+        mxr = nmxr 
+        if mxr >= R: return res 
+        i += 1
+    return -1    
+```
+
+
 
 ## 合并区间
 
@@ -4161,6 +4213,221 @@ class Trie:
 
 ## 线段树
 
+### lazy线段树
+
+- 支持单点修改 / 区间修改 / 区间查询
+
+- 支持最小/最大/求和
+
+```python
+class SegmentTree:
+    __slots__ = ['node', 'lazy', 'n', 'nums', 'op', 'ini', 'ops']
+
+    def __init__(self, nums, ops = 'sum'):
+        n = len(nums)
+        if ops == 'sum' or ops == 'bin':
+            op, ini = lambda a, b: a + b, 0
+        elif ops == 'max':
+            op, ini = lambda a, b: max(a, b), -inf
+        elif ops == 'min':  
+            op, ini = lambda a, b: min(a, b), inf
+        self.nums = nums
+        self.op = op
+        self.ini = ini
+        self.ops = ops 
+        self.node = [ini] * (4 * n)
+        self.lazy = [None] * (4 * n)
+        self.n = n
+
+    def build(self, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
+        if l == r:
+            self.node[idx] = self.nums[l - 1]
+            return
+        mid = (l + r) >> 1
+        self.build(idx << 1, l, mid)
+        self.build((idx << 1) + 1, mid + 1, r)
+
+        self.node[idx] = self.op(self.node[idx << 1], self.node[(idx << 1) + 1])
+
+    def do(self, idx, dl, dr, val = None):
+        if self.ops == 'bin':
+            self.node[idx] = dr - dl + 1 
+            self.lazy[idx] = True
+        else:
+            self.node[idx] = self.op(val, self.node[idx])
+            self.lazy[idx] = val
+
+    def pushdown(self, idx, pl, pr):
+        val = self.lazy[idx]
+        mid = (pl + pr) >> 1
+        self.do(idx << 1, pl, mid, val)
+        self.do((idx << 1) + 1, mid + 1, pr, val)
+        self.lazy[idx] = None
+
+    def update(self, ul, ur, val, idx = 1, l = 1, r = None):
+        if r is None:r = self.n
+        if ul <= l and r <= ur:
+            self.do(idx, l, r, val)
+            return
+        if self.lazy[idx]:
+            self.pushdown(idx, l, r)
+        mid = (l + r) >> 1
+        if ul <= mid: self.update(ul, ur, val, idx << 1, l, mid)
+        if ur > mid: self.update(ul, ur, val, (idx << 1) + 1, mid + 1, r)
+
+        self.node[idx] = self.op(self.node[idx << 1], self.node[(idx << 1) + 1])
+
+    def query(self, ql, qr, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
+        if ql <= l and r <= qr:
+            return self.node[idx]
+
+        if self.lazy[idx]:
+            self.pushdown(idx, l, r)
+
+        mid = (l + r) >> 1
+        ansl, ansr = self.ini, self.ini
+        if ql <= mid: ansl = self.query(ql, qr, idx << 1, l, mid)
+        if qr > mid:ansr = self.query(ql, qr, (idx << 1) + 1, mid + 1, r)
+        return self.op(ansl, ansr)
+
+```
+
+> ```python
+> tr = SegmentTree([1, 2, 3, 4, 5], 'sum')
+> tr.build()
+> print(tr.query(1, 5))  # 15
+> print(tr.query(2, 5))  # 14
+> tr.update(2, 4, 2)  # 1 4 5 6 5
+> print(tr.query(2, 5))  # 20
+> 
+> 
+> tr = SegmentTree([8, 4, 5, 7, 9], 'min')
+> tr.build()
+> print(tr.query(1, 4)) # 4
+> tr.update(1, 4, 5) # [5, 4, 5, 5, 9]
+> print(tr.query(4, 5)) # 5
+> tr.update(3, 5, -10) # [5, 4, -10, -10, -10]
+> print(tr.query(1, 3)) # -10
+> ```
+
+
+
+lazy 线段树（01翻转）
+
+```python
+class Solution:
+    def handleQuery(self, nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
+        n = len(nums1)
+        node = [0] * (4 * n)
+         # 懒标记：True表示该节点代表的区间被曾经被修改，但是其子节点尚未更新
+        lazy = [False] * (4 * n)
+
+        # 初始化线段树
+        def build(i = 1, l = 1, r = n):
+            if l == r:
+                node[i] = nums1[l - 1]
+                return 
+            mid = (l + r) >> 1
+            build(i * 2, l, mid)
+            build(i * 2 + 1, mid + 1, r)
+             # 维护区间 [l, r] 的值
+            node[i] = node[i * 2] + node[i * 2 + 1]
+        
+        
+        # 更新节点值，并设置lazy标记
+        def do(i, l, r):
+            node[i] = r - l + 1 - node[i]
+            lazy[i] = not lazy[i]
+        
+
+        # 区间更新：本题中更新区间[l, r] 相当于做翻转
+        def update(L, R, i = 1, l = 1, r = n):
+            if L <= l and r <= R:
+                do(i, l, r)
+                return 
+            
+            mid = (l + r) >> 1
+            if lazy[i]:
+                # 根据标记信息更新p的两个左右子节点，同时为子节点增加标记
+                # 然后清除当前节点的标记
+                do(i * 2, l, mid)
+                do(i * 2 + 1, mid + 1, r)
+                lazy[i] = False
+        
+            if L <= mid:
+                update(L, R, i * 2, l, mid)
+            if R > mid:
+                update(L, R, i * 2 + 1, mid + 1, r)
+            
+            # 更新节点值
+            node[i] = node[i * 2] + node[i * 2 + 1]
+        
+        build()
+
+        res, s = [], sum(nums2)
+        for op, L, R in queries:
+            if op == 1:
+                update(L + 1, R + 1)
+            elif op == 2:
+                s += node[1] * L 
+            else:
+                res.append(s)
+        return res
+```
+
+### 递归动态开点（无lazy) 线段树
+
+区间覆盖统计问题，区间覆盖不需要重复操作，不需要进行lazy传递
+
+但是数据范围较大，需要动态开点
+
+```python
+# https://leetcode.cn/problems/count-integers-in-intervals
+class CountIntervals:
+    __slots__ = 'left', 'right', 'l', 'r', 'val'
+
+    def __init__(self, l = 1, r = int(1e9)):
+        self.left = self.right = None
+        self.l, self.r, self.val = l, r, 0
+
+
+    def add(self, l: int, r: int) -> None:
+
+        # 覆盖区间操作，不需要重复覆盖，饱和区间无需任何操作
+        if self.val == self.r - self.l + 1: 
+            return  
+
+        if l <= self.l and self.r <= r:  # self 已被区间 [l,r] 完整覆盖，不再继续递归
+            self.val = self.r - self.l + 1
+            return
+        
+        
+        mid = (self.l + self.r) >> 1
+        
+        # 动态开点
+        if self.left is None: 
+            self.left = CountIntervals(self.l, mid)  # 动态开点
+        
+        if self.right is None: 
+            self.right = CountIntervals(mid + 1, self.r)  # 动态开点
+        
+        if l <= mid: 
+            self.left.add(l, r)
+        if mid < r: 
+            self.right.add(l, r)
+        
+        # self.val 的值，表示区间[self.l, self.r] 中被覆盖的点的个数
+        self.val = self.left.val + self.right.val
+
+    def count(self) -> int:
+        return self.val
+
+```
+
+### 
+
 ### 动态开点 + lazy 线段树			
 
 ```python
@@ -4264,11 +4531,134 @@ class RangeModule:
 # obj.removeRange(left,right)
 ```
 
-### 线段树优化DP问题
+[LCP 32. 批量处理任务 - 力扣（LeetCode）](https://leetcode.cn/problems/t3fKg1/description/)
+
+```python
+class SegmentTree:
+    __slots__ = ['node', 'lazy', 'n', 'nums', 'op', 'ini', 'ops']
+    def __init__(self, nums, ops='sum'):
+        if ops == 'sum' or ops == 'bin':
+            self.op, self.ini = lambda a, b: a + b, 0
+        elif ops == 'max':
+            self.op, self.ini = lambda a, b: max(a, b), -float('inf')
+        elif ops == 'min':
+            self.op, self.ini = lambda a, b: min(a, b), float('inf')
+        
+        self.nums = nums
+        self.ops = ops
+        self.n = len(nums)
+        self.node = {}
+        self.lazy = {}
+    
+    def build(self, idx=1, l=1, r=None):
+        if r is None:
+            r = self.n
+        if l == r:
+            self.node[idx] = self.nums[l - 1]
+            return
+        mid = (l + r) >> 1
+
+        self.build(idx << 1, l, mid)
+        self.build((idx << 1) + 1, mid + 1, r)
+
+        self.node[idx] = self.op(self.node.get(idx << 1, self.ini), self.node.get((idx << 1) + 1, self.ini))
+    
+    def do(self, idx, dl, dr, val=None):
+        if self.ops == 'bin':
+            self.node[idx] = dr - dl + 1
+            self.lazy[idx] = True
+        else:
+            self.node[idx] = self.op(val, self.node.get(idx, self.ini))
+            self.lazy[idx] = val
+    
+    def pushdown(self, idx, pl, pr):
+        if idx not in self.lazy:
+            return
+        val = self.lazy[idx]
+        mid = (pl + pr) >> 1
+        if idx << 1 not in self.node:
+            self.node[idx << 1] = self.ini
+        if (idx << 1) + 1 not in self.node:
+            self.node[(idx << 1) + 1] = self.ini
+        self.do(idx << 1, pl, mid, val)
+        self.do((idx << 1) + 1, mid + 1, pr, val)
+        del self.lazy[idx]
+    
+    def update(self, ul, ur, val, idx=1, l=1, r=None):
+        if r is None:
+            r = self.n
+        
+        if ul <= l and r <= ur:
+            self.do(idx, l, r, val)
+            return
+        
+        self.pushdown(idx, l, r)
+
+        mid = (l + r) >> 1
+        if ul <= mid:
+            self.update(ul, ur, val, idx << 1, l, mid)
+        if ur > mid:
+            self.update(ul, ur, val, (idx << 1) + 1, mid + 1, r)
+
+        self.node[idx] = self.op(self.node.get(idx << 1, self.ini), self.node.get((idx << 1) + 1, self.ini))
+    
+    def query(self, ql, qr, idx=1, l=1, r=None):
+        if r is None:
+            r = self.n
+        if ql <= l and r <= qr:
+            return self.node.get(idx, self.ini)
+        
+        self.pushdown(idx, l, r)
+
+        mid = (l + r) >> 1
+        ansl, ansr = self.ini, self.ini
+        if ql <= mid:
+            ansl = self.query(ql, qr, idx << 1, l, mid)
+        if qr > mid:
+            ansr = self.query(ql, qr, (idx << 1) + 1, mid + 1, r)
+        return self.op(ansl, ansr)
+    
+    def update_suffix(self, ul, ur, val, idx=1, l=1, r=None):
+        if r is None:
+            r = self.n
+        siz = r - l + 1
+        if ul <= l and r <= ur and siz - self.node.get(idx, 0) <= val:
+            ans = siz - self.node.get(idx, 0)
+            self.do(idx, l, r)
+            return ans
+        mid = (l + r) >> 1
+        self.pushdown(idx, l, r)
+        ans = 0
+        if ur > mid:
+            ans = self.update_suffix(ul, ur, val, (idx << 1) + 1, mid + 1, r)
+        val -= ans
+        if val and ul <= mid:
+            ans += self.update_suffix(ul, ur, val, idx << 1, l, mid)
+        self.node[idx] = self.op(self.node.get(idx << 1, self.ini), self.node.get((idx << 1) + 1, self.ini))
+        return ans
+
+class Solution:
+    def processTasks(self, nums):
+        nums.sort(key=lambda x: x[1])
+        n, m = len(nums), nums[-1][1]
+        tr = SegmentTree([0] * (m + 1), 'bin')
+        for l, r, c in nums:
+            l, r = l + 1, r + 1
+            c -= tr.query(l, r)
+            if c > 0:
+                tr.update_suffix(l, r, c)
+        return tr.query(0, m + 1)
+```
+
+
+
+### 
+
+### 线段树优化问题
 
 [2617. 网格图中最少访问的格子数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/description/?envType=daily-question&envId=2024-03-22)
 
-单点修改 + 区间查询
+单点修改 + 区间最小值查询
 
 ```python
 class SegmentTree:
@@ -4365,192 +4755,117 @@ class Solution:
 
 ```
 
+[LCP 32. 批量处理任务 - 力扣（LeetCode）](https://leetcode.cn/problems/t3fKg1/)
 
-
-### 递归动态开点（无lazy) 线段树
-
-区间覆盖统计问题，区间覆盖不需要重复操作，不需要进行lazy传递
-
-但是数据范围较大，需要动态开点
-
-```python
-# https://leetcode.cn/problems/count-integers-in-intervals
-class CountIntervals:
-    __slots__ = 'left', 'right', 'l', 'r', 'val'
-
-    def __init__(self, l = 1, r = int(1e9)):
-        self.left = self.right = None
-        self.l, self.r, self.val = l, r, 0
-
-
-    def add(self, l: int, r: int) -> None:
-
-        # 覆盖区间操作，不需要重复覆盖，饱和区间无需任何操作
-        if self.val == self.r - self.l + 1: 
-            return  
-
-        if l <= self.l and self.r <= r:  # self 已被区间 [l,r] 完整覆盖，不再继续递归
-            self.val = self.r - self.l + 1
-            return
-        
-        
-        mid = (self.l + self.r) >> 1
-        
-        # 动态开点
-        if self.left is None: 
-            self.left = CountIntervals(self.l, mid)  # 动态开点
-        
-        if self.right is None: 
-            self.right = CountIntervals(mid + 1, self.r)  # 动态开点
-        
-        if l <= mid: 
-            self.left.add(l, r)
-        if mid < r: 
-            self.right.add(l, r)
-        
-        # self.val 的值，表示区间[self.l, self.r] 中被覆盖的点的个数
-        self.val = self.left.val + self.right.val
-
-    def count(self) -> int:
-        return self.val
-
-```
-
-lazy线段树（点区间赋值）
+排序 + 贪心 + lazy 线段树二分优化
 
 ```python
 class SegmentTree:
-    __slots__ = ['node', 'lazy']
-    def __init__(self, n: int):
-        self.node = [0] * (4 * n)
-        self.lazy = [0] * (4 * n)
-    
-    def build(self, i, l, r):
+    __slots__ = ['node', 'lazy', 'n', 'nums', 'op', 'ini', 'ops']
+
+    def __init__(self, nums, ops = 'sum'):
+        n = len(nums)
+        if ops == 'sum' or ops == 'bin':
+            op, ini = lambda a, b: a + b, 0
+        elif ops == 'max':
+            op, ini = lambda a, b: max(a, b), -inf
+        elif ops == 'min':  
+            op, ini = lambda a, b: min(a, b), inf
+        self.nums = nums
+        self.op = op
+        self.ini = ini
+        self.ops = ops 
+        self.node = [ini] * (4 * n)
+        self.lazy = [None] * (4 * n)
+        self.n = n
+
+    def build(self, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
         if l == r:
-            self.node[i] = Nums[l - 1]
+            self.node[idx] = self.nums[l - 1]
             return
         mid = (l + r) >> 1
-        
-        self.build(i * 2, l ,mid)
-        self.build(i * 2 + 1, mid + 1, r)
+        self.build(idx << 1, l, mid)
+        self.build((idx << 1) + 1, mid + 1, r)
 
-        self.node[i] = self.node[i * 2] + self.node[i * 2 + 1]
+        self.node[idx] = self.op(self.node[idx << 1], self.node[(idx << 1) + 1])
 
-    # 更新节点值，设置lazy标记
-    def do(self, i, l, r, val):
-        self.node[i] = val * (l - r + 1)
-        self.lazy[i] = val
+    def do(self, idx, dl, dr, val = None):
+        if self.ops == 'bin':
+            self.node[idx] = dr - dl + 1 
+            self.lazy[idx] = True
+        else:
+            self.node[idx] = self.op(val, self.node[idx])
+            self.lazy[idx] = val
 
-    # 检查标记，根据标记根据子节点信息，下放标记，清除标记
-    def pushdown(self, i, l, r):
-        if self.lazy[i]:
-            val = self.lazy[i]
-            mid = (l + r) >> 1
-            self.do(i * 2, l, mid, val)
-            self.do(i * 2 + 1, mid + 1, r, val)
-            self.lazy[i] = 0
+    def pushdown(self, idx, pl, pr):
+        val = self.lazy[idx]
+        mid = (pl + pr) >> 1
+        self.do(idx << 1, pl, mid, val)
+        self.do((idx << 1) + 1, mid + 1, pr, val)
+        self.lazy[idx] = None
 
-    
-    def update(self, i, l, r, L, R, val):
-        if L <= l and r <= R:
-            # 区间更新
-            self.do(i, l, r, val)
-            return 
-        
-        # 检查lazy标记
-        self.pushdown(i, l, r)
-        
-        # 左右递归更新
+    def update(self, ul, ur, val, idx = 1, l = 1, r = None):
+        if r is None:r = self.n
+        if ul <= l and r <= ur:
+            self.do(idx, l, r, val)
+            return
+        if self.lazy[idx]:
+            self.pushdown(idx, l, r)
         mid = (l + r) >> 1
-        if L <= mid:
-            self.update(i * 2, l, mid, L, R, val)
-        if R > mid:
-            self.update(i * 2 + 1, mid + 1, r, L, R, val)
-        
-        # 更新节点值: 区间和
-        self.node[i] = self.node[i * 2] + self.node[i * 2 + 1]
-    
-    def query(self, i, l, r, L, R) -> int:
-        if L <= l and r <= R:
-            return self.node[i]
-        
-        # 检查lazy标记
-        self.pushdown(i, l, r)
+        if ul <= mid: self.update(ul, ur, val, idx << 1, l, mid)
+        if ur > mid: self.update(ul, ur, val, (idx << 1) + 1, mid + 1, r)
+
+        self.node[idx] = self.op(self.node[idx << 1], self.node[(idx << 1) + 1])
+
+    def query(self, ql, qr, idx = 1, l = 1, r = None):
+        if r is None: r = self.n
+        if ql <= l and r <= qr:
+            return self.node[idx]
+
+        if self.lazy[idx]:
+            self.pushdown(idx, l, r)
 
         mid = (l + r) >> 1
+        ansl, ansr = self.ini, self.ini
+        if ql <= mid: ansl = self.query(ql, qr, idx << 1, l, mid)
+        if qr > mid:ansr = self.query(ql, qr, (idx << 1) + 1, mid + 1, r)
+        return self.op(ansl, ansr)
 
-        vl, vr = 0, 0
-        if L <= mid:
-            vl = self.query(i * 2, l, mid, L, R)
-        if R > mid:
-            vr = self.query(i * 2 + 1, mid + 1, r, L, R)
-        return vl + vr
-```
+    def update_suffix(self, ul, ur, val, idx = 1, l = 1, r = None):
+        if r is None: r = self.n 
+        siz = r - l + 1
+        if ul <= l and r <= ur and siz - self.node[idx] <= val:
+            ans = siz - self.node[idx]
+            self.do(idx, l, r)
+            return ans
+        mid = (l + r) >> 1
+        if self.lazy[idx]:
+            self.pushdown(idx, l, r)
+        ans = 0
+        if ur > mid: ans += self.update_suffix(ul, ur, val, (idx << 1) + 1, mid + 1, r)
+        val -= ans
+        if val and ul <= mid: ans += self.update_suffix(ul, ur, val, idx << 1,  l, mid)
+        self.node[idx] = self.op(self.node[idx << 1], self.node[(idx << 1) + 1])
+        return ans 
 
-lazy 线段树（01翻转）
-
-```python
 class Solution:
-    def handleQuery(self, nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
-        n = len(nums1)
-        node = [0] * (4 * n)
-         # 懒标记：True表示该节点代表的区间被曾经被修改，但是其子节点尚未更新
-        lazy = [False] * (4 * n)
-
-        # 初始化线段树
-        def build(i = 1, l = 1, r = n):
-            if l == r:
-                node[i] = nums1[l - 1]
-                return 
-            mid = (l + r) >> 1
-            build(i * 2, l, mid)
-            build(i * 2 + 1, mid + 1, r)
-             # 维护区间 [l, r] 的值
-            node[i] = node[i * 2] + node[i * 2 + 1]
-        
-        
-        # 更新节点值，并设置lazy标记
-        def do(i, l, r):
-            node[i] = r - l + 1 - node[i]
-            lazy[i] = not lazy[i]
-        
-
-        # 区间更新：本题中更新区间[l, r] 相当于做翻转
-        def update(L, R, i = 1, l = 1, r = n):
-            if L <= l and r <= R:
-                do(i, l, r)
-                return 
-            
-            mid = (l + r) >> 1
-            if lazy[i]:
-                # 根据标记信息更新p的两个左右子节点，同时为子节点增加标记
-                # 然后清除当前节点的标记
-                do(i * 2, l, mid)
-                do(i * 2 + 1, mid + 1, r)
-                lazy[i] = False
-        
-            if L <= mid:
-                update(L, R, i * 2, l, mid)
-            if R > mid:
-                update(L, R, i * 2 + 1, mid + 1, r)
-            
-            # 更新节点值
-            node[i] = node[i * 2] + node[i * 2 + 1]
-        
-        build()
-
-        res, s = [], sum(nums2)
-        for op, L, R in queries:
-            if op == 1:
-                update(L + 1, R + 1)
-            elif op == 2:
-                s += node[1] * L 
-            else:
-                res.append(s)
-        return res
+    def findMinimumTime(self, nums: List[List[int]]) -> int:
+        nums.sort(key = lambda x: x[1])
+        n, m = len(nums), nums[-1][1]
+        tr = SegmentTree([0] * m, 'bin')
+        for l, r, c in nums:
+            c -= tr.query(l, r)
+            if c > 0:
+                tr.update_suffix(l, r, c)
+        return tr.query(0, m)
 ```
+
+
 
 ## 树状数组
+
+下标从1开始，单点修改 + 区间查询
 
 ```python
 # 下标从1开始
@@ -7790,7 +8105,7 @@ $f[x]$  表示 $ 0 \sim endTime[x] $ 时间段内的最多报酬，一种转移�
 
 # 贪心
 
-## 多维贪心 + 排序
+## 排序贪心
 
 [406. 根据身高重建队列 - 力扣（LeetCode）](https://leetcode.cn/problems/queue-reconstruction-by-height/description/)
 
@@ -7833,6 +8148,50 @@ $f[x]$  表示 $ 0 \sim endTime[x] $ 时间段内的最多报酬，一种转移�
             s += mxw 
             res = min(res, nums[i][0] * s)
         return res
+```
+
+****
+
+[2589. 完成所有任务的最少时间 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/description/?envType=daily-question&envId=2024-05-15)
+
+**区间选点问题：选点数量可能超过1 + 右端点排序贪心**
+
+为什么不能按照左端点排序？
+
+如果按照左端点排序：
+
+- 当下一个区间比当前区间先结束时，选点会在当前区间中间；
+- 当下一个区间前缀和当前区间后缀相交时，选点在当前区间的尾部。
+
+两者无法统一。
+
+考虑按照**右端点排序 / 结束时间排序：**
+
+- 当下一个区间比当前区间先开始，选点可以在当前区间的尾部。
+- 当下一个区间前缀和当前区间后缀相交时，选点也可以在区间的尾部。
+
+因此二者是统一的。
+
+从前向后考虑区间，当前区间，我们希望当前区间的后缀去匹配更多的后续区间的前缀，因此选点应该越靠后越好，即在当前区间的尾部。当相邻区间不相交时，选点是当前区间独占的。
+
+因此，使用 $sel$ 维护选择的点，每次进入新区间，首先考察范围内已经选择的点的个数；剩余的点需要贪心的安排在尾部。
+
+时间复杂度：$O(n \log n + n U)$, $U$ 为最大结束时间。
+
+```python
+    def findMinimumTime(self, nums: List[List[int]]) -> int:
+        nums.sort(key = lambda x: x[1])
+        n, m = len(nums), nums[-1][1]
+        sel = [0] * (m + 1)
+        for l, r, c in nums:
+            c -= sum(sel[l: r + 1])
+            if c > 0:
+                for i in range(r, l - 1, -1):
+                    if sel[i]: continue 
+                    sel[i] = 1
+                    c -= 1
+                    if c == 0: break 
+        return sum(sel)
 ```
 
 
