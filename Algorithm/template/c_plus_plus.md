@@ -1,5 +1,52 @@
 [TOC]
 
+# 基本操作
+
+## 输入输出
+
+读到输入流末尾
+
+```c++
+    while (scanf("%d%d", &l, &r) != EOF) {
+        
+    }
+```
+
+[3701. 非素数个数 - AcWing题库](https://www.acwing.com/problem/content/description/3704/)
+
+```c++
+#include<bits/stdc++.h>
+
+using namespace std;
+const int mx = 1e7;
+vector<int> primes;
+int is_prime[mx + 1];
+int a[mx + 1];
+int solve(int l, int r) {
+    return a[r] - a[l - 1];
+}
+int main() {
+    memset(is_prime, 1, sizeof(is_prime));
+    memset(a, 0, sizeof(a));
+    is_prime[0] = is_prime[1] = 0;
+    for(int i = 2; i <= mx; i++) {
+        if (is_prime[i]) primes.push_back(i);
+        for(auto& p : primes) {
+            if (i * p > mx) break;
+            is_prime[i * p] = 0;
+            if (i % p == 0) break;
+        }
+    }
+    for (int i = 2; i <= mx; i++) a[i] = a[i - 1] + (is_prime[i] ? 0 : 1);
+    int l, r;
+    while (scanf("%d%d", &l, &r) != EOF) 
+        printf("%d\n", solve(l, r));
+    return 0;
+}
+```
+
+
+
 # unordered_map
 
 ## 遍历
@@ -108,7 +155,26 @@ ull hash_string(string s, int base = 131, ull moder = 1e18 + 7) {
 }
 ```
 
-# 
+# 前缀和 / 差分
+
+[2779. 数组的最大美丽值 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-beauty-of-an-array-after-applying-operation/description/?envType=daily-question&envId=2024-06-15)
+
+```c++
+    int maximumBeauty(vector<int>& nums, int k) {
+        int delta =  k - *min_element(nums.begin(), nums.end());
+        int n = nums.size();
+        for(auto& x : nums) x += delta;
+        int mx = *max_element(nums.begin(), nums.end()) + k;
+        vector<int> a(mx + 1, 0);
+        vector<int> d(mx + 2, 0);
+        for(auto& x : nums) d[x - k]++, d[x + k + 1]--;
+        a[0] = d[0];
+        for(int i = 1; i <= mx; i++) a[i] = a[i - 1] + d[i];
+        return *max_element(a.begin(), a.end());
+    }
+```
+
+
 
 # 区间合并
 
@@ -133,6 +199,94 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 
 
 # 数据结构
+
+## 二叉树
+
+二叉查找树（C语言）
+
+```c++
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef struct Node
+{
+    int v;
+    struct Node *l;
+    struct Node *r;
+} Node;
+
+Node *newNode(int v)
+{
+    Node *res = (Node *)malloc(sizeof(Node));
+    res->v = v;
+    res->l = NULL;
+    res->r = NULL;
+    return res;
+}
+
+void insert(Node *node, int v)
+{
+    if (v < node->v)
+    {
+        if (node->l == NULL)
+            node->l = newNode(v);
+        else
+            insert(node->l, v);
+    }
+    else
+    {
+        if (node->r == NULL)
+            node->r = newNode(v);
+        else
+            insert(node->r, v);
+    }
+}
+
+void inorder(Node *node)
+{
+    if (node != NULL)
+    {
+        inorder(node->l);
+        printf("%d ", node->v);
+        inorder(node->r);
+    }
+}
+int main()
+{
+    Node *root = newNode(4);
+    insert(root, 1);
+    insert(root, 2);
+    insert(root, 0);
+    insert(root, 9);
+    inorder(root);
+    return 0;
+}
+```
+
+二叉树的递归中序遍历
+
+```c++
+void inorder(Node *root)
+{
+    Node *stk[100];
+    int pstk = 0;
+    memset(stk, NULL, sizeof(stk));
+    stk[pstk++] = root;
+    while (pstk)
+    {
+        Node *node = stk[--pstk];
+        if (node->l == NULL && node->r == NULL) printf("%d ", node->v);
+        else
+        {
+            if (node->r != NULL) stk[pstk++] = node->r;
+            stk[pstk++] = newNode(node->v);
+            if (node->l != NULL)stk[pstk++] = node->l;
+        }
+    }
+}
+```
+
+
 
 ## 并查集
 
@@ -202,6 +356,47 @@ public:
 
 
 ## 树状数组
+
+### 可离散化树状数组
+
+```c++
+inline int lowbit(int x){ return x & -x; }
+class FenwickTree{
+private:
+    int n;
+    vector<int> nums;
+    unordered_map<int, int> d;
+public:
+    FenwickTree(vector<int>& nums) {
+        set<int> s(nums.begin(), nums.end());
+        vector<int> unums(s.begin(), s.end());
+        n = unums.size();
+        for(int i = 0; i < n; i++) d[unums[i]] = i + 1;
+        this -> nums = vector<int>(n + 1, 0); 
+    }
+
+    int query(int x) {
+        x = d[x];
+        int res = 0;
+        while (x) {
+            res += nums[x];
+            x -= lowbit(x);
+        }
+        return res; 
+    }
+
+    void update(int x, int val = 1) {
+        x = d[x];
+        while (x <= n) {
+            nums[x] += val;
+            x += lowbit(x);
+        }
+    }
+
+};
+```
+
+
 
 ```c++
 class FenwickTree {
@@ -428,6 +623,50 @@ int main() {
 ```
 
 # 图论
+
+## Dijkstra
+
+### 1. 朴素Dijkstra
+
+适用于稠密图，时间复杂度：$O(n^2)$
+
+[743. 网络延迟时间 - 力扣（LeetCode）](https://leetcode.cn/problems/network-delay-time/)
+
+```c++
+const int MX = 110;
+const int inf = 0x3f3f3f3f;
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& edges, int n, int k) {
+        int g[MX][MX];
+        memset(g, 0x3f, sizeof(g));
+        for(auto& edge : edges) {
+            int u = edge[0], v = edge[1], w = edge[2];
+            g[u][v] = w;
+            g[u][u] = 0, g[v][v] = 0;
+        }
+        vector<int> d(MX, inf);
+        d[k] = 0;
+        
+        int v[MX];
+        memset(v, 0, sizeof(v));
+
+        for (int i = 0; i < n - 1; i++){
+            int x = -1;
+            for(int u = 1; u <= n; u++) 
+                if(!v[u] && (x < 0 || d[u] < d[x]))
+                    x = u;
+            v[x] = 1;
+            for(int u = 1; u <= n; u++) 
+                d[u] = min(d[u], d[x] + g[x][u]);
+        }
+        int res = *max_element(d.begin() + 1, d.begin() + n + 1);
+        return res < inf ? res : -1;
+    }
+};
+```
+
+
 
 ## 换根DP
 
@@ -794,5 +1033,38 @@ do{
 
 ```c++
 
+```
+
+# 排序
+
+## 快速排序
+
+
+
+## 反悔贪心
+
+### 1.反悔堆
+
+[1642. 可以到达的最远建筑 - 力扣（LeetCode）](https://leetcode.cn/problems/furthest-building-you-can-reach/?envType=problem-list-v2&envId=1DMi3d2m)
+
+```c++
+    int furthestBuilding(vector<int>& nums, int b, int l) {
+        priority_queue<int> hq;    // 默认大顶堆，和py相反    
+        for(int i = 1; i < nums.size(); i++) {
+            int x = nums[i] - nums[i - 1];
+            if (x <= 0) continue;
+            hq.push(x);
+            if (b >= x) b -= x;
+            else{
+                while (b < x && l && hq.size()) {
+                    b += hq.top(); hq.pop();
+                    l--;
+                }
+                if (b < x) return i - 1;
+                b -= x;
+            }
+        }
+        return nums.size() - 1;
+    }
 ```
 

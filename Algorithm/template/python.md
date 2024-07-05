@@ -124,7 +124,7 @@ s.add((1, 2, 1))
 print(s)  # 输出：{(1, 1, 2)}
 ```
 
-## 6. 技巧
+## 6. 基本输入输出
 
 快读快写
 
@@ -134,6 +134,42 @@ sys.setrecursionlimit(1000000)
 input=lambda:sys.stdin.readline().strip()
 write=lambda x:sys.stdout.write(str(x)+'\n')
 ```
+
+读到文件结尾
+
+```python
+import sys
+
+for line in sys.stdin:
+    line = line.strip()   					
+```
+
+[3701. 非素数个数 - AcWing题库](https://www.acwing.com/problem/content/description/3704/)
+
+```python
+import sys
+n = 10 ** 7
+primes = []
+is_prime = [1] * (n + 1)
+is_prime[0] = is_prime[1] = 0
+for i in range(2, n + 1):
+    if is_prime[i]: primes.append(i)
+    for p in primes:
+        if i * p > n: break
+        is_prime[i * p] = 0
+        if i % p == 0: break 
+
+a = [0] * (n + 1)
+for i in range(2, n + 1):
+    a[i] = a[i - 1] + (1 if not is_prime[i] else 0)
+
+for line in sys.stdin:
+    input = line.strip()    
+    l, r = map(int, input.split())
+    print(a[r] - a[l - 1])
+```
+
+
 
 ## 7.优先队列 / 堆
 
@@ -1331,7 +1367,7 @@ print(bisect_left(l, 10)) # 14
 
 ```python
 a = [(1, 20), (2, 19), (4, 15), (7,12)]
-idx = bisect_left(a, (2, ))
+idx = bisect_left(a, (2, )) # 1
 ```
 
 ## 二分答案
@@ -1873,6 +1909,10 @@ def get_set_subarrays_lower_k(nums, k):
 不定长滑窗哈希表：所有 $freq[x] \le k$ 的最长子数组，由于单次判断的时间复杂度是 $O(n)$，总复杂度是 $O(n^2) $。
 通过 $cnt$ 维护 $freq[x] > k$ 的个数，**在边界处增减1**。转换为 $cnt = 0$ 最长子数组 ，复杂度 $O(n) $
 
+
+
+
+
 [2958. 最多 K 个重复元素的最长子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/description/)
 
 ```python
@@ -1892,12 +1932,6 @@ def get_set_subarrays_lower_k(nums, k):
             res = max(res, r - l + 1)
         return res 
 ```
-
-
-
-
-
-
 
 [Problem - 1777C - Codeforces](https://codeforces.com/problemset/problem/1777/C)
 
@@ -1951,7 +1985,7 @@ for _ in range(t):
 
 
 
-## 枚举型滑窗
+## 枚举型滑窗 / 分组滑窗
 
 **枚举出现种类个数**
 
@@ -2058,6 +2092,30 @@ for _ in range(t):
 
 
 
+**分组滑窗**
+
+[2831. 找出最长等值子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/find-the-longest-equal-subarray/description/?envType=daily-question&envId=2024-05-23)
+
+按元素对下标分组 + 不定长滑窗
+
+预处理每个元素所有下标构成的数组，对某一元素 $x$，其数组 $a$ 上做不定长滑窗，$a[r] - a[l]  + 1$ 为滑窗长度，$r-l+1$ 为 $x$ 个数。因为最多能删除 $k$ 个，所以要求 $ a[r] - a[l] + 1 - (r - l + 1) \le k$。
+
+```python
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int:
+        d = defaultdict(list)
+        for i, x in enumerate(nums):
+            d[x].append(i)
+        res = 1
+        for a in d.values():
+            m = len(a)
+            l = 0
+            for r in range(m):
+                while a[r] - a[l] + 1 - (r - l + 1) > k:
+                    l += 1 
+                res = max(res, r - l + 1)
+        return res    
+```
+
 
 
 
@@ -2116,6 +2174,52 @@ for _ in range(t):
                 r += 1
             res = min(res, r - l - 1)
         return res
+```
+
+[1163. 按字典序排在最后的子串 - 力扣（LeetCode）](https://leetcode.cn/problems/last-substring-in-lexicographical-order/description/)
+
+转换问题：子串中字典序最大的串
+
+**性质1： 后缀 $s[i:]$   是以 $s[i]$  为开头的子串中，字典序最大的串。**
+
+**性质2：考察字典序最大的串，记为 $sub$，它的每个字符都小于等于 $sub[0]$。**
+
+> 例如，'ycyba' 是一个可能的最大串，而 'yczba'就不是，因为 'zba' > 'yczba'。
+
+
+
+对于两个位置 $i,j$，用偏移 $k$ 考察 $s[i:] $ 和 $s[j:]$ 中各个字符的大小关系：
+
+- $s[i+k] = s[j+k]$，则继续往后考察，$k+1$；
+
+- $s[i+k] < s[j+k]$，应让 $i$ 跳到 $\max (i+k+1, j)$。
+
+    - 首先可以肯定 $[i+1, i+k]$ 都不需要考虑，这是因为由于性质1，2，所以以 $[i+1, i+k]$ 开头的子串一定比 $s[i \sim i+k]$ 小；
+    - 其次，如果 $i+k+1 \le j$，则 $j$ 应该曾经已经考虑过 $[i+k+1, j - 1]$ 区间了，他们都没能更新 $i$ ，一定比 $s[i:i+k]$ 小
+    - 最后，如果 $i+k+1>j$ ，例如 'yybbyybbyyc' 这种情况，$s[i:i+k] = yybbyyb$，$s[j:j+k] = yybbyyc$，有公共前缀 $yybbyy$ ，以及后缀 $yyc$，即 $[j, i + k]$ 区间一定回比后缀小。
+
+    所以， $i = \max(i+k+1, j)$, $j = i + 1, k = 0 $。
+
+- $s[i+k] > s[j+k]$，让 $j$ 跳到 $j+k+1, k = 0$。
+
+
+
+```python
+class Solution:
+    def lastSubstring(self, s: str) -> str:
+        i, j, k = 0, 1, 0
+        n = len(s)
+        while j + k < n:
+            if s[i + k] == s[j + k]:
+                k += 1
+            else:
+                if s[i + k] < s[j + k]:
+                    i = j if j > i + k + 1 else i + k + 1
+                    j = i + 1
+                else: # s[i + k] > s[j + k]:
+                    j += k + 1
+                k = 0
+        return s[i: ]
 ```
 
 
@@ -2283,9 +2387,61 @@ while i < n:
         return -1
 ```
 
-## 单调栈
 
-## 优化dp
+
+## 单调队列	
+
+**滑窗最大值 ~ 维护递减小队列； 滑窗最小值 ~  维护递增队列**
+
+[239. 滑动窗口最大值 - 力扣（LeetCode）](https://leetcode.cn/problems/sliding-window-maximum/)
+
+```python
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        n = len(nums)
+        res = []
+        q = deque()
+        for i, x in enumerate(nums):
+            # 1.入，需要维护单调减队列的有序性
+            while q and x >= nums[q[-1]]:
+                q.pop()
+            q.append(i)
+
+            # 2.出，当滑动窗口区间长度大于k的时候，弹出去左端的
+            if i - q[0] + 1 > k:
+                q.popleft()
+            
+            # 记录元素
+            if i >= k - 1:
+                res.append(nums[q[0]])
+        return res    
+```
+
+[2398. 预算内的最多机器人数目 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/description/)
+
+单调队列 + 滑动窗口
+
+```python
+  def maximumRobots(self, chargeTimes: List[int], runningCosts: List[int], budget: int) -> int:
+        n = len(chargeTimes)
+        res = 0
+        s = l = 0   # 滑窗的和 / 窗口左边界 
+        q = deque()     # 单调队列维护最大值
+        # 滑动窗口
+        for i, x in enumerate(chargeTimes):
+            while q and x >= chargeTimes[q[-1]]:
+                q.pop()
+            q.append(i)
+            s += runningCosts[i]
+            while i - l + 1 > 0 and s * (i - l + 1) + chargeTimes[q[0]] > budget:
+                s -= runningCosts[l]
+                l += 1
+                if l > q[0]:
+                    q.popleft()
+            res = max(res, i - l + 1)
+        return res
+```
+
+## 单调栈优化dp
 
 [2617. 网格图中最少访问的格子数 - 力扣（LeetCode）](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/description/?envType=daily-question&envId=2024-03-22)
 
@@ -2344,59 +2500,32 @@ def minimumVisitedCells(self, grid: List[List[int]]) -> int:
         return f if f != inf else -1
 ```
 
+[LCP 32. 批量处理任务 - 力扣（LeetCode）](https://leetcode.cn/problems/t3fKg1/description/)
 
-
-## 单调队列
-
-滑窗最大值 ~ 维护递减小队列； 滑窗最小值 ~  维护递增队列
-
-[239. 滑动窗口最大值 - 力扣（LeetCode）](https://leetcode.cn/problems/sliding-window-maximum/)
+二分单调栈
 
 ```python
-    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
-        n = len(nums)
-        res = []
-        q = deque()
-        for i, x in enumerate(nums):
-            # 1.入，需要维护单调减队列的有序性
-            while q and x >= nums[q[-1]]:
-                q.pop()
-            q.append(i)
-
-            # 2.出，当滑动窗口区间长度大于k的时候，弹出去左端的
-            if i - q[0] + 1 > k:
-                q.popleft()
-            
-            # 记录元素
-            if i >= k - 1:
-                res.append(nums[q[0]])
-        return res    
+class Solution:
+    def processTasks(self, tasks: List[List[int]]) -> int:
+        stk = [(-1, -1, 0)]
+        tasks.sort(key = lambda x: x[1])
+        for l, r, t in tasks:
+            p = bisect_left(stk, (l, )) - 1
+            blue = stk[-1][2] - stk[p][2]  
+            red = max(0, stk[p][1] - l + 1) 
+            t -= blue + red 
+            if t <= 0: continue 
+            nl, nr, nt = r - t + 1, r, stk[-1][2] + t
+            while stk:
+                ll, rr, _ = stk[-1]
+                if nl > rr: break
+                nl = ll - (rr - nl + 1)
+                stk.pop()
+            stk.append((nl, nr, nt))
+        return stk[-1][2]
 ```
 
-[2398. 预算内的最多机器人数目 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/description/)
 
-单调队列 + 滑动窗口
-
-```python
-  def maximumRobots(self, chargeTimes: List[int], runningCosts: List[int], budget: int) -> int:
-        n = len(chargeTimes)
-        res = 0
-        s = l = 0   # 滑窗的和 / 窗口左边界 
-        q = deque()     # 单调队列维护最大值
-        # 滑动窗口
-        for i, x in enumerate(chargeTimes):
-            while q and x >= chargeTimes[q[-1]]:
-                q.pop()
-            q.append(i)
-            s += runningCosts[i]
-            while i - l + 1 > 0 and s * (i - l + 1) + chargeTimes[q[0]] > budget:
-                s -= runningCosts[l]
-                l += 1
-                if l > q[0]:
-                    q.popleft()
-            res = max(res, i - l + 1)
-        return res
-```
 
 ## 单调队列优化dp
 
@@ -2419,7 +2548,7 @@ def minimumVisitedCells(self, grid: List[List[int]]) -> int:
         return f[1]
 ```
 
-注意到 i递减，区间[i + 1, 2 * i + 1]是一个长度为为i + 1 的滑动窗口，转移成滑动窗口最值问题。
+注意到 i递减，区间 $[i + 1, 2 \times i + 1]$是一个长度为为i + 1 的滑动窗口，转移成滑动窗口最值问题。
 
 ```python
     def minimumCoins(self, prices: List[int]) -> int:
@@ -2446,7 +2575,28 @@ def minimumVisitedCells(self, grid: List[List[int]]) -> int:
 
 # 前缀/差分
 
-## 1.二维差分
+## 一维差分
+
+```python
+    def maximumBeauty(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        d = k - min(nums) 
+        for i in range(n): nums[i] += d 
+        mx = max(nums) + k
+        a = [0] * (mx + 1)
+        d = [0] * (mx + 2)
+        for x in nums:
+            d[x - k] += 1
+            d[x + k + 1] -= 1
+        a[0] = d[0]
+        for i in range(1, mx + 1):
+            a[i] = a[i - 1] + d[i]
+        return max(a)
+```
+
+
+
+## 二维差分
 
 ```python
 d = [[0] * (n + 2) for _ in range(m + 2)]
@@ -2463,7 +2613,7 @@ for i in range(m):
 
 ```
 
-## 2.二维前缀
+## 二维前缀
 
 [3070. 元素和小于等于 k 的子矩阵的数目 - 力扣（LeetCode）](https://leetcode.cn/problems/count-submatrices-with-top-left-element-and-sum-less-than-k/description/)
 
@@ -4001,6 +4151,57 @@ def union(u, v):
 
 **并查集维护连通块大小 ** 
 
+模板代码：
+
+```python
+        fa = list(range(n + 1))
+        siz = [1] * (n + 1)
+        def find(x):
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):
+            if find(u) != find(v):
+                siz[find(v)] += siz[find(u)]
+                fa[find(u)] = find(v)
+```
+
+
+
+[765. 情侣牵手 - 力扣（LeetCode）](https://leetcode.cn/problems/couples-holding-hands/description/)
+
+诸如 $(0,1), (1, 2), (2, 3), (3,1)$ 应该视作一个连通块内，其交换次数为连通块大小 - 1。
+
+```python
+class Solution:
+    def minSwapsCouples(self, row: List[int]) -> int:
+        n = len(row)
+        fa = list(range(n + 1))
+        siz = [1] * (n + 1)
+        def find(x):
+            if fa[x] != x:
+                fa[x] = find(fa[x])
+            return fa[x]
+        def union(u, v):
+            if find(u) != find(v):
+                siz[find(v)] += siz[find(u)]
+                fa[find(u)] = find(v)
+        s = set()
+        for i in range(0, n, 2):
+            p = i // 2
+            l, r = row[i] // 2, row[i + 1] // 2
+            if l == r: continue 
+            union(l, r)
+        for x in row:
+            s.add(find(x // 2))
+        res = 0
+        for x in s:
+            res += siz[find(x)] - 1
+        return res  
+```
+
+
+
 [2867. 统计树中的合法路径数目 - 力扣（LeetCode）](https://leetcode.cn/problems/count-valid-paths-in-a-tree/description/?envType=featured-list&envId=4eH5fI7k?envType=featured-list&envId=4eH5fI7k)
 
 并查集维护所有非质数子连通块的大小。
@@ -4920,6 +5121,8 @@ class NumArray:
 
 ### 离散化树状数组 + 还原
 
+
+
 ```python
 class FenwickTree:
     def __init__(self, length: int):
@@ -4973,6 +5176,92 @@ class Solution:
         return [mp_rev[i] for i in a] + [mp_rev[i] for i in b]
 ```
 
+
+
+**可离散化线段树**
+
+```python
+class FenwickTree:
+    def __lowbit(self, x: int) -> int:
+        """
+        返回x 的二进制中，最低为的1所构成的数。
+        :param x: 整数
+        :return: x的二进制中，最低为的1所构成的数
+        """
+        return x & -x
+    def __init__(self, n: int, discretize: bool = False, nums: [List[int]] = None):
+        """
+        初始化树状数组（Fenwick Tree）数据结构，下标从0开始
+        :param n: 值域范围
+        :param discretize: 是否对输入值进行离散化
+        :param nums: 离散化所需的输入数组
+        """
+        self.__dic = None
+        self.__discretize = discretize
+        self.__nums = None
+        self.__n = n
+
+        if discretize:
+            unique_nums = sorted(set(nums))
+            self.__dic = {unique_nums[i]: i + 1 for i in range(len(unique_nums))}
+            self.__n = len(unique_nums)
+
+        self.__nums = [0] * (self.__n + 1)
+
+    def __query(self, x: int) -> int:
+        """
+        查询小于等于x的个数
+        :param x: 查询的数
+        :return: 查询小于等于x的个数
+        """
+        res = 0
+        while x > 0:
+            res += self.__nums[x]
+            x -= self.__lowbit(x)
+        return res
+
+    def update(self, x: int, val: int) -> None:
+        """
+        x处对应的值增加val
+        :param x: 更新的数
+        :param val: 变化值
+        """
+        if self.__discretize:
+            if x not in self.__dic:
+                raise ValueError(f"值{x} 不在离散化范围内")
+            x = self.__dic[x]
+
+        while x <= self.__n:
+            self.__nums[x] += val
+            x += self.__lowbit(x)
+
+    def query(self, lx: int, rx: int = None) -> int:
+        """
+        如果只传入一个参数，则查询小于等于lx的个数
+        如果传入两个参数，则查询大于等于lx, 小于等于rx的个数
+        :param lx: 查询区间左端点
+        :param rx: 查询区间右端点
+        :return: 查询区间内的元素个数
+        """
+        if self.__discretize:
+            if lx not in self.__dic:
+                raise ValueError(f"值{lx} 不在离散化范围内")
+            lx = self.__dic[lx]
+            if rx is not None:
+                if rx not in self.__dic:
+                    raise ValueError(f"值{rx} 不在离散化范围内")
+                rx = self.__dic[rx]
+
+        if rx is not None:
+            if lx > rx:
+                raise ValueError(f"左边界{lx} 大于右边界{rx}")
+            return self.__query(rx) - self.__query(lx - 1)
+        return self.__query(lx)
+
+```
+
+
+
 ## ST表 / 可重复贡献问题
 
 > 可重复贡献问题：指对于运算 $opt$， 满足 $ x \space opt  \space x = x$。例如区间最值问题，区间GCD问题。
@@ -5004,7 +5293,7 @@ $$
 $例如，对于 f(4, 3) = opt(f(4, 2), f(8, 2))$
 
 ```python
-lenj = math.ceil(math.log(n, 2)) + 1
+lenj = math.ceil(math.__log(n, 2)) + 1
 f = [[0] * lenj for _ in range(n)]
 for i in range(n):
     f[i][0] = a[i]
@@ -5046,7 +5335,9 @@ for i in range(2, n + 1):
 ```python
 def opt(a, b):
     return max(a, b)
-lenj = math.ceil(math.log(n, 2)) + 1
+
+
+lenj = math.ceil(math.__log(n, 2)) + 1
 f = [[0] * lenj for _ in range(n)]
 log = [0] * (n + 1)
 for i in range(2, n + 1):
@@ -5055,6 +5346,8 @@ for i in range(n): f[i][0] = a[i]
 for j in range(1, lenj):
     for i in range(n + 1 - (1 << j)):
         f[i][j] = opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+
+
 def qry(l, r):
     k = log[r - l + 1]
     return opt(f[l][k], f[r - (1 << k) + 1][k])
@@ -5066,19 +5359,21 @@ def qry(l, r):
 class ST:
     def opt(self, a, b):
         return a & b
+
     def __init__(self, nums):
         n = len(nums)
         log = [0] * (n + 1)
         for i in range(2, n + 1):
             log[i] = log[i >> 1] + 1
-        lenj = ceil(math.log(n, 2)) + 1
+        lenj = ceil(math.__log(n, 2)) + 1
         f = [[0] * lenj for _ in range(n)]
         for i in range(n): f[i][0] = nums[i]
         for j in range(1, lenj):
             for i in range(n + 1 - (1 << j)):
                 f[i][j] = self.opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
-        self.f = f 
-        self.log = log 
+        self.f = f
+        self.log = log
+
     def qry(self, L, R):
         k = self.log[R - L + 1]
         return self.opt(self.f[L][k], self.f[R - (1 << k) + 1][k])
@@ -5090,36 +5385,39 @@ class ST:
 
 ```python
     def subArrayRanges(self, nums: List[int]) -> int:
-        # f[i][j] 表示 [i, i + 2^j - 1] 的最值
-        n = len(nums)
-        lenj = ceil(math.log(n, 2)) + 1
-        log = [0] * (n + 1)
-        for i in range(2, n + 1):
-            log[i] = log[i // 2] + 1
-        
-        class ST:
-            def __init__(self, n, flag):
-                self.flag = flag
-                f = [[inf * flag] * lenj for _ in range(n)]
-                for i in range(n):
-                    f[i][0] = nums[i]
-                for j in range(1, lenj):
-                    for i in range(n + 1 - (1 << j)):
-                        f[i][j] = self.op(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
-                self.f = f
-            def op(self, a, b):
-                if self.flag == 1: return min(a, b)
-                return max(a, b)
-            def query(self, l, r):
-                k = log[(r - l + 1)]
-                return self.op(self.f[l][k], self.f[r - (1 << k) + 1][k])
-        n = len(nums)
-        mxtr, mntr = ST(n, -1), ST(n, 1)
-        res = 0
-        for i in range(n):
-            for j in range(i + 1, n):
-                res += mxtr.query(i, j) - mntr.query(i, j)
-        return res
+    # f[i][j] 表示 [i, i + 2^j - 1] 的最值
+    n = len(nums)
+    lenj = ceil(math.__log(n, 2)) + 1
+    log = [0] * (n + 1)
+    for i in range(2, n + 1):
+        log[i] = log[i // 2] + 1
+
+    class ST:
+        def __init__(self, n, flag):
+            self.flag = flag
+            f = [[inf * flag] * lenj for _ in range(n)]
+            for i in range(n):
+                f[i][0] = nums[i]
+            for j in range(1, lenj):
+                for i in range(n + 1 - (1 << j)):
+                    f[i][j] = self.op(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+            self.f = f
+
+        def op(self, a, b):
+            if self.flag == 1: return min(a, b)
+            return max(a, b)
+
+        def query(self, l, r):
+            k = log[(r - l + 1)]
+            return self.op(self.f[l][k], self.f[r - (1 << k) + 1][k])
+
+    n = len(nums)
+    mxtr, mntr = ST(n, -1), ST(n, 1)
+    res = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            res += mxtr.query(i, j) - mntr.query(i, j)
+    return res
 ```
 
 
@@ -8298,13 +8596,13 @@ def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]])
             if i < k:
                 total_profit += p 
                 if c not in s:      # 种类c首次出现, 对应p一定最大, 一定保留
-                    s.add(c)
+                    s.add(c)	
                 else:
                     stk.append(p)    # 反悔栈：存放第二次及以后出现的更小的p
             elif stk and c not in s:
                 # 只有c没有出现在s中时，才尝试反悔一个出现两次及以上的p
-                total_profit += p - stk.pop() 
-                s.add(c)
+                total_profit += p - stk.pop() 			
+                s.add(c)		
                 # 贪心：s的长度只增不减
             res = max(res, total_profit + len(s) ** 2)
         return res
@@ -8649,10 +8947,10 @@ $ f(i, j) =\min \{f(i - 1, j - 1) + d[i]/s,~ ceil(f(i - 1, j) + d[i]/s)\}$
                 return k
 ```
 
-## 
 
 
 
 
 
-[灵茶の试炼 (qq.com)](https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz?tab=BB08J2)
+
+[灵茶の试炼 (qq.com)](https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz?tab=BB08J2)	

@@ -3275,7 +3275,7 @@ $$
 $例如，对于 f(4, 3) = opt(f(4, 2), f(8, 2))$
 
 ```python
-lenj = math.ceil(math.log(n, 2)) + 1
+lenj = math.ceil(math.__log(n, 2)) + 1
 f = [[0] * lenj for _ in range(n)]
 for i in range(n):
     f[i][0] = a[i]
@@ -3317,7 +3317,9 @@ for i in range(2, n + 1):
 ```python
 def opt(a, b):
     return max(a, b)
-lenj = math.ceil(math.log(n, 2)) + 1
+
+
+lenj = math.ceil(math.__log(n, 2)) + 1
 f = [[0] * lenj for _ in range(n)]
 log = [0] * (n + 1)
 for i in range(2, n + 1):
@@ -3326,6 +3328,8 @@ for i in range(n): f[i][0] = a[i]
 for j in range(1, lenj):
     for i in range(n + 1 - (1 << j)):
         f[i][j] = opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+
+
 def qry(l, r):
     k = log[r - l + 1]
     return opt(f[l][k], f[r - (1 << k) + 1][k])
@@ -3337,19 +3341,21 @@ def qry(l, r):
 class ST:
     def opt(self, a, b):
         return a & b
+
     def __init__(self, nums):
         n = len(nums)
         log = [0] * (n + 1)
         for i in range(2, n + 1):
             log[i] = log[i >> 1] + 1
-        lenj = ceil(math.log(n, 2)) + 1
+        lenj = ceil(math.__log(n, 2)) + 1
         f = [[0] * lenj for _ in range(n)]
         for i in range(n): f[i][0] = nums[i]
         for j in range(1, lenj):
             for i in range(n + 1 - (1 << j)):
                 f[i][j] = self.opt(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
-        self.f = f 
-        self.log = log 
+        self.f = f
+        self.log = log
+
     def qry(self, L, R):
         k = self.log[R - L + 1]
         return self.opt(self.f[L][k], self.f[R - (1 << k) + 1][k])
@@ -3361,36 +3367,39 @@ class ST:
 
 ```python
     def subArrayRanges(self, nums: List[int]) -> int:
-        # f[i][j] 表示 [i, i + 2^j - 1] 的最值
-        n = len(nums)
-        lenj = ceil(math.log(n, 2)) + 1
-        log = [0] * (n + 1)
-        for i in range(2, n + 1):
-            log[i] = log[i // 2] + 1
-        
-        class ST:
-            def __init__(self, n, flag):
-                self.flag = flag
-                f = [[inf * flag] * lenj for _ in range(n)]
-                for i in range(n):
-                    f[i][0] = nums[i]
-                for j in range(1, lenj):
-                    for i in range(n + 1 - (1 << j)):
-                        f[i][j] = self.op(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
-                self.f = f
-            def op(self, a, b):
-                if self.flag == 1: return min(a, b)
-                return max(a, b)
-            def query(self, l, r):
-                k = log[(r - l + 1)]
-                return self.op(self.f[l][k], self.f[r - (1 << k) + 1][k])
-        n = len(nums)
-        mxtr, mntr = ST(n, -1), ST(n, 1)
-        res = 0
-        for i in range(n):
-            for j in range(i + 1, n):
-                res += mxtr.query(i, j) - mntr.query(i, j)
-        return res
+    # f[i][j] 表示 [i, i + 2^j - 1] 的最值
+    n = len(nums)
+    lenj = ceil(math.__log(n, 2)) + 1
+    log = [0] * (n + 1)
+    for i in range(2, n + 1):
+        log[i] = log[i // 2] + 1
+
+    class ST:
+        def __init__(self, n, flag):
+            self.flag = flag
+            f = [[inf * flag] * lenj for _ in range(n)]
+            for i in range(n):
+                f[i][0] = nums[i]
+            for j in range(1, lenj):
+                for i in range(n + 1 - (1 << j)):
+                    f[i][j] = self.op(f[i][j - 1], f[i + (1 << (j - 1))][j - 1])
+            self.f = f
+
+        def op(self, a, b):
+            if self.flag == 1: return min(a, b)
+            return max(a, b)
+
+        def query(self, l, r):
+            k = log[(r - l + 1)]
+            return self.op(self.f[l][k], self.f[r - (1 << k) + 1][k])
+
+    n = len(nums)
+    mxtr, mntr = ST(n, -1), ST(n, 1)
+    res = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            res += mxtr.query(i, j) - mntr.query(i, j)
+    return res
 ```
 
 

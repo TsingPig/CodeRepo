@@ -1,60 +1,26 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int N = 15;
-using ll = long long;
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-ll a[N], m[N], Mi[N];
-
-// 扩展欧几里得算法
-tuple<ll, ll, ll> exgcd(ll a, ll b)
+// 1 7 5 6 4 
+// 1 6 5 7 4
+void quickSort(int* a, int n)
 {
-    if (b == 0)
-        return {1, 0, a};
-    auto [x, y, d] = exgcd(b, a % b);
-    return {y, x - a / b * y, d};
-}
-
-// 求 ax + by = c 的特解
-pair<ll, ll> liEu(ll a, ll b, ll c)
-{
-    auto [x, y, d] = exgcd(a, b);
-    if (c % d != 0)
-        return {0, 0};
-    a /= d;
-    c /= d;
-    b /= d;
-    return {(x * c % b + b) % b, (y * c % a + a) % a};
-}
-
-ll inv(ll a, ll b)
-{
-    // ax mod b = 1
-    // ax + 1y = b
-    auto [x, y] = liEu(a, b, 1);
-    return x;
+    int pos = n / 2; int x = a[pos];
+    int i = pos - 1, j = pos + 1;
+    while(i > 0 && j < n) {
+        if(a[i] < x) {
+        }
+    }
 }
 
 int main()
 {
-    ll n, mul = 1; // mulΪ����m[i]�ĳ˻�
-    cin >> n;
-    for (int i = 1; i <= n; i++)
-    {
-        cin >> m[i] >> a[i];
-        mul *= m[i];
-    }
-
-    ll X = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        Mi[i] = mul / m[i];
-        ll x = 0, y = 0;
-        ll cur = inv(Mi[i], m[i]);
-        cur = (cur * Mi[i]) % mul;
-        cur = (cur * a[i]) % mul;
-        // X = (X + *Mi[i] * iv) % mul;
-        X = (X + cur) % mul;
-    }
-    cout << X << endl;
+    int a[10];
+    for(int i = 0; i < 10; i++)
+        scanf("%d", &a[i]);
+    quickSort(a, 10);
+    for(int i = 0; i < 10; i++)
+        printf("%d ", a[i]);
     return 0;
 }
