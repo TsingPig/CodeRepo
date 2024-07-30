@@ -1,26 +1,43 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <eigen3/Eigen/Core>
 
-// 1 7 5 6 4 
-// 1 6 5 7 4
-void quickSort(int* a, int n)
+#define N 100005
+using namespace std;
+class node
 {
-    int pos = n / 2; int x = a[pos];
-    int i = pos - 1, j = pos + 1;
-    while(i > 0 && j < n) {
-        if(a[i] < x) {
-        }
-    }
-}
+    int t, c;
 
+public:
+    node(int t, int c)
+    {
+        this->t = t;
+        this->c = c;
+    }
+    node(node &b)
+    {
+        t = b.t;
+        c = b.c;
+    }
+    node(const node &b)
+    {
+        t = b.t;
+        c = b.c;
+    }
+    bool operator<(node &b)
+    {
+        return t < b.t;
+    }
+    bool operator<(const node &b)
+    {
+        return t < b.t;
+    }
+    void output()
+    {
+        cout << this->t;
+    }
+};
 int main()
 {
-    int a[10];
-    for(int i = 0; i < 10; i++)
-        scanf("%d", &a[i]);
-    quickSort(a, 10);
-    for(int i = 0; i < 10; i++)
-        printf("%d ", a[i]);
-    return 0;
+    priority_queue<node> q;
+    node a(1, 1), b(2, 2);
+    q.push(a);
 }

@@ -4455,6 +4455,9 @@ class SegmentTree:
         if self.ops == 'bin':
             self.node[idx] = dr - dl + 1 
             self.lazy[idx] = True
+        elif self.ops == 'sum':
+            self.node[idx] = self.op(self.node[idx], (dr - dl + 1) * val)
+            self.lazy[idx] = val
         else:
             self.node[idx] = self.op(val, self.node[idx])
             self.lazy[idx] = val
@@ -4578,6 +4581,116 @@ class Solution:
         return res
 ```
 
+
+
+### lazy线段树（带动态开点）
+
+```python
+class Node:
+    __slots__ = ['l', 'r', 'lazy', 'val']
+
+    def __init__(self, val = 0):
+        self.l = None
+        self.r = None
+        self.lazy = None
+        self.val = val
+
+class SegmentTree:
+    __slots__ = ['root', 'node', 'op', 'ini', 'ops', 'max_val']
+
+    def __init__(self, ops: str = 'sum', max_val: int = int(1e9)):
+        if ops == 'sum' or ops == 'bin':
+            op, ini = lambda a, b: a + b if a is not None else b, 0
+        elif ops == 'max':
+            op, ini = lambda a, b: max(a, b), -inf
+        elif ops == 'min':
+            op, ini = lambda a, b: min(a, b), inf
+        self.root = Node(ini)
+        self.op = op
+        self.ini = ini
+        self.ops = ops
+        self.max_val = max_val
+
+    def __do(self, node, dl, dr, val = None):
+        if self.ops == 'bin':
+            node.val = dr - dl + 1
+            node.lazy = True
+        elif self.ops == 'sum':
+            node.val = self.op(node.val, (dr - dl + 1) * val)
+            node.lazy = self.op(node.lazy, val)
+        else:
+            node.val = self.op(node.val, val)
+            node.lazy = val
+
+
+    # 下放lazy标记。如果是孩子为空，则动态开点
+    def __pushdown(self, node, pl, pr):
+        val = node.lazy
+
+
+        # 根据lazy标记信息，更新左右节点，然后将lazy信息清除
+        mid = (pl + pr) >> 1
+        self.__do(node.l, pl, mid, val)
+        self.__do(node.r, mid + 1, pr, val)
+        node.lazy = None
+
+    def update(self, ul, ur, val, node = None, l = 1, r = None):
+        # 查询默认从根节点开始
+        if node is None: node = self.root
+        if r is None: r = self.max_val
+
+        if ul <= l and r <= ur:
+            self.__do(node, l, r, val)
+            return
+
+        if node.l is None: node.l = Node(self.ini)
+        if node.r is None: node.r = Node(self.ini)
+        # 下放标记、根据标记信息更新左右节点，然后清除标记
+        if node.lazy is not None:
+            self.__pushdown(node, l, r)
+
+        mid = (l + r) >> 1
+        if ul <= mid: self.update(ul, ur, val, node.l, l, mid)
+        if ur > mid: self.update(ul, ur, val, node.r, mid + 1, r)
+        # node.val 为 True 表示这个节点所在区间，均被“跟踪”
+        node.val = self.op(node.l.val, node.r.val)
+
+    def query(self, ql, qr, node = None, l = 1, r = None):
+        # 查询默认从根节点开始
+        if node is None: node = self.root
+        if r is None: r = self.max_val
+
+        if ql <= l and r <= qr:
+            return node.val
+
+        if node.l is None: node.l = Node(self.ini)
+        if node.r is None: node.r = Node(self.ini)
+
+        # 下放标记、根据标记信息更新左右节点，然后清除标记
+        if node.lazy is not None:
+            self.__pushdown(node, l, r)
+
+        mid = (l + r) >> 1
+        ansl, ansr = self.ini, self.ini
+        if ql <= mid: ansl = self.query(ql, qr, node.l, l, mid)
+        if qr > mid: ansr = self.query(ql, qr, node.r, mid + 1, r)
+        return self.op(ansl, ansr)
+```
+
+```python
+tr = SegmentTree('sum')
+tr.update(1, 10, 99)
+tr.update(1, 4, 1)
+tr.update(5, 10, 1)
+print(tr.query(1, 1))  # 100
+print(tr.query(1, 10))  # 1000
+
+```
+
+
+
+
+
 ### 递归动态开点（无lazy) 线段树
 
 区间覆盖统计问题，区间覆盖不需要重复操作，不需要进行lazy传递
@@ -4627,9 +4740,9 @@ class CountIntervals:
 
 ```
 
-### 
 
-### 动态开点 + lazy 线段树			
+
+### 动态开点 + lazy 线段树 （旧版）			
 
 ```python
 # https://leetcode.cn/problems/range-module/
@@ -7041,7 +7154,7 @@ f[i,j]~ &=~Max(f[i-1,j],&  	&f[i-1,j-w]+v,&	&~f[i-1,j-2w]+2v,&	&~f[i-1,j-3w]+3v 
 
 f[i,j-w]~ &= ~Max(	&		&f[i-1,j-w],&	&~f[i-1,j-2w]+v,&			&~f[i-1,j-3w]+2v,    &...)
 
-\end{align}
+\end{align} 
 $$
 所以 $f(i, j) = max \big(f(i - 1, j), f(i, j - w[i]) + v[i] \big)$， 
 

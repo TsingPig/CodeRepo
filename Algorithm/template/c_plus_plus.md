@@ -1037,6 +1037,37 @@ do{
 
 # 排序
 
+## 插入排序
+
+```c
+void insertSort(int arr[], int n) {
+    for(int i = 1, j; i < n; i++) {
+        int k = arr[i];
+        for(j = i; j >= 1 && k < arr[j - 1]; j--) arr[j] = arr[j - 1];
+        arr[j] = k;
+    }
+}
+```
+
+## 希尔排序
+
+希尔排序函数：初始增量为n，然后每次 n 缩小一半，直到增量为1。每次进行插入排序
+
+```c
+// 希尔排序函数：初始增量为n，然后每次 n 缩小一半，直到增量为1。每次进行插入排序
+void shellSort(int arr[], int n) {
+    for(int gap = n / 2; gap > 0; gap >>= 1) {
+        for(int i = gap, j; i < n; i++) {
+            int k = arr[i];
+            for(j = i; j >= gap && k < arr[j - gap]; j -= gap) arr[j] = arr[j - gap];
+            arr[j] = k;
+        }
+    }
+}
+```
+
+
+
 ## 快速排序
 
 
