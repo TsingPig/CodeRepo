@@ -4689,6 +4689,23 @@ print(tr.query(1, 10))  # 1000
 
 
 
+[699. 掉落的方块 - 力扣（LeetCode）](https://leetcode.cn/problems/falling-squares/description/?envType=daily-question&envId=2024-07-28)
+
+```python
+class Solution:
+    def fallingSquares(self, positions: List[List[int]]) -> List[int]:
+        tr = SegmentTree('max', int(1e8))
+        res = []
+        for l, sz in positions:
+            r = l + sz - 1
+            mxh = tr.query(l, r) + sz
+            tr.update(l, r, mxh)
+            res.append(tr.query(1, int(1e8)))
+        return res
+```
+
+
+
 
 
 ### 递归动态开点（无lazy) 线段树
