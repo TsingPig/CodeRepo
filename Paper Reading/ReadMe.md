@@ -28,6 +28,12 @@ JCR 4区
 
  [An Overview of Blockchain Technology Architecture, Consensus, and Future Trends.pdf](An Overview of Blockchain Technology Architecture, Consensus, and Future Trends.pdf) 
 
-区块链综述：架构、共识和未来趋势（**Bitcoin**、Byzantine Generals Problem、**PoW**、**mining**、**PoS**、**PBFT**、**DPoS**、Ripple、Tendermint、）
+区块链综述：架构、共识和未来趋势（**Bitcoin**、Byzantine Generals Problem、**PoW**、**mining**、**PoS**、**PBFT**、**DPoS**、Ripple、Tendermint）
 
 <img src="C:\Users\TsingPig\AppData\Roaming\Typora\typora-user-images\image-20240902103824525.png" alt="image-20240902103824525" style="zoom:35%;" />
+
+ [Overview_On_Hardware_Characteristics_Of_Virtual_Reality_Systems.pdf](___References\Overview_On_Hardware_Characteristics_Of_Virtual_Reality_Systems.pdf) 
+
+VR设备综述
+
+<img src="C:\Users\TsingPig\AppData\Roaming\Typora\typora-user-images\image-20240904162742219.png" alt="image-20240904162742219" style="zoom:33%;" />
