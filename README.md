@@ -1,3 +1,3 @@
 VR Paper List
 
-![Paper List](Paper Reading___vr/Paper List.png)
+![Paper List](Paper Reading/___vr/Paper List.png)
