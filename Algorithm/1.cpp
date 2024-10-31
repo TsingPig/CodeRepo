@@ -1,43 +1,27 @@
-#include <eigen3/Eigen/Core>
-
-#define N 100005
+#include <iostream>
 using namespace std;
-class node
-{
-    int t, c;
 
-public:
-    node(int t, int c)
-    {
-        this->t = t;
-        this->c = c;
-    }
-    node(node &b)
-    {
-        t = b.t;
-        c = b.c;
-    }
-    node(const node &b)
-    {
-        t = b.t;
-        c = b.c;
-    }
-    bool operator<(node &b)
-    {
-        return t < b.t;
-    }
-    bool operator<(const node &b)
-    {
-        return t < b.t;
-    }
-    void output()
-    {
-        cout << this->t;
-    }
-};
 int main()
 {
-    priority_queue<node> q;
-    node a(1, 1), b(2, 2);
-    q.push(a);
+    int n, q;
+    cin >> n >> q;
+    char a[n]; cin >> a;
+    int num10 = 0, num01 = 0;
+    for (int i = 0; i < q; i++)
+    {
+        int x, y;
+        cin >> x >> y;
+        for (int j = x + 1; j < y; j++)
+        {
+            if (a[j - 1] == '1' && a[j] == '0')
+                num10++;
+            if (a[j - 1] == '0' && a[j] == '1')
+                num01++;
+        }
+        if (num10 == num01)
+            cout << "YES" << endl;
+        else
+            cout << "NO" << endl;
+    }
+    return 0;
 }

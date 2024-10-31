@@ -3040,7 +3040,7 @@ $$
 
 - 对于质数$p$ ， $\phi(p^k) = p^k - \frac{p^k}{p} = p^k - p^{k -1}$
 
-​		证明：减去是$p$ 的倍数的数，得到不是p 的倍数的数的个数一定和 $p$ 互质。
+​		证明：减去是$p$ 的倍数的数，剩下不是p 的倍数的数，一定和 $p$ 互质。
 
 ```python
 def solve(n):
@@ -3048,7 +3048,7 @@ def solve(n):
     for i in range(2, int(sqrt(n)) + 1):
         if n % i == 0:
             res = res * (i - 1) // i
-            while n % i == 0:
+            while n % i == 0:7
                 n //= i 
     if n > 1:
         res = res * (n - 1) // n
