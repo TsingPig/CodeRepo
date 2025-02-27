@@ -1358,7 +1358,7 @@ l = [1,1,1,3,3,3,4,4,4,5,5,5,8,9,10,10]
 print(len(l)) # 16
 
 print(bisect(l, 10))     # 相当于upper_bound, 16
-print(bisect_right(l, 10))    
+print(bisect_right(l, 10))    # 16
 
 print(bisect_left(l, 10)) # 14
 ```
