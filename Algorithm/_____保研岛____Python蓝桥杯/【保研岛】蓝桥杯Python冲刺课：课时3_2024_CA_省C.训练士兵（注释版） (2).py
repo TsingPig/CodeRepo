@@ -15,8 +15,8 @@ lambda 参数: 表达式
 x = lambda a: a + 10
 print(x(5)) # 输出: 15
 
-get_mid = lambda nums: nums[len(nums) / 2]
-print(get_mid([1, 4, 5))
+get_mid = lambda nums: nums[len(nums) // 2]
+print(get_mid([1, 4, 5]))
 
 
 # 数据读入
