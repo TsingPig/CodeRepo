@@ -8,16 +8,16 @@
 
 '''
 
-# 常见变量命名
-# res/ans 答案、结果
-# cnt/tot 用于技术
-# i, idx 表示 索引
-# x, y, z... 表示元素遍历
-# a, b, c... 变量
-# s 字符串变量
-# nums 数组
-# q 队列， d字典， k,v 键值对变量
-# l, r = left, right
+        # 常见变量命名
+        # res/ans 答案、结果
+        # cnt/tot 用于计数
+        # i, idx 表示 索引
+        # x, y, z... 表示元素遍历
+        # a, b, c... 变量
+        # s 字符串变量
+        # nums 数组
+        # q 队列， d字典， k,v 键值对变量
+        # l, r = left, right
 
 
 
