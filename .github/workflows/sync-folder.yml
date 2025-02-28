@@ -1,0 +1,22 @@
+name: Sync Folder
+on:
+  push:
+    paths:
+      - 'Algorithm/_____保研岛____Python蓝桥杯/**' # 监听文件夹的变化
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sync folder to new repository
+        run: |
+          mkdir new-repo
+          cp -r folder_name/ new-repo/
+          cd new-repo
+          git init
+          git add .
+          git commit -m "Synced folder from original repo"
+          git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/new-repo.git
+          git push -u origin main --force
