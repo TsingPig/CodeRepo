@@ -52,7 +52,7 @@ jobs:
 
           # 初始化 Git 并推送
           cd $NEW_REPO
-          git init
+          git init -b main  # 初始化并指定默认分支为 main
           git add .
           git commit -m "Synced folder from original repo"
           git remote add origin $NEW_REPO_URL
