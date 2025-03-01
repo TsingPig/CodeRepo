@@ -191,23 +191,29 @@ stk[-1]  # 获取栈顶元素不移除
 
 # ==================== 栈实战示例 ====================
 
-# 示例3：后序表达式求值（栈操作经典）
-def eval_rpn(tokens):
+def eval_rpn(tokens: list[str]) -> int:
     stack = []
-    ops = {'+': lambda a,b: a+b, '*': lambda a,b: a*b}  # 简写运算符
+    ops = {
+        '+': lambda a, b: a + b,
+        '-': lambda a, b: a - b,
+        '*': lambda a, b: a * b,
+        '/': lambda a, b: int(a / b)  # 关键！向零取整（而非Python默认的向下取整）
+    }
+
     for t in tokens:
         if t in ops:
             b = stack.pop()
             a = stack.pop()
-            stack.append(ops[t](a,b))  # 注意操作数顺序
+            stack.append(ops[t](a, b))  # 注意操作数顺序：a在前，b在后
         else:
             stack.append(int(t))
     return stack[0]
 
-# 示例1：简单表达式
-# 2 + 1 * 3
-print(eval_rpn(["2", "1", "+", "3", "*"]))  # 输出: 9
 
+# ------------------ 测试用例 -------------------
+print(eval_rpn(["2", "1", "+", "3", "*"]))  # 输出: 9 → (2+1)*3
+print(eval_rpn(["4", "13", "5", "/", "+"]))  # 输出: 6 → 4 + (13/5)
+print(eval_rpn(["10", "6", "9", "3", "+", "-11", "*", "/", "*"]))  # 输出: -20
 
 # 示例4：嵌套列表解析（栈结构应用）
 def decode_string(s):
