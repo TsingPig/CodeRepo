@@ -4,7 +4,7 @@
 
 b站 pre版本视频合集 https://space.bilibili.com/398421867/lists?sid=4898042&spm_id_from=333.788.0.0
 
-
+Gitee镜像仓库：https://gitee.com/TsingPig/Lesson_Python_TsingPig.git
 
 | 补充资料                                             | 备注                               |
 | ---------------------------------------------------- | ---------------------------------- |
