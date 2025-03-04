@@ -39,21 +39,28 @@ jobs:
             https://api.github.com/user/repos \
             -d '{"name":"'$NEW_REPO'", "private":false}'
 
-      - name: Sync folder to new repository
+      - name: Clone new repository
         run: |
-          # 设置变量
-          FOLDER_PATH="Algorithm/_____保研岛____Python蓝桥杯"
           NEW_REPO="Lesson_Python_TsingPig"
           NEW_REPO_URL="https://${{ secrets.NEW_REPO_TOKEN }}@github.com/${{ github.repository_owner }}/$NEW_REPO.git"
 
-          # 创建新文件夹并复制内容
-          mkdir $NEW_REPO
-          cp -r "$FOLDER_PATH/" "$NEW_REPO/"
-
-          # 初始化 Git 并推送
+          # 克隆目标仓库，保留已有内容
+          git clone $NEW_REPO_URL $NEW_REPO
           cd $NEW_REPO
-          git init -b main  # 初始化并指定默认分支为 main
+          git checkout main
+
+      - name: Sync folder content
+        run: |
+          # 设置变量
+          SOURCE_FOLDER="Algorithm/_____保研岛____Python蓝桥杯"
+          TARGET_FOLDER="Lesson_Python_TsingPig"
+
+          # 仅同步文件夹内部内容，不覆盖目标仓库已有文件
+          rsync -av --delete $SOURCE_FOLDER/ $TARGET_FOLDER/
+
+      - name: Push changes to new repository
+        run: |
+          cd Lesson_Python_TsingPig
           git add .
-          git commit -m "Synced folder from original repo"
-          git remote add origin $NEW_REPO_URL
-          git push -u origin main --force
+          git commit -m "Sync latest changes from original repo" || echo "No changes to commit"
+          git push origin main
