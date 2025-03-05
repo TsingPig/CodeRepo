@@ -1,5 +1,3 @@
-# 蓝桥杯Python冲刺课_课时4 暴力 & 哈希 & 时间复杂度
-
 ## 哈希
 
 [1. 两数之和 - 力扣（LeetCode）](https://leetcode.cn/problems/two-sum/?envType=problem-list-v2&envId=o85r8WFa)[1. 两数之和 - 力扣（LeetCode）](https://leetcode.cn/problems/two-sum/?envType=problem-list-v2&envId=o85r8WFa)
@@ -16,10 +14,49 @@
 
 **提示：**
 
-- `2 <= nums.length <= 104`
-- `-109 <= nums[i] <= 109`
-- `-109 <= target <= 109`
+- `2 <= nums.length <= 1e5`
 - **只会存在一个有效答案**
+
+
+
+**思路：暴力**
+
+```python
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        n = len(nums)
+        for i in range(n):
+            for j in range(n):
+                if i == j: continue
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+```
+
+
+
+```python
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        n = len(nums)
+        for i, x in enumerate(nums):
+            for j, y in enumerate(nums):
+                if i == j: continue
+                if x + y == target:
+                    return [i, j]
+```
+
+
+
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # 前缀哈希
+        d = {}
+        n = len(nums)
+        for i, x in enumerate(nums):
+            if d.get(target - x) is not None:
+                return [i, d[target - x]]
+            d[x] = i
+
+```
 
 
 
@@ -73,7 +110,7 @@ for i in range(n):
     p[i + 1] = p[i] + a[i]
 ```
 
-
+$a[l] + ... + a[r] = p[r + 1] - p[l]$
 
 [P8218 【深进1.例1】求区间和 - 洛谷 (luogu.com.cn)](https://www.luogu.com.cn/problem/P8218)
 
@@ -92,9 +129,6 @@ for i in range(n):
 
 for _ in range(q):
     l, r = map(int, input().split())
-    # l, r 下标从1开始，即求 a[l - 1] + a[l] + ... + a[r - 1]
-    # 即 sum(a[l - 1:r])
-    # 即 p[r] - p[l - 1]
     print(p[r] - p[l - 1])
 ```
 
