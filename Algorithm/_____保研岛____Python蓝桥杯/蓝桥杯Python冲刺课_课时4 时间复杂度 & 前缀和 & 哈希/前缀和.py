@@ -8,12 +8,11 @@ n = int(input())
 a = list(map(int, input().split()))
 q = int(input())
 
+# 前缀和模板, p[i] = sum(a[:i])
+p = [0] * (n + 1)
+for i in range(n):
+    p[i + 1] = p[i] + a[i]
+
 for _ in range(q):
     l, r = map(int, input().split())
-
-    res = 0
-    for i in range(l-1, r):
-        res += a[i]
-    print(res)
-
-    #print(sum(a[l-1:r]))
+    print(p[r] - p[l - 1])
