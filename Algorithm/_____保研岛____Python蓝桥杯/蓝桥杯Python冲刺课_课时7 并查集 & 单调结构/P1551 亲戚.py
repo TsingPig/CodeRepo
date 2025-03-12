@@ -1,5 +1,6 @@
 # https://www.luogu.com.cn/problem/P1551
 import sys
+input = lambda: sys.stdin.readline().strip()
 n, m, p = map(int, input().split())
 
 
