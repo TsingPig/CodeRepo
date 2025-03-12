@@ -43,7 +43,7 @@ jobs:
         run: |
           # 设置变量
           FOLDER_PATH="Algorithm/_____保研岛____Python蓝桥杯"
-          NEW_REPO="Lesson_Python_TsingPig"
+          NEW_REPO="LanQiao_Python"
           NEW_REPO_URL="https://${{ secrets.NEW_REPO_TOKEN }}@github.com/${{ github.repository_owner }}/$NEW_REPO.git"
 
           # 创建新文件夹并复制子内容
