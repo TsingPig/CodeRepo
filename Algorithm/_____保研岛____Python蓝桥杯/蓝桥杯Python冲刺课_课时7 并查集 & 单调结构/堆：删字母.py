@@ -1,6 +1,6 @@
 
 import sys
-in
+input = lambda: sys.stdin.readline().strip()
 # 请在此输入您的代码
 # 4 7 5 6 20 1 4 15 30             6
 # 4

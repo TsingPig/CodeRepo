@@ -12,3 +12,5 @@ class Solution:
             res += x 
             heappush(hq, (-ceil(-x / 3), i))
         return -res
+
+
