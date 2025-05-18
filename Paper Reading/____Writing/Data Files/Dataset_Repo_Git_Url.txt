@@ -59,7 +59,6 @@ https://github.com/abmami/Fruit-Ninja-VR-Unity
 https://github.com/itspitaman/VR-Hero-Shooter-Controller
 https://github.com/itspitaman/Kindled-Spirits-VR
 https://github.com/jeffrafter/unity-basic-xr-template
-https://github.com/The64thGamer/Min-Max
 https://github.com/AmyE123/Orb-Odyssey
 https://github.com/mta211041/neanderthal-tools
 https://github.com/jordansmithsgames/VRobot
