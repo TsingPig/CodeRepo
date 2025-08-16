@@ -37,3 +37,110 @@ JCR 4区
 VR设备综述
 
 <img src="C:\Users\TsingPig\AppData\Roaming\Typora\typora-user-images\image-20240904162742219.png" alt="image-20240904162742219" style="zoom:33%;" />
+
+$E=mc^2$
+
+$\sin 30 = \frac{1}{2}$
+
+Markdown + Latex
+
+123456
+
+Typora
+
+
+
+
+
+# Python 安装指南
+
+Python 是一种流行的编程语言，安装过程非常简单。以下是不同操作系统下的 Python 安装方法：
+
+## Windows 系统安装 Python
+
+1. **下载 Python**
+
+    - 访问 Python 官方网站
+    - 点击 "Download Python 3.x.x"（最新稳定版）
+    - 下载 Windows 安装程序（64位或32位，根据你的系统选择）
+
+2. **运行安装程序**
+
+    - 双击下载的 `.exe` 文件
+    - 勾选 **"Add Python 3.x to PATH"**（重要！这将允许你在命令行中使用 Python）
+    - 点击 "Install Now"（默认安装）或 "Customize installation"（自定义安装）
+    - 等待安装完成
+
+3. **验证安装**
+
+    - 打开命令提示符（Win+R，输入 `cmd`）
+    - 输入 `python --version` 或 `python -V`
+    - 如果显示 Python 版本号（如 `Python 3.9.7`），说明安装成功
+
+    
+
+```c++
+#include <iostream>
+#include <vector>
+
+// 迭代实现二分查找
+int binarySearch(const std::vector<int>& arr, int target) {
+    int left = 0;
+    int right = arr.size() - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // 防止溢出
+        
+        if (arr[mid] == target) {
+            return mid; // 找到目标，返回索引
+        } else if (arr[mid] < target) {
+            left = mid + 1; // 在右半部分继续查找
+        } else {
+            right = mid - 1; // 在左半部分继续查找
+        }
+    }
+    
+    return -1; // 未找到目标
+}
+
+// 递归实现二分查找
+int binarySearchRecursive(const std::vector<int>& arr, int target, int left, int right) {
+    if (left > right) {
+        return -1; // 基本情况：未找到
+    }
+    
+    int mid = left + (right - left) / 2;
+    
+    if (arr[mid] == target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    } else {
+        return binarySearchRecursive(arr, target, left, mid - 1);
+    }
+}
+
+int main() {
+    std::vector<int> arr = {1, 3, 5, 7, 9, 11, 13, 15};
+    int target = 7;
+    
+    // 使用迭代版本
+    int result = binarySearch(arr, target);
+    if (result != -1) {
+        std::cout << "迭代版本: 元素 " << target << " 在索引 " << result << " 处找到" << std::endl;
+    } else {
+        std::cout << "迭代版本: 元素 " << target << " 未找到" << std::endl;
+    }
+    
+    // 使用递归版本
+    result = binarySearchRecursive(arr, target, 0, arr.size() - 1);
+    if (result != -1) {
+        std::cout << "递归版本: 元素 " << target << " 在索引 " << result << " 处找到" << std::endl;
+    } else {
+        std::cout << "递归版本: 元素 " << target << " 未找到" << std::endl;
+    }
+    
+    return 0;
+}
+```
+
