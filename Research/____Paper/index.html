@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>论文管理系统</title>
+<style>
+body { font-family: "Segoe UI", system-ui, sans-serif; background:#f5f5f5; margin:20px; color:#222; }
+h1 { color:#333; margin-bottom:16px; }
+.paper { border:1px solid #ddd; padding:12px; margin:10px 0; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.04); }
+.paper .actions { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+input, textarea { width:100%; margin:4px 0; padding:8px; border-radius:6px; border:1px solid #ddd; }
+button { margin:2px 0; padding:6px 12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+button:hover { background:#f0f0f0; }
+.collapse { display:none; margin-top:8px; }
+.note { background:#fff9db; border:1px solid #f2da75; border-radius:6px; padding:6px 8px; margin-top:6px; }
+.note-header { display:flex; justify-content:space-between; align-items:center; font-weight:600; color:#9c6500; }
+.note-header button { border:none; background:transparent; color:#b7791f; font-weight:600; }
+.note-content { display:none; margin-top:6px; white-space:pre-wrap; font-size:0.95em; color:#5c3d00; }
+.toolbar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.toolbar button { flex:none; }
+.groups { display:flex; flex-direction:column; gap:12px; }
+.group { border:1px solid #ccc; border-radius:10px; background:#fff; overflow:hidden; }
+.group-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; background:#f3f4f6; }
+.group-title { font-weight:600; color:#111; }
+.group-count { color:#555; font-size:0.9em; margin-left:8px; }
+.group-collapse { display:none; padding:10px 16px 16px; }
+.group.open .group-collapse { display:block; }
+.group-header button { border:none; background:#e5e7eb; padding:4px 10px; border-radius:6px; }
+.status { font-size:0.9em; color:#555; margin-bottom:12px; }
+.status.error { color:#c53030; }
+.status.success { color:#2f855a; }
+</style>
+</head>
+<body>
+<h1>📚 论文管理系统</h1>
+<div class="toolbar">
+    <input type="text" id="search" placeholder="搜索标题/作者/标签..." style="flex:1; min-width:220px;">
+    <button id="bind-file">📂 绑定 metadata.json</button>
+    <button id="download-json">💾 导出 metadata.json</button>
+    <button id="reload-data">🔄 重新加载</button>
+</div>
+
+<p id="status" class="status">初始化中...</p>
+
+<div id="papers" class="groups"></div>
+
+<script>
+const EMBEDDED_PAPERS = [{"file_key": "__game/a survey of video game testing.pdf", "title": "A Survey of Video Game Testing", "authors": "Cristiano Politowski", "year": "2021", "venue": "", "tags": ["survey"], "pdf": "papers/__Game/A%20Survey%20of%20Video%20Game%20Testing.pdf", "bib": "", "notes": ""}, {"file_key": "__game/agent-based testing of extended reality systems.pdf", "title": "Agent based Testing of Extended Reality Systems", "authors": "Rui Prada, I. S. W. B. Prasetya, Fitsum Kifetew, Frank Dignum, Tanja E. J. Vos, Jason Lander, Jean-yves Donnart, Alexandre Kazmierowski, Joseph Davidson, and Pedro M. Fernandes", "year": "2020", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Agent-based%20Testing%20of%20Extended%20Reality%20Systems.pdf", "bib": "", "notes": ""}, {"file_key": "__game/an agent-based approach to automated game testing_an experience report.pdf", "title": "An Agent based Approach to Automated Game Testing an Experience Report", "authors": "Unknown Authors", "year": "2020", "venue": "", "tags": ["Game Testing"], "pdf": "papers/__Game/An%20Agent-based%20Approach%20to%20Automated%20Game%20Testing_an%20Experience%20Report.pdf", "bib": "", "notes": ""}, {"file_key": "__game/an automated model based testing approach for platform games.pdf", "title": "An automated model based testing approach for platform games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["Model-based Testing"], "pdf": "papers/__Game/An%20automated%20model%20based%20testing%20approach%20for%20platform%20games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/aplib_tactical agents for testing computer games.pdf", "title": "Aplib Tactical Agents for Testing Computer Games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Aplib_Tactical%20Agents%20for%20Testing%20Computer%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/augmenting automated game testing with deep reinforcement learning.pdf", "title": "Augmenting Automated Game Testing with Deep Reinforcement Learning", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Augmenting%20Automated%20Game%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "__game/dota 2 with large scale deep reinforcement learning.pdf", "title": "Dota 2 with Large Scale Deep Reinforcement Learning", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Dota%202%20with%20Large%20Scale%20Deep%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "__game/exploring game space using survival analysis.pdf", "title": "Exploring Game Space Using Survival Analysis", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Exploring%20Game%20Space%20Using%20Survival%20Analysis.pdf", "bib": "", "notes": ""}, {"file_key": "__game/glib  towards automated test oracle for graphically-rich applications.pdf", "title": "Glib towards automated test oracle for graphically rich applications", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Glib%20%20towards%20automated%20test%20oracle%20for%20graphically-rich%20applications.pdf", "bib": "", "notes": ""}, {"file_key": "__game/improving playtesting coverage via curiosity driven reinforcement learning agents.pdf", "title": "Improving Playtesting Coverage via Curiosity Driven Reinforcement Learning Agents", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Improving%20Playtesting%20Coverage%20via%20Curiosity%20Driven%20Reinforcement%20Learning%20Agents.pdf", "bib": "", "notes": ""}, {"file_key": "__game/know your bugs_a survey of issues in automated.pdf", "title": "Know Your Bugs A Survey of Issues in Automated", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Know%20Your%20Bugs_A%20Survey%20of%20Issues%20in%20Automated.pdf", "bib": "", "notes": ""}, {"file_key": "__game/navigation and exploration in 3d-game automated play testing.pdf", "title": "Navigation and Exploration in 3D Game Automated Play Testing", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Navigation%20and%20Exploration%20in%203D-Game%20Automated%20Play%20Testing.pdf", "bib": "", "notes": ""}, {"file_key": "__game/procedural game level design to trigger spatial exploration.pdf", "title": "Procedural Game Level Design to Trigger Spatial Exploration", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Procedural%20Game%20Level%20Design%20to%20Trigger%20Spatial%20Exploration.pdf", "bib": "", "notes": ""}, {"file_key": "__game/search-based automated play testing of computer games_a model-based approach.pdf", "title": "Search Based Automated Play Testing of Computer Games A Model Based Approach", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Search-Based%20Automated%20Play%20Testing%20of%20Computer%20Games_A%20Model-Based%20Approach.pdf", "bib": "", "notes": ""}, {"file_key": "__game/study of methodology of testing mobile games based on ttcn-3.pdf", "title": "Study of Methodology of Testing Mobile Games Based on TTCN 3", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Study%20of%20Methodology%20of%20Testing%20Mobile%20Games%20Based%20on%20TTCN-3.pdf", "bib": "", "notes": ""}, {"file_key": "__game/technical challenges of deploying reinforcement learning agents for game testing in aaa games.pdf", "title": "Technical Challenges of Deploying Reinforcement Learning Agents for Game Testing in AAA Games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Technical%20Challenges%20of%20Deploying%20Reinforcement%20Learning%20Agents%20for%20Game%20Testing%20in%20AAA%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/towards agent-based testing of 3d games using reinforcement learning.pdf", "title": "Towards Agent Based Testing of 3D Games using Reinforcement Learning", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Towards%20Agent-Based%20Testing%20of%203D%20Games%20using%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "__game/towards automated video game testing_still a long way to go.pdf", "title": "Towards automated video game testing still a long way to go", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Towards%20automated%20video%20game%20testing_still%20a%20long%20way%20to%20go.pdf", "bib": "", "notes": ""}, {"file_key": "__game/using an agent-based approach for robust automated testing of computer games.pdf", "title": "Using an Agent Based Approach for Robust Automated Testing of Computer Games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Using%20an%20Agent-Based%20Approach%20for%20Robust%20Automated%20Testing%20of%20Computer%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/using reinforcement learning for load testing of video games.pdf", "title": "Using Reinforcement Learning for Load Testing of Video Games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Using%20Reinforcement%20Learning%20for%20Load%20Testing%20of%20Video%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/video game automated testing approaches_an assessment framework.pdf", "title": "Video Game Automated Testing Approaches An Assessment Framework", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Video%20Game%20Automated%20Testing%20Approaches_An%20Assessment%20Framework.pdf", "bib": "", "notes": ""}, {"file_key": "__game/widget detection-based testing for industrial mobile games.pdf", "title": "Widget Detection Based Testing for Industrial Mobile Games", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Widget%20Detection-Based%20Testing%20for%20Industrial%20Mobile%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "__game/wuji_automatic online combat game testing using evolutionary deep reinforcement learning.pdf", "title": "Wuji Automatic Online Combat Game Testing Using Evolutionary Deep Reinforcement Learning", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/__Game/Wuji_Automatic%20Online%20Combat%20Game%20Testing%20Using%20Evolutionary%20Deep%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "a survey on vision-language-action models for embodied ai .pdf", "title": "A Survey on Vision Language Action Models for Embodied AI", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/A%20Survey%20on%20Vision-Language-Action%20Models%20for%20Embodied%20AI%20.pdf", "bib": "", "notes": ""}, {"file_key": "aligning cyber space with physical world a comprehensive survey on embodied ai.pdf", "title": "Aligning Cyber Space with Physical World A Comprehensive Survey on Embodied AI", "authors": "Unknown Authors", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Aligning%20Cyber%20Space%20with%20Physical%20World%20A%20Comprehensive%20Survey%20on%20Embodied%20AI.pdf", "bib": "", "notes": ""}, {"file_key": "llm/bug prediction using source code embedding based on doc2vec.pdf", "title": "Bug Prediction Using Source Code Embedding Based on Doc2Vec", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Bug%20Prediction%20Using%20Source%20Code%20Embedding%20Based%20on%20Doc2Vec.pdf", "bib": "", "notes": ""}, {"file_key": "llm/chain-of-thought prompting elicits reasoning in large language models.pdf", "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Chain-of-Thought%20Prompting%20Elicits%20Reasoning%20in%20Large%20Language%20Models.pdf", "bib": "", "notes": ""}, {"file_key": "llm/chatdev_communicative_agents_for_software_development.pdf", "title": "ChatDev_Communicative_Agents_for_Software_Development", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/ChatDev_Communicative_Agents_for_Software_Development.pdf", "bib": "", "notes": ""}, {"file_key": "llm/codet5 identifier-aware unified pre-trained encoder-decoder models for code understanding and generation.pdf", "title": "CodeT5 Identifier-aware Unified Pre-trained Encoder-Decoder Models for Code Understanding and Generation", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/CodeT5%20Identifier-aware%20Unified%20Pre-trained%20Encoder-Decoder%20Models%20for%20Code%20Understanding%20and%20Generation.pdf", "bib": "", "notes": ""}, {"file_key": "llm/large language models for software engineering_ a systematic literature review.pdf", "title": "Large Language Models for Software Engineering_ A Systematic Literature Review", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Large%20Language%20Models%20for%20Software%20Engineering_%20A%20Systematic%20Literature%20Review.pdf", "bib": "", "notes": ""}, {"file_key": "llm/make llm a testing expert_ bringing human-like interaction to mobile gui testing via functionality-aware decisions.pdf", "title": "Make LLM a Testing Expert_ Bringing Human-like Interaction to Mobile GUI Testing via Functionality-aware Decisions", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Make%20LLM%20a%20Testing%20Expert_%20Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf", "bib": "", "notes": ""}, {"file_key": "llm/transformers_state-of-the-art natural language processing.pdf", "title": "Transformers_State-of-the-Art Natural Language Processing", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Transformers_State-of-the-Art%20Natural%20Language%20Processing.pdf", "bib": "", "notes": ""}, {"file_key": "llm/tree of thought_deliberate problem solving with large language models.pdf", "title": "Tree of Thought_Deliberate Problem Solving with Large Language Models", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/Tree%20of%20Thought_Deliberate%20Problem%20Solving%20with%20Large%20Language%20Models.pdf", "bib": "", "notes": ""}, {"file_key": "llm/voyager_an open-ended embodied agent with large language models.pdf", "title": "VOYAGER_An Open-Ended Embodied Agent with Large Language Models", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/LLM/VOYAGER_An%20Open-Ended%20Embodied%20Agent%20with%20Large%20Language%20Models.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/_how developers optimize virtual reality applications a study of optimization commits in open source unity projects.pdf", "title": "_How developers optimize virtual reality applications A study of optimization commits in open source unity projects", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/a survey of performance optimization for mobile application.pdf", "title": "A Survey of Performance Optimization for Mobile Application", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/A%20Survey%20of%20Performance%20Optimization%20for%20Mobile%20Application.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/an app performance optimization advisor for mobile device app.pdf", "title": "An app performance optimization advisor for mobile device app", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/An%20app%20performance%20optimization%20advisor%20for%20mobile%20device%20app.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/efish’nsea unity game set for learning software performance.pdf", "title": "eFish’nSea Unity Game Set for Learning Software Performance", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/eFish%E2%80%99nSea%20Unity%20Game%20Set%20for%20Learning%20Software%20Performance.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/learning performance optimization from code changes for android apps.pdf", "title": "Learning Performance Optimization from Code Changes for Android Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Learning%20Performance%20Optimization%20from%20Code%20Changes%20for%20Android%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/mobile application processors_techniques for software power-performance optimization.pdf", "title": "Mobile Application Processors_Techniques for Software Power-Performance Optimization", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Mobile%20Application%20Processors_Techniques%20for%20Software%20Power-Performance%20Optimization.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/optimizing immersion_analyzing  graphics and performance  considerations in unity3d  vr development.pdf", "title": "Optimizing Immersion_Analyzing  Graphics and Performance  Considerations in Unity3D  VR Development", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Optimizing%20Immersion_Analyzing%20%20Graphics%20and%20Performance%20%20Considerations%20in%20Unity3D%20%20VR%20Development.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/performance analysis and optimization techniques in unity 3d.pdf", "title": "Performance Analysis and Optimization Techniques in Unity 3D", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Performance%20Analysis%20and%20Optimization%20Techniques%20in%20Unity%203D.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/performance optimization opportunities in the android software stack.pdf", "title": "Performance optimization opportunities in the Android software stack", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Performance%20optimization%20opportunities%20in%20the%20Android%20software%20stack.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/pro android apps performance optimization.pdf", "title": "Pro Android Apps Performance Optimization", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Pro%20Android%20Apps%20Performance%20Optimization.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/pro ios apps .pdf", "title": "Pro iOS Apps ", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Pro%20iOS%20Apps%20.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/research on key technologies for deep optimization  of unity based scenarios.pdf", "title": "Research on Key Technologies for Deep Optimization  of Unity Based Scenarios", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Research%20on%20Key%20Technologies%20for%20Deep%20Optimization%20%20of%20Unity%20Based%20Scenarios.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/research on the 3d game scene optimization of mobile phone based on the unity 3d engine.pdf", "title": "Research on the 3D Game Scene Optimization of Mobile Phone Based on the Unity 3D Engine", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Research%20on%20the%203D%20Game%20Scene%20Optimization%20of%20Mobile%20Phone%20Based%20on%20the%20Unity%203D%20Engine.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/research on unity scene optimization based on fast lod technique performance comparison on android mobile platform.pdf", "title": "Research on Unity Scene Optimization Based on Fast LoD Technique Performance Comparison on Android Mobile Platform", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Research%20on%20Unity%20Scene%20Optimization%20Based%20on%20Fast%20LoD%20Technique%20Performance%20Comparison%20on%20Android%20Mobile%20Platform.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/revitalizing codequest mobile app_performance optimization for immersive oop learning.pdf", "title": "Revitalizing CodeQuest Mobile App_Performance Optimization for Immersive OOP Learning", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/Revitalizing%20CodeQuest%20Mobile%20App_Performance%20Optimization%20for%20Immersive%20OOP%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/unity-optimizations-for-x86-android-v2-92.pdf", "title": "unity-optimizations-for-x86-android-v2-92", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/unity-optimizations-for-x86-android-v2-92.pdf", "bib": "", "notes": ""}, {"file_key": "performance optimization/unity-performance-optimizations-best-practices-630893.pdf", "title": "unity-performance-optimizations-best-practices-630893", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/Performance%20Optimization/unity-performance-optimizations-best-practices-630893.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_a peek into the metaverse  detecting 3d model clones in mobile games.pdf", "title": "_A Peek into the Metaverse  Detecting 3D Model Clones in Mobile Games", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_A%20Peek%20into%20the%20Metaverse%20%20Detecting%203D%20Model%20Clones%20in%20Mobile%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_a study of user privacy in android mobile ar apps.pdf", "title": "_A Study of User Privacy in Android Mobile AR Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_A%20Study%20of%20User%20Privacy%20in%20Android%20Mobile%20AR%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_how developers optimize virtual reality applications a study of optimization commits in open source unity projects.pdf", "title": "_How developers optimize virtual reality applications A study of optimization commits in open source unity projects", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_re methods for virtual reality software product development a mapping study.pdf", "title": "_RE Methods for Virtual Reality Software Product Development A Mapping Study", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_RE%20Methods%20for%20Virtual%20Reality%20Software%20Product%20Development%20A%20Mapping%20Study.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_virtual reality (vr) automated testing in the wild a case study on unity-based vr applications.pdf", "title": "_Virtual Reality (VR) Automated Testing in the Wild A Case Study on Unity-Based VR Applications", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_Virtual%20Reality%20%28VR%29%20Automated%20Testing%20in%20the%20Wild%20A%20Case%20Study%20on%20Unity-Based%20VR%20Applications.pdf", "bib": "", "notes": ""}, {"file_key": "vr/_vrtest an extensible framework for automatic testing.pdf", "title": "_VRTest An Extensible Framework for Automatic Testing", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/_VRTest%20An%20Extensible%20Framework%20for%20Automatic%20Testing.pdf", "bib": "", "notes": ""}, {"file_key": "vr/a survey on (m)llm-based gui agents.pdf", "title": "A Survey on (M)LLM-Based GUI Agents", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/A%20Survey%20on%20%28M%29LLM-Based%20GUI%20Agents.pdf", "bib": "", "notes": ""}, {"file_key": "vr/a survey onthe design of virtual reality interaction interfaces.pdf", "title": "A Survey onthe Design of Virtual Reality Interaction Interfaces", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/A%20Survey%20onthe%20Design%20of%20Virtual%20Reality%20Interaction%20Interfaces.pdf", "bib": "", "notes": ""}, {"file_key": "vr/adcube webvr ad fraud and practical confinement of third-party ads.pdf", "title": "AdCube WebVR Ad Fraud and Practical Confinement of Third-Party Ads", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/AdCube%20WebVR%20Ad%20Fraud%20and%20Practical%20Confinement%20of%20Third-Party%20Ads.pdf", "bib": "", "notes": ""}, {"file_key": "vr/aligning_cyber_space_with_physical_world_a_comprehensive_survey_on_embodied_ai.pdf", "title": "Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI.pdf", "bib": "", "notes": ""}, {"file_key": "vr/an evolutionary approach for generating software models_the case of kromaia in game software engineering.pdf", "title": "An evolutionary approach for generating software models_The case of Kromaia in Game Software Engineering", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/An%20evolutionary%20approach%20for%20generating%20software%20models_The%20case%20of%20Kromaia%20in%20Game%20Software%20Engineering.pdf", "bib": "", "notes": ""}, {"file_key": "vr/an_empirical_study_on_oculus_virtual_reality_applications_security_and_privacy_perspectives.pdf", "title": "An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf", "bib": "", "notes": ""}, {"file_key": "vr/analyzing and detecting virtual_augmented reality performance issues with large language models.pdf", "title": "Analyzing and Detecting Virtual_Augmented Reality Performance Issues with Large Language Models", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Analyzing%20and%20Detecting%20Virtual_Augmented%20Reality%20Performance%20Issues%20with%20Large%20Language%20Models.pdf", "bib": "", "notes": ""}, {"file_key": "vr/ataxonomy_of_interaction_techniques_for_immersive_augmented_reality_based_on_an_iterative_literature_review.pdf", "title": "ATaxonomy_of_Interaction_Techniques_for_Immersive_Augmented_Reality_based_on_an_Iterative_Literature_Review", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/ATaxonomy_of_Interaction_Techniques_for_Immersive_Augmented_Reality_based_on_an_Iterative_Literature_Review.pdf", "bib": "", "notes": ""}, {"file_key": "vr/autoconsis_automatic gui-driven data inconsistency detection of mobile apps.pdf", "title": "AutoConsis_Automatic GUI-driven Data Inconsistency Detection of Mobile Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/AutoConsis_Automatic%20GUI-driven%20Data%20Inconsistency%20Detection%20of%20Mobile%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/automated usability evaluation of virtual reality application.pdf", "title": "Automated Usability Evaluation of Virtual Reality Application", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Automated%20Usability%20Evaluation%20of%20Virtual%20Reality%20Application.pdf", "bib": "", "notes": ""}, {"file_key": "vr/automatically detecting visual bugs in html5 canvas games.pdf", "title": "Automatically Detecting Visual Bugs in HTML5 Canvas Games", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Automatically%20Detecting%20Visual%20Bugs%20in%20HTML5%20Canvas%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "vr/autovr_automated ui exploration for detecting sensitive data flow exposures in virtual reality apps.pdf", "title": "AutoVR_Automated UI Exploration for Detecting Sensitive Data Flow Exposures in Virtual Reality Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/AutoVR_Automated%20UI%20Exploration%20for%20Detecting%20Sensitive%20Data%20Flow%20Exposures%20in%20Virtual%20Reality%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/can cooperative multi-agent reinforcement learning boost automatic web testing an exploratory study.pdf", "title": "Can Cooperative Multi-Agent Reinforcement Learning Boost Automatic Web Testing An Exploratory Study", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Can%20Cooperative%20Multi-Agent%20Reinforcement%20Learning%20Boost%20Automatic%20Web%20Testing%20An%20Exploratory%20Study.pdf", "bib": "", "notes": ""}, {"file_key": "vr/deeply reinforcing android gui testing with deep reinforcement learning.pdf", "title": "Deeply Reinforcing Android GUI Testing with Deep Reinforcement Learning", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Deeply%20Reinforcing%20Android%20GUI%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "vr/demystifying mobile extended reality in web browsers  how far can we go.pdf", "title": "Demystifying Mobile Extended Reality in Web Browsers  How Far Can We Go", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Demystifying%20Mobile%20Extended%20Reality%20in%20Web%20Browsers%20%20How%20Far%20Can%20We%20Go.pdf", "bib": "", "notes": ""}, {"file_key": "vr/development of real-time qa_qc tools for aec in unity.pdf", "title": "Development of Real-Time QA_QC Tools for AEC in Unity", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Development%20of%20Real-Time%20QA_QC%20Tools%20for%20AEC%20in%20Unity.pdf", "bib": "", "notes": ""}, {"file_key": "vr/efficient incremental code coverage analysis for regression test suites.pdf", "title": "Efficient Incremental Code Coverage Analysis for Regression Test Suites", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Efficient%20Incremental%20Code%20Coverage%20Analysis%20for%20Regression%20Test%20Suites.pdf", "bib": "", "notes": ""}, {"file_key": "vr/efish'nsea_unity game set for learning software performance issues root causes and resolutions.pdf", "title": "eFish'nSea_Unity Game Set for Learning Software Performance Issues Root Causes and Resolutions", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/eFish%27nSea_Unity%20Game%20Set%20for%20Learning%20Software%20Performance%20Issues%20Root%20Causes%20and%20Resolutions.pdf", "bib": "", "notes": ""}, {"file_key": "vr/embodied bench.pdf", "title": "Embodied Bench", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Embodied%20Bench.pdf", "bib": "", "notes": ""}, {"file_key": "vr/erebus access control for augmented reality systems.pdf", "title": "Erebus Access Control for Augmented Reality Systems", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Erebus%20Access%20Control%20for%20Augmented%20Reality%20Systems.pdf", "bib": "", "notes": ""}, {"file_key": "vr/evombt_at_the_sbst_2022_tool_competition.pdf", "title": "EvoMBT_at_the_SBST_2022_Tool_Competition", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/EvoMBT_at_the_SBST_2022_Tool_Competition.pdf", "bib": "", "notes": ""}, {"file_key": "vr/evombt_evolutionary model based testing.pdf", "title": "EvoMBT_Evolutionary Model Based Testing", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/EvoMBT_Evolutionary%20Model%20Based%20Testing.pdf", "bib": "", "notes": ""}, {"file_key": "vr/exploring_and_analyzing_virtualaugmented_reality_performance_issues_based_on_code_large_language_models.pdf", "title": "Exploring_and_Analyzing_VirtualAugmented_Reality_Performance_Issues_Based_on_Code_Large_Language_Models", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Exploring_and_Analyzing_VirtualAugmented_Reality_Performance_Issues_Based_on_Code_Large_Language_Models.pdf", "bib": "", "notes": ""}, {"file_key": "vr/fastbot2_reusable automated model-based gui testing for android enhanced by reinforcement learning.pdf", "title": "Fastbot2_Reusable Automated Model-based GUI Testing for Android Enhanced by Reinforcement Learning", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf", "bib": "", "notes": ""}, {"file_key": "vr/general and practical property-based testing for android apps.pdf", "title": "General and Practical Property-based Testing for Android Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/General%20and%20Practical%20Property-based%20Testing%20for%20Android%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/guided, stochastic model-based gui testing of android apps.pdf", "title": "Guided, stochastic model-based GUI testing of Android apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Guided%2C%20stochastic%20model-based%20GUI%20testing%20of%20Android%20apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/habitat_a_platform_for_embodied_ai_research_iccv_2019_paper.pdf", "title": "Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper.pdf", "bib": "", "notes": ""}, {"file_key": "vr/less cybersickness, please demystifying and detecting stereoscopic visual inconsistencies in virtual reality apps.pdf", "title": "Less Cybersickness, Please Demystifying and Detecting Stereoscopic Visual Inconsistencies in Virtual Reality Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Less%20Cybersickness%2C%20Please%20Demystifying%20and%20Detecting%20Stereoscopic%20Visual%20Inconsistencies%20in%20Virtual%20Reality%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/make llm a testing expert_bringing human-like interaction to mobile gui testing via functionality-aware decisions.pdf", "title": "Make LLM a Testing Expert_Bringing Human-like Interaction to Mobile GUI Testing via Functionality-aware Decisions", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Make%20LLM%20a%20Testing%20Expert_Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf", "bib": "", "notes": ""}, {"file_key": "vr/model-based gui testing for harmonyos apps.pdf", "title": "Model-based GUI Testing For HarmonyOS Apps", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Model-based%20GUI%20Testing%20For%20HarmonyOS%20Apps.pdf", "bib": "", "notes": ""}, {"file_key": "vr/motorease_automated detection of motor impairment accessibility issues in mobile app uis.pdf", "title": "MotorEase_Automated Detection of Motor Impairment Accessibility Issues in Mobile App UIs", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/MotorEase_Automated%20Detection%20of%20Motor%20Impairment%20Accessibility%20Issues%20in%20Mobile%20App%20UIs.pdf", "bib": "", "notes": ""}, {"file_key": "vr/navigating mobile testing evaluation_a comprehensive statistical analysis of android gui testing metrics.pdf", "title": "Navigating Mobile Testing Evaluation_A Comprehensive Statistical Analysis of Android GUI Testing Metrics", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Navigating%20Mobile%20Testing%20Evaluation_A%20Comprehensive%20Statistical%20Analysis%20of%20Android%20GUI%20Testing%20Metrics.pdf", "bib": "", "notes": ""}, {"file_key": "vr/ovrseen auditing network traffic and privacy policies in oculus vr.pdf", "title": "OVRseen Auditing Network Traffic and Privacy Policies in Oculus VR", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/OVRseen%20Auditing%20Network%20Traffic%20and%20Privacy%20Policies%20in%20Oculus%20VR.pdf", "bib": "", "notes": ""}, {"file_key": "vr/owl eyes_spotting ui display issues via visual understanding.pdf", "title": "Owl Eyes_Spotting UI Display Issues via Visual Understanding", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Owl%20Eyes_Spotting%20UI%20Display%20Issues%20via%20Visual%20Understanding.pdf", "bib": "", "notes": ""}, {"file_key": "vr/playing without paying detecting vulnerable payment verification in native binaries of unity mobile games.pdf", "title": "Playing without paying Detecting vulnerable payment verification in native binaries of unity mobile games", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Playing%20without%20paying%20Detecting%20vulnerable%20payment%20verification%20in%20native%20binaries%20of%20unity%20mobile%20games.pdf", "bib": "", "notes": ""}, {"file_key": "vr/predart towards automatic oracle prediction of object placements in augmented reality testing.pdf", "title": "PredART Towards Automatic Oracle Prediction of Object Placements in Augmented Reality Testing", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/PredART%20Towards%20Automatic%20Oracle%20Prediction%20of%20Object%20Placements%20in%20Augmented%20Reality%20Testing.pdf", "bib": "", "notes": ""}, {"file_key": "vr/secure multi-user content sharing for augmented reality applications.pdf", "title": "Secure Multi-User Content Sharing for Augmented Reality Applications", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Secure%20Multi-User%20Content%20Sharing%20for%20Augmented%20Reality%20Applications.pdf", "bib": "", "notes": ""}, {"file_key": "vr/semantic gui scene learning and video alignment for detecting duplicate video-based bug reports.pdf", "title": "Semantic GUI Scene Learning and Video Alignment for Detecting Duplicate Video-based Bug Reports", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Semantic%20GUI%20Scene%20Learning%20and%20Video%20Alignment%20for%20Detecting%20Duplicate%20Video-based%20Bug%20Reports.pdf", "bib": "", "notes": ""}, {"file_key": "vr/semantic tree-based 3d scene model recognition.pdf", "title": "Semantic Tree-Based 3D Scene Model Recognition", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Semantic%20Tree-Based%203D%20Scene%20Model%20Recognition.pdf", "bib": "", "notes": ""}, {"file_key": "vr/smartfuzz making smart contract fuzzing smarter via state-aware feedback.pdf", "title": "SmartFuzz Making Smart Contract Fuzzing Smarter via State-Aware Feedback", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/SmartFuzz%20Making%20Smart%20Contract%20Fuzzing%20Smarter%20via%20State-Aware%20Feedback.pdf", "bib": "", "notes": ""}, {"file_key": "vr/software testing for extended reality applications_a systematic mapping study.pdf", "title": "Software Testing for Extended Reality Applications_A Systematic Mapping Study", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Software%20Testing%20for%20Extended%20Reality%20Applications_A%20Systematic%20Mapping%20Study.pdf", "bib": "", "notes": ""}, {"file_key": "vr/towards automatic oracle prediction for ar testing_assessing virtual object placement quality under real-world scenes.pdf", "title": "Towards Automatic Oracle Prediction for AR Testing_Assessing Virtual Object Placement Quality under Real-World Scenes", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Towards%20Automatic%20Oracle%20Prediction%20for%20AR%20Testing_Assessing%20Virtual%20Object%20Placement%20Quality%20under%20Real-World%20Scenes.pdf", "bib": "", "notes": ""}, {"file_key": "vr/unit test generation using large language models for unity game development.pdf", "title": "Unit Test Generation using Large Language Models for Unity Game Development", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Unit%20Test%20Generation%20using%20Large%20Language%20Models%20for%20Unity%20Game%20Development.pdf", "bib": "", "notes": ""}, {"file_key": "vr/unity rl playground_a versatile reinforcement learning  framework for mobile robots.pdf", "title": "Unity RL Playground_A Versatile Reinforcement Learning  Framework for Mobile Robots", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Unity%20RL%20Playground_A%20Versatile%20Reinforcement%20Learning%20%20Framework%20for%20Mobile%20Robots.pdf", "bib": "", "notes": ""}, {"file_key": "vr/utilizing generative ai for vr exploration testing_a case study.pdf", "title": "Utilizing Generative AI for VR Exploration Testing_A Case Study", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Utilizing%20Generative%20AI%20for%20VR%20Exploration%20Testing_A%20Case%20Study.pdf", "bib": "", "notes": ""}, {"file_key": "vr/virtual reality genres_comparing preferences in immersive experiences and games.pdf", "title": "Virtual Reality Genres_Comparing Preferences in Immersive Experiences and Games", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Virtual%20Reality%20Genres_Comparing%20Preferences%20in%20Immersive%20Experiences%20and%20Games.pdf", "bib": "", "notes": ""}, {"file_key": "vr/virtual reality toolkit for the unity game engine.pdf", "title": "Virtual reality toolkit for the Unity game engine", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/Virtual%20reality%20toolkit%20for%20the%20Unity%20game%20engine.pdf", "bib": "", "notes": ""}, {"file_key": "vr/vr.net_ a real-world dataset for virtual reality motion sickness research.pdf", "title": "VR.net_ A Real-world Dataset for Virtual Reality Motion Sickness Research", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/VR.net_%20A%20Real-world%20Dataset%20for%20Virtual%20Reality%20Motion%20Sickness%20Research.pdf", "bib": "", "notes": ""}, {"file_key": "vr/vrguide efficient testing of virtual reality scenes via dynamic cut coverage.pdf", "title": "VRGuide Efficient Testing of Virtual Reality Scenes via Dynamic Cut Coverage", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/VRGuide%20Efficient%20Testing%20of%20Virtual%20Reality%20Scenes%20via%20Dynamic%20Cut%20Coverage.pdf", "bib": "", "notes": ""}, {"file_key": "vr/when the user is inside the user interface an empirical study of ui security properties in augmented reality.pdf", "title": "When the User Is Inside the User Interface An Empirical Study of UI Security Properties in Augmented Reality", "authors": "Unknown", "year": "2025", "venue": "", "tags": ["unsorted"], "pdf": "papers/VR/When%20the%20User%20Is%20Inside%20the%20User%20Interface%20An%20Empirical%20Study%20of%20UI%20Security%20Properties%20in%20Augmented%20Reality.pdf", "bib": "", "notes": ""}];
+let papers = [];
+let metadataMap = {};
+let metadataHandle = null;
+
+const supportsFileSystemAccess = !!(window.showOpenFilePicker && window.isSecureContext);
+const searchInput = document.getElementById('search');
+const papersContainer = document.getElementById('papers');
+const downloadBtn = document.getElementById('download-json');
+const bindBtn = document.getElementById('bind-file');
+const reloadBtn = document.getElementById('reload-data');
+const statusEl = document.getElementById('status');
+
+function escapeHtml(str = '') {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+async function initApp() {
+    bindBtn.addEventListener('click', handleBindFile);
+    downloadBtn.addEventListener('click', () => persistMetadata({ auto: false }));
+    reloadBtn.addEventListener('click', () => {
+        if (metadataHandle) {
+            loadFromHandle();
+        } else {
+            loadMetadataViaFetch({ fallbackToEmbedded: true });
+        }
+    });
+    searchInput.addEventListener('input', e => render(getFilteredList(e.target.value)));
+
+    await loadMetadataViaFetch({ fallbackToEmbedded: true });
+}
+
+function render(list) {
+    papersContainer.innerHTML = '';
+    const groups = groupByTag(list);
+    if (!Object.keys(groups).length) {
+        papersContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">暂无数据，请加载 metadata.json</div>`;
+        return;
+    }
+    Object.entries(groups).forEach(([tag, items]) => {
+        const section = document.createElement('section');
+        section.className = 'group open';
+        section.innerHTML = `
+            <div class="group-header" onclick="toggleGroup(this)">
+                <div>
+                    <span class="group-title"># ${escapeHtml(tag)}</span>
+                    <span class="group-count">(${items.length})</span>
+                </div>
+                <button type="button">折叠</button>
+            </div>
+            <div class="group-collapse"></div>
+        `;
+
+        const collapse = section.querySelector('.group-collapse');
+        items.forEach(p => collapse.appendChild(createPaperCard(p)));
+        papersContainer.appendChild(section);
+    });
+}
+
+function groupByTag(list) {
+    const grouped = {};
+    list.forEach(p => {
+        const tags = (p.tags && p.tags.length) ? p.tags : ['未分组'];
+        tags.forEach(tag => {
+            const key = tag || '未分组';
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(p);
+        });
+    });
+    return Object.fromEntries(Object.entries(grouped).sort((a,b)=>a[0].localeCompare(b[0], 'zh')));
+}
+
+function createPaperCard(p) {
+    const div = document.createElement('div');
+    div.className = 'paper';
+    div.innerHTML = `
+        <b>${escapeHtml(p.title)}</b> (${escapeHtml(p.year)})<br>
+        作者: ${escapeHtml(p.authors)}<br>
+        标签: ${escapeHtml((p.tags || []).join(', '))}<br>
+        ${p.notes ? `
+        <div class="note">
+            <div class="note-header">
+                <span>📝 备注</span>
+                <button type="button" class="toggle-note" onclick="toggleNote(event, this)">展开</button>
+            </div>
+            <div class="note-content">${escapeHtml(p.notes)}</div>
+        </div>` : ''}
+        <div class="actions">
+            <a href="${p.pdf}" target="_blank">📄 打开PDF</a>
+            <button onclick="toggleEdit(this)">✏️ 编辑</button>
+        </div>
+        <div class="collapse">
+            <input value="${escapeHtml(p.title)}" placeholder="标题" class="edit-title"><br>
+            <input value="${escapeHtml(p.authors)}" placeholder="作者" class="edit-authors"><br>
+            <input value="${escapeHtml(p.year)}" placeholder="年份" class="edit-year"><br>
+            <input value="${escapeHtml((p.tags || []).join(', '))}" placeholder="标签,逗号分隔" class="edit-tags"><br>
+            <textarea class="edit-notes" placeholder="备注">${escapeHtml(p.notes)}</textarea><br>
+            <textarea class="edit-bib" placeholder="BibTeX">${escapeHtml(p.bib)}</textarea><br>
+            <button onclick="saveEdit(this, '${p.file_key}')">💾 保存并导出 metadata.json</button>
+        </div>
+    `;
+    return div;
+}
+
+function toggleEdit(btn) {
+    const collapse = btn.parentNode.nextElementSibling;
+    collapse.style.display = collapse.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveEdit(btn, key) {
+    const parent = btn.parentNode;
+    const p = papers.find(p=>p.file_key===key);
+    if (!p) return;
+    p.title = parent.querySelector('.edit-title').value;
+    p.authors = parent.querySelector('.edit-authors').value;
+    p.year = parent.querySelector('.edit-year').value;
+    p.tags = parent.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+    p.notes = parent.querySelector('.edit-notes').value;
+    p.bib = parent.querySelector('.edit-bib').value;
+    metadataMap[key] = { ...p };
+    metadataMap[key].file_key = key;
+    render(getFilteredList(searchInput.value));
+    await persistMetadata({ auto: true });
+}
+
+function toggleNote(event, btn) {
+    event.stopPropagation();
+    const content = btn.closest('.note').querySelector('.note-content');
+    const isHidden = content.style.display === 'none' || content.style.display === '';
+    content.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? '折叠' : '展开';
+}
+
+function toggleGroup(header) {
+    const group = header.closest('.group');
+    const button = header.querySelector('button');
+    const isOpen = group.classList.toggle('open');
+    button.textContent = isOpen ? '折叠' : '展开';
+}
+
+function getFilteredList(q) {
+    const query = (q || '').toLowerCase();
+    if (!query) return papers;
+    return papers.filter(p => {
+        const tagsText = (p.tags || []).join(',');
+        return p.title.toLowerCase().includes(query) ||
+               p.authors.toLowerCase().includes(query) ||
+               tagsText.toLowerCase().includes(query);
+    });
+}
+
+function arrayToMetadataMap(list) {
+    const map = {};
+    list.forEach((item, index) => {
+        const rawKey = item.file_key || item.pdf || `paper_${index}`;
+        const key = String(rawKey).toLowerCase();
+        map[key] = { ...item, file_key: key };
+    });
+    return map;
+}
+
+function applyMetadataMap(map) {
+    metadataMap = map || {};
+    papers = Object.entries(metadataMap).map(([key, value]) => ({
+        file_key: key,
+        ...value,
+        tags: (value.tags || []).filter(Boolean)
+    }));
+    render(getFilteredList(searchInput.value));
+}
+
+async function loadMetadataViaFetch({ fallbackToEmbedded = false } = {}) {
+    try {
+        const response = await fetch(`metadata.json?ts=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        applyMetadataMap(data);
+        showStatus('已从同目录 metadata.json 加载数据', false);
+    } catch (error) {
+        if (fallbackToEmbedded && Array.isArray(EMBEDDED_PAPERS) && EMBEDDED_PAPERS.length) {
+            applyMetadataMap(arrayToMetadataMap(EMBEDDED_PAPERS));
+            showStatus('无法读取 metadata.json，已回退至内置数据；建议使用本地服务器或绑定文件以保持同步', true);
+        } else {
+            showStatus('无法直接读取 metadata.json，请使用本地服务器或“绑定”按钮手动选择文件', true);
+            render([]);
+        }
+    }
+}
+
+async function handleBindFile() {
+    if (!supportsFileSystemAccess) {
+        alert('当前环境不支持直接写入文件，请通过本地服务器 (如 python -m http.server) 访问或使用下载导出方式。');
+        return;
+    }
+    try {
+        [metadataHandle] = await window.showOpenFilePicker({
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        await loadFromHandle();
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            showStatus('绑定文件失败：' + err.message, true);
+        }
+    }
+}
+
+async function loadFromHandle() {
+    if (!metadataHandle) return;
+    const file = await metadataHandle.getFile();
+    const text = await file.text();
+    const data = JSON.parse(text || '{}');
+    applyMetadataMap(data);
+    showStatus(`已绑定 ${file.name}，后续保存将自动覆盖`, false);
+}
+
+async function persistMetadata({ auto }) {
+    const payload = JSON.stringify(metadataMap, null, 2);
+    if (supportsFileSystemAccess && !metadataHandle) {
+        metadataHandle = await promptForSaveHandle(auto);
+    }
+
+    if (metadataHandle && supportsFileSystemAccess) {
+        const writable = await metadataHandle.createWritable();
+        await writable.write(payload);
+        await writable.close();
+        showStatus('metadata.json 已自动覆盖保存', false);
+    } else {
+        triggerDownloadFallback(payload, auto);
+    }
+}
+
+function showStatus(message, isError) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('error', !!isError);
+    statusEl.classList.toggle('success', !isError);
+}
+
+function triggerDownloadFallback(payload, auto) {
+    const blob = new Blob([payload], { type: 'application/json' });
+    const filename = auto ? `metadata_auto_${Date.now()}.json` : 'metadata.json';
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showStatus('浏览器限制，已触发 metadata.json 下载，请手动替换或使用“绑定/选择保存文件”', true);
+}
+
+async function promptForSaveHandle(auto) {
+    if (!supportsFileSystemAccess) return null;
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: 'metadata.json',
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        showStatus(`已选择 ${handle.name || 'metadata.json'}，后续保存将自动覆盖`, false);
+        return handle;
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            showStatus('未获得文件写入权限，已退回下载方式', true);
+        } else if (!auto) {
+            showStatus('已取消选择文件，保存会改为下载', true);
+        }
+        return null;
+    }
+}
+
+// 初始化
+initApp();
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>论文管理系统</title>
+<style>
+body { font-family: "Segoe UI", system-ui, sans-serif; background:#f5f5f5; margin:20px; color:#222; }
+h1 { color:#333; margin-bottom:16px; }
+.paper { border:1px solid #ddd; padding:12px; margin:10px 0; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.04); }
+.paper .actions { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+input, textarea { width:100%; margin:4px 0; padding:8px; border-radius:6px; border:1px solid #ddd; }
+button { margin:2px 0; padding:6px 12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+button:hover { background:#f0f0f0; }
+.collapse { display:none; margin-top:8px; }
+.note { background:#fff9db; border:1px solid #f2da75; border-radius:6px; padding:6px 8px; margin-top:6px; }
+.note-header { display:flex; justify-content:space-between; align-items:center; font-weight:600; color:#9c6500; }
+.note-header button { border:none; background:transparent; color:#b7791f; font-weight:600; }
+.note-content { display:none; margin-top:6px; white-space:pre-wrap; font-size:0.95em; color:#5c3d00; }
+.toolbar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.toolbar button { flex:none; }
+.groups { display:flex; flex-direction:column; gap:12px; }
+.group { border:1px solid #ccc; border-radius:10px; background:#fff; overflow:hidden; }
+.group-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; background:#f3f4f6; }
+.group-title { font-weight:600; color:#111; }
+.group-count { color:#555; font-size:0.9em; margin-left:8px; }
+.group-collapse { display:none; padding:10px 16px 16px; }
+.group.open .group-collapse { display:block; }
+.group-header button { border:none; background:#e5e7eb; padding:4px 10px; border-radius:6px; }
+.status { font-size:0.9em; color:#555; margin-bottom:12px; }
+.status.error { color:#c53030; }
+.status.success { color:#2f855a; }
+</style>
+</head>
+<body>
+<h1>📚 论文管理系统</h1>
+<div class="toolbar">
+    <input type="text" id="search" placeholder="搜索标题/作者/标签..." style="flex:1; min-width:220px;">
+    <button id="bind-file">📂 绑定 metadata.json</button>
+    <button id="download-json">💾 导出 metadata.json</button>
+    <button id="reload-data">🔄 重新加载</button>
+</div>
+
+<p id="status" class="status">初始化中...</p>
+
+<div id="papers" class="groups"></div>
+
+<script>
+const EMBEDDED_PAPERS = [];
+let papers = [];
+let metadataMap = {};
+let metadataHandle = null;
+
+const supportsFileSystemAccess = !!(window.showOpenFilePicker && window.isSecureContext);
+const searchInput = document.getElementById('search');
+const papersContainer = document.getElementById('papers');
+const downloadBtn = document.getElementById('download-json');
+const bindBtn = document.getElementById('bind-file');
+const reloadBtn = document.getElementById('reload-data');
+const statusEl = document.getElementById('status');
+
+function escapeHtml(str = '') {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+async function initApp() {
+    bindBtn.addEventListener('click', handleBindFile);
+    downloadBtn.addEventListener('click', () => persistMetadata({ auto: false }));
+    reloadBtn.addEventListener('click', () => {
+        if (metadataHandle) {
+            loadFromHandle();
+        } else {
+            loadMetadataViaFetch({ fallbackToEmbedded: true });
+        }
+    });
+    searchInput.addEventListener('input', e => render(getFilteredList(e.target.value)));
+
+    await loadMetadataViaFetch({ fallbackToEmbedded: true });
+}
+
+function render(list) {
+    papersContainer.innerHTML = '';
+    const groups = groupByTag(list);
+    if (!Object.keys(groups).length) {
+        papersContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">暂无数据，请加载 metadata.json</div>`;
+        return;
+    }
+    Object.entries(groups).forEach(([tag, items]) => {
+        const section = document.createElement('section');
+        section.className = 'group open';
+        section.innerHTML = `
+            <div class="group-header" onclick="toggleGroup(this)">
+                <div>
+                    <span class="group-title"># ${escapeHtml(tag)}</span>
+                    <span class="group-count">(${items.length})</span>
+                </div>
+                <button type="button">折叠</button>
+            </div>
+            <div class="group-collapse"></div>
+        `;
+
+        const collapse = section.querySelector('.group-collapse');
+        items.forEach(p => collapse.appendChild(createPaperCard(p)));
+        papersContainer.appendChild(section);
+    });
+}
+
+function groupByTag(list) {
+    const grouped = {};
+    list.forEach(p => {
+        const tags = (p.tags && p.tags.length) ? p.tags : ['未分组'];
+        tags.forEach(tag => {
+            const key = tag || '未分组';
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(p);
+        });
+    });
+    return Object.fromEntries(Object.entries(grouped).sort((a,b)=>a[0].localeCompare(b[0], 'zh')));
+}
+
+function createPaperCard(p) {
+    const div = document.createElement('div');
+    div.className = 'paper';
+    div.innerHTML = `
+        <b>${escapeHtml(p.title)}</b> (${escapeHtml(p.year)})<br>
+        作者: ${escapeHtml(p.authors)}<br>
+        标签: ${escapeHtml((p.tags || []).join(', '))}<br>
+        ${p.notes ? `
+        <div class="note">
+            <div class="note-header">
+                <span>📝 备注</span>
+                <button type="button" class="toggle-note" onclick="toggleNote(event, this)">展开</button>
+            </div>
+            <div class="note-content">${escapeHtml(p.notes)}</div>
+        </div>` : ''}
+        <div class="actions">
+            <a href="${p.pdf}" target="_blank">📄 打开PDF</a>
+            <button onclick="toggleEdit(this)">✏️ 编辑</button>
+        </div>
+        <div class="collapse">
+            <input value="${escapeHtml(p.title)}" placeholder="标题" class="edit-title"><br>
+            <input value="${escapeHtml(p.authors)}" placeholder="作者" class="edit-authors"><br>
+            <input value="${escapeHtml(p.year)}" placeholder="年份" class="edit-year"><br>
+            <input value="${escapeHtml((p.tags || []).join(', '))}" placeholder="标签,逗号分隔" class="edit-tags"><br>
+            <textarea class="edit-notes" placeholder="备注">${escapeHtml(p.notes)}</textarea><br>
+            <textarea class="edit-bib" placeholder="BibTeX">${escapeHtml(p.bib)}</textarea><br>
+            <button onclick="saveEdit(this, '${p.file_key}')">💾 保存并导出 metadata.json</button>
+        </div>
+    `;
+    return div;
+}
+
+function toggleEdit(btn) {
+    const collapse = btn.parentNode.nextElementSibling;
+    collapse.style.display = collapse.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveEdit(btn, key) {
+    const parent = btn.parentNode;
+    const p = papers.find(p=>p.file_key===key);
+    if (!p) return;
+    p.title = parent.querySelector('.edit-title').value;
+    p.authors = parent.querySelector('.edit-authors').value;
+    p.year = parent.querySelector('.edit-year').value;
+    p.tags = parent.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+    p.notes = parent.querySelector('.edit-notes').value;
+    p.bib = parent.querySelector('.edit-bib').value;
+    metadataMap[key] = { ...p };
+    metadataMap[key].file_key = key;
+    render(getFilteredList(searchInput.value));
+    await persistMetadata({ auto: true });
+}
+
+function toggleNote(event, btn) {
+    event.stopPropagation();
+    const content = btn.closest('.note').querySelector('.note-content');
+    const isHidden = content.style.display === 'none' || content.style.display === '';
+    content.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? '折叠' : '展开';
+}
+
+function toggleGroup(header) {
+    const group = header.closest('.group');
+    const button = header.querySelector('button');
+    const isOpen = group.classList.toggle('open');
+    button.textContent = isOpen ? '折叠' : '展开';
+}
+
+function getFilteredList(q) {
+    const query = (q || '').toLowerCase();
+    if (!query) return papers;
+    return papers.filter(p => {
+        const tagsText = (p.tags || []).join(',');
+        return p.title.toLowerCase().includes(query) ||
+               p.authors.toLowerCase().includes(query) ||
+               tagsText.toLowerCase().includes(query);
+    });
+}
+
+function arrayToMetadataMap(list) {
+    const map = {};
+    list.forEach((item, index) => {
+        const rawKey = item.file_key || item.pdf || `paper_${index}`;
+        const key = String(rawKey).toLowerCase();
+        map[key] = { ...item, file_key: key };
+    });
+    return map;
+}
+
+function applyMetadataMap(map) {
+    metadataMap = map || {};
+    papers = Object.entries(metadataMap).map(([key, value]) => ({
+        file_key: key,
+        ...value,
+        tags: (value.tags || []).filter(Boolean)
+    }));
+    render(getFilteredList(searchInput.value));
+}
+
+async function loadMetadataViaFetch({ fallbackToEmbedded = false } = {}) {
+    try {
+        const response = await fetch(`metadata.json?ts=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        applyMetadataMap(data);
+        showStatus('已从同目录 metadata.json 加载数据', false);
+    } catch (error) {
+        if (fallbackToEmbedded && Array.isArray(EMBEDDED_PAPERS) && EMBEDDED_PAPERS.length) {
+            applyMetadataMap(arrayToMetadataMap(EMBEDDED_PAPERS));
+            showStatus('无法读取 metadata.json，已回退至内置数据；建议使用本地服务器或绑定文件以保持同步', true);
+        } else {
+            showStatus('无法直接读取 metadata.json，请使用本地服务器或“绑定”按钮手动选择文件', true);
+            render([]);
+        }
+    }
+}
+
+async function handleBindFile() {
+    if (!supportsFileSystemAccess) {
+        alert('当前环境不支持直接写入文件，请通过本地服务器 (如 python -m http.server) 访问或使用下载导出方式。');
+        return;
+    }
+    try {
+        [metadataHandle] = await window.showOpenFilePicker({
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        await loadFromHandle();
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            showStatus('绑定文件失败：' + err.message, true);
+        }
+    }
+}
+
+async function loadFromHandle() {
+    if (!metadataHandle) return;
+    const file = await metadataHandle.getFile();
+    const text = await file.text();
+    const data = JSON.parse(text || '{}');
+    applyMetadataMap(data);
+    showStatus(`已绑定 ${file.name}，后续保存将自动覆盖`, false);
+}
+
+async function persistMetadata({ auto }) {
+    const payload = JSON.stringify(metadataMap, null, 2);
+    if (supportsFileSystemAccess && !metadataHandle) {
+        metadataHandle = await promptForSaveHandle(auto);
+    }
+
+    if (metadataHandle && supportsFileSystemAccess) {
+        const writable = await metadataHandle.createWritable();
+        await writable.write(payload);
+        await writable.close();
+        showStatus('metadata.json 已自动覆盖保存', false);
+    } else {
+        triggerDownloadFallback(payload, auto);
+    }
+}
+
+function showStatus(message, isError) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('error', !!isError);
+    statusEl.classList.toggle('success', !isError);
+}
+
+function triggerDownloadFallback(payload, auto) {
+    const blob = new Blob([payload], { type: 'application/json' });
+    const filename = auto ? `metadata_auto_${Date.now()}.json` : 'metadata.json';
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showStatus('浏览器限制，已触发 metadata.json 下载，请手动替换或使用“绑定/选择保存文件”', true);
+}
+
+async function promptForSaveHandle(auto) {
+    if (!supportsFileSystemAccess) return null;
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: 'metadata.json',
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        showStatus(`已选择 ${handle.name || 'metadata.json'}，后续保存将自动覆盖`, false);
+        return handle;
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            showStatus('未获得文件写入权限，已退回下载方式', true);
+        } else if (!auto) {
+            showStatus('已取消选择文件，保存会改为下载', true);
+        }
+        return null;
+    }
+}
+
+// 初始化
+initApp();
+</script>
+</body>
+</html>

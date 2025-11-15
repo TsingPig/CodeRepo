@@ -15,7 +15,7 @@ the School of Computer Science and Engineering, Sun Yat-sen University, China, a
 - **A Survey on Vision-Language-Action Models for Embodied AI** (arXiv 2024.05, [PDF](https://arxiv.org/pdf/2405.14093))  
 Yueen Ma; Zixing Song; Yuzheng Zhuang; Jianye Hao; Irwin King, Fellow, IEEE  
 The Chinese University of Hong Kong, Huawei Noah’s Ark Lab
-  - [PDF](./Paper%20PDFs/A%20Survey%20on%20Vision-Language-Action%20Models%20for%20Embodied%20AI.pdf)  
+  - [PDF](./Paper%20PDFs/A%20Survey%20on%20Vision-Language-Action%20Models%20for%20Embodied%20AI%20.pdf)  
 
 
 
