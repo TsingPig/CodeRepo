@@ -2,6 +2,7 @@ import os
 import json
 import urllib.parse
 from datetime import datetime
+from pathlib import Path
 
 PDF_DIR = "papers"
 METADATA_FILE = "metadata.json"
@@ -41,6 +42,7 @@ for rel_path, fname in pdf_files:
 
     quoted_rel_path = "/".join(urllib.parse.quote(part) for part in rel_path.split("/"))
 
+    abs_path = os.path.abspath(os.path.join(PDF_DIR, rel_path))
     paper = {
         "file_key": key,
         "title": info.get("title", os.path.splitext(fname)[0]),
@@ -49,6 +51,8 @@ for rel_path, fname in pdf_files:
         "venue": info.get("venue", ""),
         "tags": info.get("tags", ["unsorted"]),
         "pdf": f"{PDF_DIR}/{quoted_rel_path}",
+        "pdf_local": Path(abs_path).as_uri(),
+        "read": info.get("read", False),
         "bib": info.get("bib", ""),
         "notes": info.get("notes", "")
     }

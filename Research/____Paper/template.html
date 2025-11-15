@@ -6,9 +6,9 @@
 <style>
 body { font-family: "Segoe UI", system-ui, sans-serif; background:#f5f5f5; margin:20px; color:#222; }
 h1 { color:#333; margin-bottom:16px; }
-.paper { border:1px solid #ddd; padding:12px; margin:10px 0; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.04); }
+.paper { border:1px solid #ddd; padding:12px; margin:10px 0; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.04); transition:background 0.2s ease, border-color 0.2s ease; }
 .paper .actions { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
-input, textarea { width:100%; margin:4px 0; padding:8px; border-radius:6px; border:1px solid #ddd; }
+input, textarea, select { width:100%; margin:4px 0; padding:8px; border-radius:6px; border:1px solid #ddd; }
 button { margin:2px 0; padding:6px 12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
 button:hover { background:#f0f0f0; }
 .collapse { display:none; margin-top:8px; }
@@ -29,12 +29,22 @@ button:hover { background:#f0f0f0; }
 .status { font-size:0.9em; color:#555; margin-bottom:12px; }
 .status.error { color:#c53030; }
 .status.success { color:#2f855a; }
+.paper-header { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.paper-read { background:#f6fbf7; border-color:#c6f6d5; }
+.paper-unread { background:#fff; border-color:#e2e8f0; }
+.read-row { margin:6px 0 2px; display:flex; justify-content:flex-start; }
+.read-flag { display:inline-flex; align-items:center; gap:4px; font-size:0.85em; color:#2f855a; white-space:nowrap; padding:4px 8px; border-radius:999px; background:rgba(47,133,90,0.12); }
+.paper-unread .read-flag { color:#555; background:#f1f5f9; }
+.read-flag input { width:auto; margin:0; }
 </style>
 </head>
 <body>
 <h1>📚 论文管理系统</h1>
 <div class="toolbar">
     <input type="text" id="search" placeholder="搜索标题/作者/标签..." style="flex:1; min-width:220px;">
+    <select id="venue-filter" style="flex:0 0 200px; min-width:160px;">
+        <option value="all">全部会议/期刊</option>
+    </select>
     <button id="bind-file">📂 绑定 metadata.json</button>
     <button id="download-json">💾 导出 metadata.json</button>
     <button id="reload-data">🔄 重新加载</button>
@@ -57,6 +67,8 @@ const downloadBtn = document.getElementById('download-json');
 const bindBtn = document.getElementById('bind-file');
 const reloadBtn = document.getElementById('reload-data');
 const statusEl = document.getElementById('status');
+const venueFilter = document.getElementById('venue-filter');
+let currentVenueFilter = 'all';
 
 function escapeHtml(str = '') {
     return String(str)
@@ -78,6 +90,10 @@ async function initApp() {
         }
     });
     searchInput.addEventListener('input', e => render(getFilteredList(e.target.value)));
+    venueFilter.addEventListener('change', e => {
+        currentVenueFilter = e.target.value || 'all';
+        render(getFilteredList(searchInput.value));
+    });
 
     await loadMetadataViaFetch({ fallbackToEmbedded: true });
 }
@@ -124,11 +140,23 @@ function groupByTag(list) {
 
 function createPaperCard(p) {
     const div = document.createElement('div');
-    div.className = 'paper';
+    div.className = `paper ${p.read ? 'paper-read' : 'paper-unread'}`;
+    const encodedLocal = p.pdf_local ? encodeURIComponent(p.pdf_local) : '';
     div.innerHTML = `
-        <b>${escapeHtml(p.title)}</b> (${escapeHtml(p.year)})<br>
-        作者: ${escapeHtml(p.authors)}<br>
-        标签: ${escapeHtml((p.tags || []).join(', '))}<br>
+        <div class="paper-header">
+            <div>
+                <b>${escapeHtml(p.title)}</b> (${escapeHtml(p.year)})<br>
+                作者: ${escapeHtml(p.authors)}<br>
+                会议/期刊: ${escapeHtml(p.venue || '未填写')}<br>
+                标签: ${escapeHtml((p.tags || []).join(', '))}<br>
+            </div>
+        </div>
+        <div class="read-row">
+            <label class="read-flag" title="标记是否已读">
+                <input type="checkbox" ${p.read ? 'checked' : ''} onchange="handleReadToggle(event, '${p.file_key}')">
+                ${p.read ? '已读' : '未读'}
+            </label>
+        </div>
         ${p.notes ? `
         <div class="note">
             <div class="note-header">
@@ -138,13 +166,15 @@ function createPaperCard(p) {
             <div class="note-content">${escapeHtml(p.notes)}</div>
         </div>` : ''}
         <div class="actions">
-            <a href="${p.pdf}" target="_blank">📄 打开PDF</a>
+            <a href="${escapeHtml(p.pdf)}" target="_blank" rel="noopener">🌐 浏览器打开</a>
+            ${p.pdf_local ? `<button type="button" onclick="openLocalSource('${encodedLocal}')" title="尝试通过 file:// 打开原始文件">�️ 打开源文件</button>` : ''}
             <button onclick="toggleEdit(this)">✏️ 编辑</button>
         </div>
         <div class="collapse">
             <input value="${escapeHtml(p.title)}" placeholder="标题" class="edit-title"><br>
             <input value="${escapeHtml(p.authors)}" placeholder="作者" class="edit-authors"><br>
             <input value="${escapeHtml(p.year)}" placeholder="年份" class="edit-year"><br>
+            <input value="${escapeHtml(p.venue || '')}" placeholder="会议/期刊" class="edit-venue"><br>
             <input value="${escapeHtml((p.tags || []).join(', '))}" placeholder="标签,逗号分隔" class="edit-tags"><br>
             <textarea class="edit-notes" placeholder="备注">${escapeHtml(p.notes)}</textarea><br>
             <textarea class="edit-bib" placeholder="BibTeX">${escapeHtml(p.bib)}</textarea><br>
@@ -166,11 +196,13 @@ async function saveEdit(btn, key) {
     p.title = parent.querySelector('.edit-title').value;
     p.authors = parent.querySelector('.edit-authors').value;
     p.year = parent.querySelector('.edit-year').value;
+    p.venue = parent.querySelector('.edit-venue').value.trim();
     p.tags = parent.querySelector('.edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
     p.notes = parent.querySelector('.edit-notes').value;
     p.bib = parent.querySelector('.edit-bib').value;
     metadataMap[key] = { ...p };
     metadataMap[key].file_key = key;
+    refreshVenueFilterOptions();
     render(getFilteredList(searchInput.value));
     await persistMetadata({ auto: true });
 }
@@ -183,6 +215,25 @@ function toggleNote(event, btn) {
     btn.textContent = isHidden ? '折叠' : '展开';
 }
 
+function openLocalSource(encodedUri) {
+    try {
+        const url = decodeURIComponent(encodedUri || '');
+        if (!url) return;
+        const opened = window.open(url, '_blank');
+        if (!opened) {
+            showStatus('浏览器阻止直接打开本地文件，已复制路径，请手动粘贴到资源管理器或 PDF 编辑器中。', true);
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(url).catch(() => {});
+            }
+            alert('如果浏览器阻止 file:// 链接，请手动在资源管理器中打开：\n' + url);
+        } else {
+            showStatus('已尝试通过 file:// 打开原始文件，如被拦截请允许此操作或复制路径手动打开。', false);
+        }
+    } catch (err) {
+        showStatus('无法打开本地文件：' + err.message, true);
+    }
+}
+
 function toggleGroup(header) {
     const group = header.closest('.group');
     const button = header.querySelector('button');
@@ -190,14 +241,18 @@ function toggleGroup(header) {
     button.textContent = isOpen ? '折叠' : '展开';
 }
 
-function getFilteredList(q) {
+function getFilteredList(q, venue = currentVenueFilter) {
     const query = (q || '').toLowerCase();
-    if (!query) return papers;
     return papers.filter(p => {
         const tagsText = (p.tags || []).join(',');
-        return p.title.toLowerCase().includes(query) ||
-               p.authors.toLowerCase().includes(query) ||
-               tagsText.toLowerCase().includes(query);
+        const venueText = (p.venue || '');
+        const matchesSearch = !query ||
+            p.title.toLowerCase().includes(query) ||
+            p.authors.toLowerCase().includes(query) ||
+            tagsText.toLowerCase().includes(query) ||
+            venueText.toLowerCase().includes(query);
+        const matchesVenue = (venue === 'all') ? true : (venueText.trim() === venue);
+        return matchesSearch && matchesVenue;
     });
 }
 
@@ -216,9 +271,47 @@ function applyMetadataMap(map) {
     papers = Object.entries(metadataMap).map(([key, value]) => ({
         file_key: key,
         ...value,
-        tags: (value.tags || []).filter(Boolean)
+        tags: (value.tags || []).filter(Boolean),
+        venue: (value.venue || '').trim(),
+        read: !!value.read
     }));
+    refreshVenueFilterOptions();
     render(getFilteredList(searchInput.value));
+}
+
+async function handleReadToggle(event, key) {
+    event.stopPropagation();
+    const checked = event.target.checked;
+    const p = papers.find(item => item.file_key === key);
+    if (!p) return;
+    p.read = checked;
+    metadataMap[key] = { ...(metadataMap[key] || {}), ...p, read: checked };
+    metadataMap[key].file_key = key;
+    await persistMetadata({ auto: true });
+    render(getFilteredList(searchInput.value));
+}
+
+function refreshVenueFilterOptions() {
+    if (!venueFilter) return;
+    const previous = currentVenueFilter;
+    const venues = Array.from(new Set(
+        papers
+            .map(p => (p.venue || '').trim())
+            .filter(Boolean)
+    )).sort((a,b)=>a.localeCompare(b, 'zh'));
+    const options = ['<option value="all">全部会议/期刊</option>'];
+    venues.forEach(v => {
+        options.push(`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
+    });
+    venueFilter.innerHTML = options.join('');
+    if (previous === 'all') {
+        venueFilter.value = 'all';
+        currentVenueFilter = 'all';
+        return;
+    }
+    const exists = venues.some(v => v === previous);
+    currentVenueFilter = exists ? previous : 'all';
+    venueFilter.value = currentVenueFilter;
 }
 
 async function loadMetadataViaFetch({ fallbackToEmbedded = false } = {}) {

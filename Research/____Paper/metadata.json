@@ -9,6 +9,8 @@
       "survey"
     ],
     "pdf": "papers/__Game/A%20Survey%20of%20Video%20Game%20Testing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/A%20Survey%20of%20Video%20Game%20Testing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -22,6 +24,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Agent-based%20Testing%20of%20Extended%20Reality%20Systems.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Agent-based%20Testing%20of%20Extended%20Reality%20Systems.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -30,11 +34,13 @@
     "title": "An Agent based Approach to Automated Game Testing an Experience Report",
     "authors": "Unknown Authors",
     "year": "2020",
-    "venue": "",
+    "venue": "arXiv",
     "tags": [
       "Game Testing"
     ],
     "pdf": "papers/__Game/An%20Agent-based%20Approach%20to%20Automated%20Game%20Testing_an%20Experience%20Report.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/An%20Agent-based%20Approach%20to%20Automated%20Game%20Testing_an%20Experience%20Report.pdf",
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -48,6 +54,8 @@
       "Model-based Testing"
     ],
     "pdf": "papers/__Game/An%20automated%20model%20based%20testing%20approach%20for%20platform%20games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/An%20automated%20model%20based%20testing%20approach%20for%20platform%20games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -61,6 +69,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Aplib_Tactical%20Agents%20for%20Testing%20Computer%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Aplib_Tactical%20Agents%20for%20Testing%20Computer%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -74,6 +84,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Augmenting%20Automated%20Game%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Augmenting%20Automated%20Game%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -87,6 +99,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Dota%202%20with%20Large%20Scale%20Deep%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Dota%202%20with%20Large%20Scale%20Deep%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -100,6 +114,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Exploring%20Game%20Space%20Using%20Survival%20Analysis.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Exploring%20Game%20Space%20Using%20Survival%20Analysis.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -113,6 +129,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Glib%20%20towards%20automated%20test%20oracle%20for%20graphically-rich%20applications.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Glib%20%20towards%20automated%20test%20oracle%20for%20graphically-rich%20applications.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -126,6 +144,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Improving%20Playtesting%20Coverage%20via%20Curiosity%20Driven%20Reinforcement%20Learning%20Agents.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Improving%20Playtesting%20Coverage%20via%20Curiosity%20Driven%20Reinforcement%20Learning%20Agents.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -139,6 +159,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Know%20Your%20Bugs_A%20Survey%20of%20Issues%20in%20Automated.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Know%20Your%20Bugs_A%20Survey%20of%20Issues%20in%20Automated.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -152,6 +174,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Navigation%20and%20Exploration%20in%203D-Game%20Automated%20Play%20Testing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Navigation%20and%20Exploration%20in%203D-Game%20Automated%20Play%20Testing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -165,6 +189,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Procedural%20Game%20Level%20Design%20to%20Trigger%20Spatial%20Exploration.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Procedural%20Game%20Level%20Design%20to%20Trigger%20Spatial%20Exploration.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -178,6 +204,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Search-Based%20Automated%20Play%20Testing%20of%20Computer%20Games_A%20Model-Based%20Approach.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Search-Based%20Automated%20Play%20Testing%20of%20Computer%20Games_A%20Model-Based%20Approach.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -191,6 +219,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Study%20of%20Methodology%20of%20Testing%20Mobile%20Games%20Based%20on%20TTCN-3.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Study%20of%20Methodology%20of%20Testing%20Mobile%20Games%20Based%20on%20TTCN-3.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -204,6 +234,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Technical%20Challenges%20of%20Deploying%20Reinforcement%20Learning%20Agents%20for%20Game%20Testing%20in%20AAA%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Technical%20Challenges%20of%20Deploying%20Reinforcement%20Learning%20Agents%20for%20Game%20Testing%20in%20AAA%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -217,6 +249,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Towards%20Agent-Based%20Testing%20of%203D%20Games%20using%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Towards%20Agent-Based%20Testing%20of%203D%20Games%20using%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -230,6 +264,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Towards%20automated%20video%20game%20testing_still%20a%20long%20way%20to%20go.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Towards%20automated%20video%20game%20testing_still%20a%20long%20way%20to%20go.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -243,6 +279,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Using%20an%20Agent-Based%20Approach%20for%20Robust%20Automated%20Testing%20of%20Computer%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Using%20an%20Agent-Based%20Approach%20for%20Robust%20Automated%20Testing%20of%20Computer%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -256,6 +294,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Using%20Reinforcement%20Learning%20for%20Load%20Testing%20of%20Video%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Using%20Reinforcement%20Learning%20for%20Load%20Testing%20of%20Video%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -269,6 +309,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Video%20Game%20Automated%20Testing%20Approaches_An%20Assessment%20Framework.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Video%20Game%20Automated%20Testing%20Approaches_An%20Assessment%20Framework.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -282,6 +324,8 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Widget%20Detection-Based%20Testing%20for%20Industrial%20Mobile%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Widget%20Detection-Based%20Testing%20for%20Industrial%20Mobile%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -295,21 +339,27 @@
       "unsorted"
     ],
     "pdf": "papers/__Game/Wuji_Automatic%20Online%20Combat%20Game%20Testing%20Using%20Evolutionary%20Deep%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Wuji_Automatic%20Online%20Combat%20Game%20Testing%20Using%20Evolutionary%20Deep%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
   "a survey on vision-language-action models for embodied ai .pdf": {
     "file_key": "a survey on vision-language-action models for embodied ai .pdf",
     "title": "A Survey on Vision Language Action Models for Embodied AI",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Yueen Ma, Zixing Song, Yuzheng Zhuang, Jianye Hao, Irwin King",
+    "year": "2024",
+    "venue": "arXiv",
     "tags": [
-      "unsorted"
+      "survey",
+      "VLA",
+      "Embodied AI"
     ],
     "pdf": "papers/A%20Survey%20on%20Vision-Language-Action%20Models%20for%20Embodied%20AI%20.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/A%20Survey%20on%20Vision-Language-Action%20Models%20for%20Embodied%20AI%20.pdf",
+    "read": true,
     "bib": "",
-    "notes": ""
+    "notes": "VLA Survey, 介绍了具身智能相关的VLA技术应用"
   },
   "aligning cyber space with physical world a comprehensive survey on embodied ai.pdf": {
     "file_key": "aligning cyber space with physical world a comprehensive survey on embodied ai.pdf",
@@ -321,6 +371,8 @@
       "unsorted"
     ],
     "pdf": "papers/Aligning%20Cyber%20Space%20with%20Physical%20World%20A%20Comprehensive%20Survey%20on%20Embodied%20AI.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Aligning%20Cyber%20Space%20with%20Physical%20World%20A%20Comprehensive%20Survey%20on%20Embodied%20AI.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -334,6 +386,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Bug%20Prediction%20Using%20Source%20Code%20Embedding%20Based%20on%20Doc2Vec.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Bug%20Prediction%20Using%20Source%20Code%20Embedding%20Based%20on%20Doc2Vec.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -347,6 +401,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Chain-of-Thought%20Prompting%20Elicits%20Reasoning%20in%20Large%20Language%20Models.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Chain-of-Thought%20Prompting%20Elicits%20Reasoning%20in%20Large%20Language%20Models.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -360,6 +416,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/ChatDev_Communicative_Agents_for_Software_Development.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/ChatDev_Communicative_Agents_for_Software_Development.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -373,6 +431,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/CodeT5%20Identifier-aware%20Unified%20Pre-trained%20Encoder-Decoder%20Models%20for%20Code%20Understanding%20and%20Generation.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/CodeT5%20Identifier-aware%20Unified%20Pre-trained%20Encoder-Decoder%20Models%20for%20Code%20Understanding%20and%20Generation.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -386,6 +446,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Large%20Language%20Models%20for%20Software%20Engineering_%20A%20Systematic%20Literature%20Review.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Large%20Language%20Models%20for%20Software%20Engineering_%20A%20Systematic%20Literature%20Review.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -399,6 +461,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Make%20LLM%20a%20Testing%20Expert_%20Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Make%20LLM%20a%20Testing%20Expert_%20Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -412,6 +476,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Transformers_State-of-the-Art%20Natural%20Language%20Processing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Transformers_State-of-the-Art%20Natural%20Language%20Processing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -425,6 +491,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/Tree%20of%20Thought_Deliberate%20Problem%20Solving%20with%20Large%20Language%20Models.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/Tree%20of%20Thought_Deliberate%20Problem%20Solving%20with%20Large%20Language%20Models.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -438,6 +506,8 @@
       "unsorted"
     ],
     "pdf": "papers/LLM/VOYAGER_An%20Open-Ended%20Embodied%20Agent%20with%20Large%20Language%20Models.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/VOYAGER_An%20Open-Ended%20Embodied%20Agent%20with%20Large%20Language%20Models.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -451,6 +521,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -464,6 +536,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/A%20Survey%20of%20Performance%20Optimization%20for%20Mobile%20Application.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/A%20Survey%20of%20Performance%20Optimization%20for%20Mobile%20Application.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -477,6 +551,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/An%20app%20performance%20optimization%20advisor%20for%20mobile%20device%20app.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/An%20app%20performance%20optimization%20advisor%20for%20mobile%20device%20app.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -490,6 +566,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/eFish%E2%80%99nSea%20Unity%20Game%20Set%20for%20Learning%20Software%20Performance.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/eFish%E2%80%99nSea%20Unity%20Game%20Set%20for%20Learning%20Software%20Performance.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -503,6 +581,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Learning%20Performance%20Optimization%20from%20Code%20Changes%20for%20Android%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Learning%20Performance%20Optimization%20from%20Code%20Changes%20for%20Android%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -516,6 +596,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Mobile%20Application%20Processors_Techniques%20for%20Software%20Power-Performance%20Optimization.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Mobile%20Application%20Processors_Techniques%20for%20Software%20Power-Performance%20Optimization.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -529,6 +611,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Optimizing%20Immersion_Analyzing%20%20Graphics%20and%20Performance%20%20Considerations%20in%20Unity3D%20%20VR%20Development.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Optimizing%20Immersion_Analyzing%20%20Graphics%20and%20Performance%20%20Considerations%20in%20Unity3D%20%20VR%20Development.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -542,6 +626,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Performance%20Analysis%20and%20Optimization%20Techniques%20in%20Unity%203D.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Performance%20Analysis%20and%20Optimization%20Techniques%20in%20Unity%203D.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -555,6 +641,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Performance%20optimization%20opportunities%20in%20the%20Android%20software%20stack.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Performance%20optimization%20opportunities%20in%20the%20Android%20software%20stack.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -568,6 +656,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Pro%20Android%20Apps%20Performance%20Optimization.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Pro%20Android%20Apps%20Performance%20Optimization.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -581,6 +671,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Pro%20iOS%20Apps%20.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Pro%20iOS%20Apps%20.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -594,6 +686,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Research%20on%20Key%20Technologies%20for%20Deep%20Optimization%20%20of%20Unity%20Based%20Scenarios.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Research%20on%20Key%20Technologies%20for%20Deep%20Optimization%20%20of%20Unity%20Based%20Scenarios.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -607,6 +701,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Research%20on%20the%203D%20Game%20Scene%20Optimization%20of%20Mobile%20Phone%20Based%20on%20the%20Unity%203D%20Engine.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Research%20on%20the%203D%20Game%20Scene%20Optimization%20of%20Mobile%20Phone%20Based%20on%20the%20Unity%203D%20Engine.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -620,6 +716,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Research%20on%20Unity%20Scene%20Optimization%20Based%20on%20Fast%20LoD%20Technique%20Performance%20Comparison%20on%20Android%20Mobile%20Platform.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Research%20on%20Unity%20Scene%20Optimization%20Based%20on%20Fast%20LoD%20Technique%20Performance%20Comparison%20on%20Android%20Mobile%20Platform.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -633,6 +731,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/Revitalizing%20CodeQuest%20Mobile%20App_Performance%20Optimization%20for%20Immersive%20OOP%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/Revitalizing%20CodeQuest%20Mobile%20App_Performance%20Optimization%20for%20Immersive%20OOP%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -646,6 +746,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/unity-optimizations-for-x86-android-v2-92.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/unity-optimizations-for-x86-android-v2-92.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -659,6 +761,8 @@
       "unsorted"
     ],
     "pdf": "papers/Performance%20Optimization/unity-performance-optimizations-best-practices-630893.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/Performance%20Optimization/unity-performance-optimizations-best-practices-630893.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -672,6 +776,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_A%20Peek%20into%20the%20Metaverse%20%20Detecting%203D%20Model%20Clones%20in%20Mobile%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_A%20Peek%20into%20the%20Metaverse%20%20Detecting%203D%20Model%20Clones%20in%20Mobile%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -685,6 +791,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_A%20Study%20of%20User%20Privacy%20in%20Android%20Mobile%20AR%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_A%20Study%20of%20User%20Privacy%20in%20Android%20Mobile%20AR%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -698,6 +806,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_How%20developers%20optimize%20virtual%20reality%20applications%20A%20study%20of%20optimization%20commits%20in%20open%20source%20unity%20projects.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -711,6 +821,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_RE%20Methods%20for%20Virtual%20Reality%20Software%20Product%20Development%20A%20Mapping%20Study.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_RE%20Methods%20for%20Virtual%20Reality%20Software%20Product%20Development%20A%20Mapping%20Study.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -724,6 +836,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_Virtual%20Reality%20%28VR%29%20Automated%20Testing%20in%20the%20Wild%20A%20Case%20Study%20on%20Unity-Based%20VR%20Applications.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_Virtual%20Reality%20%28VR%29%20Automated%20Testing%20in%20the%20Wild%20A%20Case%20Study%20on%20Unity-Based%20VR%20Applications.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -737,6 +851,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/_VRTest%20An%20Extensible%20Framework%20for%20Automatic%20Testing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_VRTest%20An%20Extensible%20Framework%20for%20Automatic%20Testing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -750,6 +866,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/A%20Survey%20on%20%28M%29LLM-Based%20GUI%20Agents.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/A%20Survey%20on%20%28M%29LLM-Based%20GUI%20Agents.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -763,6 +881,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/A%20Survey%20onthe%20Design%20of%20Virtual%20Reality%20Interaction%20Interfaces.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/A%20Survey%20onthe%20Design%20of%20Virtual%20Reality%20Interaction%20Interfaces.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -776,19 +896,24 @@
       "unsorted"
     ],
     "pdf": "papers/VR/AdCube%20WebVR%20Ad%20Fraud%20and%20Practical%20Confinement%20of%20Third-Party%20Ads.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AdCube%20WebVR%20Ad%20Fraud%20and%20Practical%20Confinement%20of%20Third-Party%20Ads.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
   "vr/aligning_cyber_space_with_physical_world_a_comprehensive_survey_on_embodied_ai.pdf": {
     "file_key": "vr/aligning_cyber_space_with_physical_world_a_comprehensive_survey_on_embodied_ai.pdf",
     "title": "Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Yang Liu, Weixing Chen, Yongjie Bai, Xiaodan Liang, Guanbin Li, Wen Gao, Fellow, IEEE, Liang",
+    "year": "2024",
+    "venue": "arXiv",
     "tags": [
-      "unsorted"
+      "Embodied AI",
+      "survey"
     ],
     "pdf": "papers/VR/Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -802,6 +927,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/An%20evolutionary%20approach%20for%20generating%20software%20models_The%20case%20of%20Kromaia%20in%20Game%20Software%20Engineering.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/An%20evolutionary%20approach%20for%20generating%20software%20models_The%20case%20of%20Kromaia%20in%20Game%20Software%20Engineering.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -815,6 +942,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -828,6 +957,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Analyzing%20and%20Detecting%20Virtual_Augmented%20Reality%20Performance%20Issues%20with%20Large%20Language%20Models.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Analyzing%20and%20Detecting%20Virtual_Augmented%20Reality%20Performance%20Issues%20with%20Large%20Language%20Models.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -841,6 +972,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/ATaxonomy_of_Interaction_Techniques_for_Immersive_Augmented_Reality_based_on_an_Iterative_Literature_Review.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/ATaxonomy_of_Interaction_Techniques_for_Immersive_Augmented_Reality_based_on_an_Iterative_Literature_Review.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -854,6 +987,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/AutoConsis_Automatic%20GUI-driven%20Data%20Inconsistency%20Detection%20of%20Mobile%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AutoConsis_Automatic%20GUI-driven%20Data%20Inconsistency%20Detection%20of%20Mobile%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -867,6 +1002,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Automated%20Usability%20Evaluation%20of%20Virtual%20Reality%20Application.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Automated%20Usability%20Evaluation%20of%20Virtual%20Reality%20Application.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -880,6 +1017,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Automatically%20Detecting%20Visual%20Bugs%20in%20HTML5%20Canvas%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Automatically%20Detecting%20Visual%20Bugs%20in%20HTML5%20Canvas%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -893,6 +1032,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/AutoVR_Automated%20UI%20Exploration%20for%20Detecting%20Sensitive%20Data%20Flow%20Exposures%20in%20Virtual%20Reality%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AutoVR_Automated%20UI%20Exploration%20for%20Detecting%20Sensitive%20Data%20Flow%20Exposures%20in%20Virtual%20Reality%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -906,6 +1047,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Can%20Cooperative%20Multi-Agent%20Reinforcement%20Learning%20Boost%20Automatic%20Web%20Testing%20An%20Exploratory%20Study.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Can%20Cooperative%20Multi-Agent%20Reinforcement%20Learning%20Boost%20Automatic%20Web%20Testing%20An%20Exploratory%20Study.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -919,6 +1062,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Deeply%20Reinforcing%20Android%20GUI%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Deeply%20Reinforcing%20Android%20GUI%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -932,6 +1077,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Demystifying%20Mobile%20Extended%20Reality%20in%20Web%20Browsers%20%20How%20Far%20Can%20We%20Go.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Demystifying%20Mobile%20Extended%20Reality%20in%20Web%20Browsers%20%20How%20Far%20Can%20We%20Go.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -945,6 +1092,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Development%20of%20Real-Time%20QA_QC%20Tools%20for%20AEC%20in%20Unity.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Development%20of%20Real-Time%20QA_QC%20Tools%20for%20AEC%20in%20Unity.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -958,6 +1107,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Efficient%20Incremental%20Code%20Coverage%20Analysis%20for%20Regression%20Test%20Suites.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Efficient%20Incremental%20Code%20Coverage%20Analysis%20for%20Regression%20Test%20Suites.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -971,6 +1122,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/eFish%27nSea_Unity%20Game%20Set%20for%20Learning%20Software%20Performance%20Issues%20Root%20Causes%20and%20Resolutions.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/eFish%27nSea_Unity%20Game%20Set%20for%20Learning%20Software%20Performance%20Issues%20Root%20Causes%20and%20Resolutions.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -984,6 +1137,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Embodied%20Bench.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Embodied%20Bench.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -997,6 +1152,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Erebus%20Access%20Control%20for%20Augmented%20Reality%20Systems.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Erebus%20Access%20Control%20for%20Augmented%20Reality%20Systems.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1010,6 +1167,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/EvoMBT_at_the_SBST_2022_Tool_Competition.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/EvoMBT_at_the_SBST_2022_Tool_Competition.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1023,6 +1182,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/EvoMBT_Evolutionary%20Model%20Based%20Testing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/EvoMBT_Evolutionary%20Model%20Based%20Testing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1036,6 +1197,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Exploring_and_Analyzing_VirtualAugmented_Reality_Performance_Issues_Based_on_Code_Large_Language_Models.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Exploring_and_Analyzing_VirtualAugmented_Reality_Performance_Issues_Based_on_Code_Large_Language_Models.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1049,6 +1212,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1062,6 +1227,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/General%20and%20Practical%20Property-based%20Testing%20for%20Android%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/General%20and%20Practical%20Property-based%20Testing%20for%20Android%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1075,6 +1242,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Guided%2C%20stochastic%20model-based%20GUI%20testing%20of%20Android%20apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Guided%2C%20stochastic%20model-based%20GUI%20testing%20of%20Android%20apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1088,6 +1257,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1101,6 +1272,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Less%20Cybersickness%2C%20Please%20Demystifying%20and%20Detecting%20Stereoscopic%20Visual%20Inconsistencies%20in%20Virtual%20Reality%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Less%20Cybersickness%2C%20Please%20Demystifying%20and%20Detecting%20Stereoscopic%20Visual%20Inconsistencies%20in%20Virtual%20Reality%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1114,6 +1287,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Make%20LLM%20a%20Testing%20Expert_Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Make%20LLM%20a%20Testing%20Expert_Bringing%20Human-like%20Interaction%20to%20Mobile%20GUI%20Testing%20via%20Functionality-aware%20Decisions.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1127,6 +1302,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Model-based%20GUI%20Testing%20For%20HarmonyOS%20Apps.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Model-based%20GUI%20Testing%20For%20HarmonyOS%20Apps.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1140,6 +1317,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/MotorEase_Automated%20Detection%20of%20Motor%20Impairment%20Accessibility%20Issues%20in%20Mobile%20App%20UIs.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/MotorEase_Automated%20Detection%20of%20Motor%20Impairment%20Accessibility%20Issues%20in%20Mobile%20App%20UIs.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1153,6 +1332,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Navigating%20Mobile%20Testing%20Evaluation_A%20Comprehensive%20Statistical%20Analysis%20of%20Android%20GUI%20Testing%20Metrics.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Navigating%20Mobile%20Testing%20Evaluation_A%20Comprehensive%20Statistical%20Analysis%20of%20Android%20GUI%20Testing%20Metrics.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1166,6 +1347,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/OVRseen%20Auditing%20Network%20Traffic%20and%20Privacy%20Policies%20in%20Oculus%20VR.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/OVRseen%20Auditing%20Network%20Traffic%20and%20Privacy%20Policies%20in%20Oculus%20VR.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1179,6 +1362,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Owl%20Eyes_Spotting%20UI%20Display%20Issues%20via%20Visual%20Understanding.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Owl%20Eyes_Spotting%20UI%20Display%20Issues%20via%20Visual%20Understanding.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1192,6 +1377,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Playing%20without%20paying%20Detecting%20vulnerable%20payment%20verification%20in%20native%20binaries%20of%20unity%20mobile%20games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Playing%20without%20paying%20Detecting%20vulnerable%20payment%20verification%20in%20native%20binaries%20of%20unity%20mobile%20games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1205,6 +1392,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/PredART%20Towards%20Automatic%20Oracle%20Prediction%20of%20Object%20Placements%20in%20Augmented%20Reality%20Testing.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/PredART%20Towards%20Automatic%20Oracle%20Prediction%20of%20Object%20Placements%20in%20Augmented%20Reality%20Testing.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1218,6 +1407,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Secure%20Multi-User%20Content%20Sharing%20for%20Augmented%20Reality%20Applications.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Secure%20Multi-User%20Content%20Sharing%20for%20Augmented%20Reality%20Applications.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1231,6 +1422,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Semantic%20GUI%20Scene%20Learning%20and%20Video%20Alignment%20for%20Detecting%20Duplicate%20Video-based%20Bug%20Reports.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Semantic%20GUI%20Scene%20Learning%20and%20Video%20Alignment%20for%20Detecting%20Duplicate%20Video-based%20Bug%20Reports.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1244,6 +1437,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Semantic%20Tree-Based%203D%20Scene%20Model%20Recognition.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Semantic%20Tree-Based%203D%20Scene%20Model%20Recognition.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1257,6 +1452,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/SmartFuzz%20Making%20Smart%20Contract%20Fuzzing%20Smarter%20via%20State-Aware%20Feedback.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/SmartFuzz%20Making%20Smart%20Contract%20Fuzzing%20Smarter%20via%20State-Aware%20Feedback.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1270,6 +1467,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Software%20Testing%20for%20Extended%20Reality%20Applications_A%20Systematic%20Mapping%20Study.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Software%20Testing%20for%20Extended%20Reality%20Applications_A%20Systematic%20Mapping%20Study.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1283,6 +1482,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Towards%20Automatic%20Oracle%20Prediction%20for%20AR%20Testing_Assessing%20Virtual%20Object%20Placement%20Quality%20under%20Real-World%20Scenes.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Towards%20Automatic%20Oracle%20Prediction%20for%20AR%20Testing_Assessing%20Virtual%20Object%20Placement%20Quality%20under%20Real-World%20Scenes.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1296,6 +1497,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Unit%20Test%20Generation%20using%20Large%20Language%20Models%20for%20Unity%20Game%20Development.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Unit%20Test%20Generation%20using%20Large%20Language%20Models%20for%20Unity%20Game%20Development.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1309,6 +1512,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Unity%20RL%20Playground_A%20Versatile%20Reinforcement%20Learning%20%20Framework%20for%20Mobile%20Robots.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Unity%20RL%20Playground_A%20Versatile%20Reinforcement%20Learning%20%20Framework%20for%20Mobile%20Robots.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1322,6 +1527,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Utilizing%20Generative%20AI%20for%20VR%20Exploration%20Testing_A%20Case%20Study.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Utilizing%20Generative%20AI%20for%20VR%20Exploration%20Testing_A%20Case%20Study.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1335,6 +1542,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Virtual%20Reality%20Genres_Comparing%20Preferences%20in%20Immersive%20Experiences%20and%20Games.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Virtual%20Reality%20Genres_Comparing%20Preferences%20in%20Immersive%20Experiences%20and%20Games.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1348,6 +1557,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/Virtual%20reality%20toolkit%20for%20the%20Unity%20game%20engine.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Virtual%20reality%20toolkit%20for%20the%20Unity%20game%20engine.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1361,6 +1572,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/VR.net_%20A%20Real-world%20Dataset%20for%20Virtual%20Reality%20Motion%20Sickness%20Research.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/VR.net_%20A%20Real-world%20Dataset%20for%20Virtual%20Reality%20Motion%20Sickness%20Research.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1374,6 +1587,8 @@
       "unsorted"
     ],
     "pdf": "papers/VR/VRGuide%20Efficient%20Testing%20of%20Virtual%20Reality%20Scenes%20via%20Dynamic%20Cut%20Coverage.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/VRGuide%20Efficient%20Testing%20of%20Virtual%20Reality%20Scenes%20via%20Dynamic%20Cut%20Coverage.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   },
@@ -1387,6 +1602,39 @@
       "unsorted"
     ],
     "pdf": "papers/VR/When%20the%20User%20Is%20Inside%20the%20User%20Interface%20An%20Empirical%20Study%20of%20UI%20Security%20Properties%20in%20Augmented%20Reality.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/When%20the%20User%20Is%20Inside%20the%20User%20Interface%20An%20Empirical%20Study%20of%20UI%20Security%20Properties%20in%20Augmented%20Reality.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/vrtestsniffer_test smell detector for virtual.pdf": {
+    "file_key": "vr/vrtestsniffer_test smell detector for virtual.pdf",
+    "title": "VRTestSniffer: Test Smell Detector for Virtual Reality (VR) Software Projects",
+    "authors": " Faraz Gurramkonda∗, Avishak Chakroborty∗, Bruce Maxim∗, Mohamed Wiem Mkaouer†, Foyzul Hassan",
+    "year": "2025",
+    "venue": "ASE",
+    "tags": [
+      "VR",
+      "Test Smell"
+    ],
+    "pdf": "papers/VR/VRTestSniffer_Test%20Smell%20Detector%20for%20Virtual.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/VRTestSniffer_Test%20Smell%20Detector%20for%20Virtual.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/element-aware fine-tuning of vision-language models for cost-efficient gui testing in an industrial setting.pdf": {
+    "file_key": "vlm/element-aware fine-tuning of vision-language models for cost-efficient gui testing in an industrial setting.pdf",
+    "title": "Element-Aware Fine-Tuning of Vision-Language Models for Cost-Efficient GUI Testing in an Industrial Setting",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "",
+    "tags": [
+      "unsorted"
+    ],
+    "pdf": "papers/VLM/Element-Aware%20Fine-Tuning%20of%20Vision-Language%20Models%20for%20Cost-Efficient%20GUI%20Testing%20in%20an%20Industrial%20Setting.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/Element-Aware%20Fine-Tuning%20of%20Vision-Language%20Models%20for%20Cost-Efficient%20GUI%20Testing%20in%20an%20Industrial%20Setting.pdf",
+    "read": false,
     "bib": "",
     "notes": ""
   }
