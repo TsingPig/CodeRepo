@@ -1637,5 +1637,35 @@
     "read": false,
     "bib": "",
     "notes": ""
+  },
+  "vlm/threedworld_ a platform for interactive multi-modal physical simulation.pdf": {
+    "file_key": "vlm/threedworld_ a platform for interactive multi-modal physical simulation.pdf",
+    "title": "ThreeDWorld_ A Platform for Interactive Multi-Modal Physical Simulation",
+    "authors": " MIT-IBM Watson AI Lab",
+    "year": "2021",
+    "venue": "arXiv",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/ThreeDWorld_%20A%20Platform%20for%20Interactive%20Multi-Modal%20Physical%20Simulation.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/ThreeDWorld_%20A%20Platform%20for%20Interactive%20Multi-Modal%20Physical%20Simulation.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/ai2-thor_an interactive 3d environment for visual ai.pdf": {
+    "file_key": "vlm/ai2-thor_an interactive 3d environment for visual ai.pdf",
+    "title": "AI2-THOR_An Interactive 3D Environment for Visual AI",
+    "authors": "Allen Institute for AI",
+    "year": "2022",
+    "venue": "arXiv",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
   }
 }
