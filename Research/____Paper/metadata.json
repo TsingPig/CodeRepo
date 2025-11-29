@@ -19,9 +19,9 @@
     "title": "Agent based Testing of Extended Reality Systems",
     "authors": "Rui Prada, I. S. W. B. Prasetya, Fitsum Kifetew, Frank Dignum, Tanja E. J. Vos, Jason Lander, Jean-yves Donnart, Alexandre Kazmierowski, Joseph Davidson, and Pedro M. Fernandes",
     "year": "2020",
-    "venue": "",
+    "venue": "ICST",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/__Game/Agent-based%20Testing%20of%20Extended%20Reality%20Systems.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Agent-based%20Testing%20of%20Extended%20Reality%20Systems.pdf",
@@ -121,16 +121,16 @@
   },
   "__game/glib  towards automated test oracle for graphically-rich applications.pdf": {
     "file_key": "__game/glib  towards automated test oracle for graphically-rich applications.pdf",
-    "title": "Glib towards automated test oracle for graphically rich applications",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "title": "Glib: towards automated test oracle for graphically rich applications",
+    "authors": " Fuxi AI Lab in Netease",
+    "year": "2021",
+    "venue": "FSE",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Glib%20%20towards%20automated%20test%20oracle%20for%20graphically-rich%20applications.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Glib%20%20towards%20automated%20test%20oracle%20for%20graphically-rich%20applications.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -242,15 +242,15 @@
   "__game/towards agent-based testing of 3d games using reinforcement learning.pdf": {
     "file_key": "__game/towards agent-based testing of 3d games using reinforcement learning.pdf",
     "title": "Towards Agent Based Testing of 3D Games using Reinforcement Learning",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": " Fondazione Bruno Kessler",
+    "year": "2022",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Towards%20Agent-Based%20Testing%20of%203D%20Games%20using%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Towards%20Agent-Based%20Testing%20of%203D%20Games%20using%20Reinforcement%20Learning.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -332,15 +332,16 @@
   "__game/wuji_automatic online combat game testing using evolutionary deep reinforcement learning.pdf": {
     "file_key": "__game/wuji_automatic online combat game testing using evolutionary deep reinforcement learning.pdf",
     "title": "Wuji Automatic Online Combat Game Testing Using Evolutionary Deep Reinforcement Learning",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Tianjin University & Fuxi AI Lab",
+    "year": "2019",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "Game Testing",
+      "RL"
     ],
     "pdf": "papers/__Game/Wuji_Automatic%20Online%20Combat%20Game%20Testing%20Using%20Evolutionary%20Deep%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Wuji_Automatic%20Online%20Combat%20Game%20Testing%20Using%20Evolutionary%20Deep%20Reinforcement%20Learning.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -844,17 +845,17 @@
   "vr/_vrtest an extensible framework for automatic testing.pdf": {
     "file_key": "vr/_vrtest an extensible framework for automatic testing.pdf",
     "title": "_VRTest An Extensible Framework for Automatic Testing",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Xiaoyin Wang",
+    "year": "2022",
+    "venue": "ICSE",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/_VRTest%20An%20Extensible%20Framework%20for%20Automatic%20Testing.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_VRTest%20An%20Extensible%20Framework%20for%20Automatic%20Testing.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
-    "notes": ""
+    "notes": "short paper"
   },
   "vr/a survey on (m)llm-based gui agents.pdf": {
     "file_key": "vr/a survey on (m)llm-based gui agents.pdf",
@@ -1214,7 +1215,7 @@
     ],
     "pdf": "papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1386,15 +1387,15 @@
   "vr/predart towards automatic oracle prediction of object placements in augmented reality testing.pdf": {
     "file_key": "vr/predart towards automatic oracle prediction of object placements in augmented reality testing.pdf",
     "title": "PredART Towards Automatic Oracle Prediction of Object Placements in Augmented Reality Testing",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Tahmid Raf, Xueling Zhang, Xiaoyin Wang",
+    "year": "2022",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/PredART%20Towards%20Automatic%20Oracle%20Prediction%20of%20Object%20Placements%20in%20Augmented%20Reality%20Testing.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/PredART%20Towards%20Automatic%20Oracle%20Prediction%20of%20Object%20Placements%20in%20Augmented%20Reality%20Testing.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1682,7 +1683,7 @@
     ],
     "pdf": "papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1700,5 +1701,20 @@
     "read": true,
     "bib": "",
     "notes": ""
+  },
+  "vr/a test automation framework for user interaction.pdf": {
+    "file_key": "vr/a test automation framework for user interaction.pdf",
+    "title": "A Test Automation Framework for User Interaction  in Extended Reality Applications",
+    "authors": " Ruizhen Gu and Jos´ e Miguel Rojas",
+    "year": "2025",
+    "venue": "ASE",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/A%20Test%20Automation%20Framework%20for%20User%20Interaction.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/A%20Test%20Automation%20Framework%20for%20User%20Interaction.pdf",
+    "read": false,
+    "bib": "",
+    "notes": "workshop"
   }
 }

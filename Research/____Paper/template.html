@@ -281,6 +281,7 @@ function applyMetadataMap(map) {
 
 async function handleReadToggle(event, key) {
     event.stopPropagation();
+    event.preventDefault();
     const checked = event.target.checked;
     const p = papers.find(item => item.file_key === key);
     if (!p) return;
