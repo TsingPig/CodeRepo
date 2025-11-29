@@ -107,7 +107,7 @@ function render(list) {
     }
     Object.entries(groups).forEach(([tag, items]) => {
         const section = document.createElement('section');
-        section.className = 'group open';
+        section.className = 'group';
         section.innerHTML = `
             <div class="group-header" onclick="toggleGroup(this)">
                 <div>

@@ -935,15 +935,15 @@
   "vr/an_empirical_study_on_oculus_virtual_reality_applications_security_and_privacy_perspectives.pdf": {
     "file_key": "vr/an_empirical_study_on_oculus_virtual_reality_applications_security_and_privacy_perspectives.pdf",
     "title": "An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Hanyang Guo",
+    "year": "2024",
+    "venue": "ICSE",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/An_Empirical_Study_on_Oculus_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1025,15 +1025,16 @@
   "vr/autovr_automated ui exploration for detecting sensitive data flow exposures in virtual reality apps.pdf": {
     "file_key": "vr/autovr_automated ui exploration for detecting sensitive data flow exposures in virtual reality apps.pdf",
     "title": "AutoVR_Automated UI Exploration for Detecting Sensitive Data Flow Exposures in Virtual Reality Apps",
-    "authors": "Unknown",
+    "authors": "John Y. Kim, Chaoshun Zuo, Yanjie Zhao, and  Zhiqiang Lin, The Ohio State University",
     "year": "2025",
-    "venue": "",
+    "venue": "Usenix SEC",
     "tags": [
-      "unsorted"
+      "VR",
+      "GUI Testing"
     ],
     "pdf": "papers/VR/AutoVR_Automated%20UI%20Exploration%20for%20Detecting%20Sensitive%20Data%20Flow%20Exposures%20in%20Virtual%20Reality%20Apps.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AutoVR_Automated%20UI%20Exploration%20for%20Detecting%20Sensitive%20Data%20Flow%20Exposures%20in%20Virtual%20Reality%20Apps.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1682,6 +1683,21 @@
     "pdf": "papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/AI2-THOR_An%20Interactive%203D%20Environment%20for%20Visual%20AI.pdf",
     "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/an_empirical_study_on_meta_virtual_reality_applications_security_and_privacy_perspectives.pdf": {
+    "file_key": "vr/an_empirical_study_on_meta_virtual_reality_applications_security_and_privacy_perspectives.pdf",
+    "title": "An_Empirical_Study_on_Meta_Virtual_Reality_Applications_Security_and_Privacy_Perspectives",
+    "authors": "Hanyang Guo, Hong-Ning Dai, Xiapu Luo, Fengliang He, and Zibin Zheng",
+    "year": "2025",
+    "venue": "TSE",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/An_Empirical_Study_on_Meta_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/An_Empirical_Study_on_Meta_Virtual_Reality_Applications_Security_and_Privacy_Perspectives.pdf",
+    "read": true,
     "bib": "",
     "notes": ""
   }
