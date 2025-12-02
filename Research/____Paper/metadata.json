@@ -32,9 +32,9 @@
   "__game/an agent-based approach to automated game testing_an experience report.pdf": {
     "file_key": "__game/an agent-based approach to automated game testing_an experience report.pdf",
     "title": "An Agent based Approach to Automated Game Testing an Experience Report",
-    "authors": "Unknown Authors",
-    "year": "2020",
-    "venue": "arXiv",
+    "authors": "I. S. W. B. Prasetya",
+    "year": "2022",
+    "venue": "A-Test",
     "tags": [
       "Game Testing"
     ],
@@ -47,8 +47,8 @@
   "__game/an automated model based testing approach for platform games.pdf": {
     "file_key": "__game/an automated model based testing approach for platform games.pdf",
     "title": "An automated model based testing approach for platform games",
-    "authors": "Unknown Authors",
-    "year": "2025",
+    "authors": "Sidra Iftikhar",
+    "year": "2015",
     "venue": "",
     "tags": [
       "Model-based Testing"
@@ -62,41 +62,41 @@
   "__game/aplib_tactical agents for testing computer games.pdf": {
     "file_key": "__game/aplib_tactical agents for testing computer games.pdf",
     "title": "Aplib Tactical Agents for Testing Computer Games",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": " I. S. W. B. Prasetya",
+    "year": "2021",
+    "venue": "EMAS",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Aplib_Tactical%20Agents%20for%20Testing%20Computer%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Aplib_Tactical%20Agents%20for%20Testing%20Computer%20Games.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "__game/augmenting automated game testing with deep reinforcement learning.pdf": {
     "file_key": "__game/augmenting automated game testing with deep reinforcement learning.pdf",
     "title": "Augmenting Automated Game Testing with Deep Reinforcement Learning",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Joakim Bergdahl, Camilo Gordillo, Konrad Tollmar, Linus Gissl´ en",
+    "year": "2020",
+    "venue": "CoG",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Augmenting%20Automated%20Game%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Augmenting%20Automated%20Game%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "__game/dota 2 with large scale deep reinforcement learning.pdf": {
     "file_key": "__game/dota 2 with large scale deep reinforcement learning.pdf",
     "title": "Dota 2 with Large Scale Deep Reinforcement Learning",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Christopher Berner",
+    "year": "2019",
+    "venue": "arXiv",
     "tags": [
-      "unsorted"
+      "RL"
     ],
     "pdf": "papers/__Game/Dota%202%20with%20Large%20Scale%20Deep%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Dota%202%20with%20Large%20Scale%20Deep%20Reinforcement%20Learning.pdf",
@@ -167,15 +167,15 @@
   "__game/navigation and exploration in 3d-game automated play testing.pdf": {
     "file_key": "__game/navigation and exploration in 3d-game automated play testing.pdf",
     "title": "Navigation and Exploration in 3D Game Automated Play Testing",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "I. S. W. B. Prasetya",
+    "year": "2020",
+    "venue": "A-Test",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Navigation%20and%20Exploration%20in%203D-Game%20Automated%20Play%20Testing.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Navigation%20and%20Exploration%20in%203D-Game%20Automated%20Play%20Testing.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -197,15 +197,15 @@
   "__game/search-based automated play testing of computer games_a model-based approach.pdf": {
     "file_key": "__game/search-based automated play testing of computer games_a model-based approach.pdf",
     "title": "Search Based Automated Play Testing of Computer Games A Model Based Approach",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": " Raihana Ferdous,  I. S. W. B. Prasetya",
+    "year": "2021",
+    "venue": "EMAS",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Search-Based%20Automated%20Play%20Testing%20of%20Computer%20Games_A%20Model-Based%20Approach.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Search-Based%20Automated%20Play%20Testing%20of%20Computer%20Games_A%20Model-Based%20Approach.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -272,26 +272,27 @@
   "__game/using an agent-based approach for robust automated testing of computer games.pdf": {
     "file_key": "__game/using an agent-based approach for robust automated testing of computer games.pdf",
     "title": "Using an Agent Based Approach for Robust Automated Testing of Computer Games",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": " Samira Shirzade hhajimahmood,  I. S. W. B. Prasetya",
+    "year": "2021",
+    "venue": "A-Test",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Using%20an%20Agent-Based%20Approach%20for%20Robust%20Automated%20Testing%20of%20Computer%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Using%20an%20Agent-Based%20Approach%20for%20Robust%20Automated%20Testing%20of%20Computer%20Games.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "__game/using reinforcement learning for load testing of video games.pdf": {
     "file_key": "__game/using reinforcement learning for load testing of video games.pdf",
     "title": "Using Reinforcement Learning for Load Testing of Video Games",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Rosalia Tufano (Università della Svizzera italiana, Switzerland)",
+    "year": "2022",
+    "venue": "ICSE",
     "tags": [
-      "unsorted"
+      "Game Testing",
+      "RL"
     ],
     "pdf": "papers/__Game/Using%20Reinforcement%20Learning%20for%20Load%20Testing%20of%20Video%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Using%20Reinforcement%20Learning%20for%20Load%20Testing%20of%20Video%20Games.pdf",
@@ -317,11 +318,11 @@
   "__game/widget detection-based testing for industrial mobile games.pdf": {
     "file_key": "__game/widget detection-based testing for industrial mobile games.pdf",
     "title": "Widget Detection Based Testing for Industrial Mobile Games",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
+    "authors": "Kyushu University, Japan",
+    "year": "2023",
+    "venue": "ICSE-SEIP",
     "tags": [
-      "unsorted"
+      "Game Testing"
     ],
     "pdf": "papers/__Game/Widget%20Detection-Based%20Testing%20for%20Industrial%20Mobile%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/__Game/Widget%20Detection-Based%20Testing%20for%20Industrial%20Mobile%20Games.pdf",
@@ -410,11 +411,11 @@
   "llm/chatdev_communicative_agents_for_software_development.pdf": {
     "file_key": "llm/chatdev_communicative_agents_for_software_development.pdf",
     "title": "ChatDev_Communicative_Agents_for_Software_Development",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Chen Qian and Wei Liu and Hongzhang Liu and Nuo Chen and Yufan Dang and Jiahao Li and Cheng Yang and Weize Chen and Yusheng Su and Xin Cong and Juyuan Xu and Dahai Li and Zhiyuan Liu and Maosong Sun",
+    "year": "2024",
+    "venue": "arXiv",
     "tags": [
-      "unsorted"
+      "LLM"
     ],
     "pdf": "papers/LLM/ChatDev_Communicative_Agents_for_Software_Development.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/ChatDev_Communicative_Agents_for_Software_Development.pdf",
@@ -500,11 +501,11 @@
   "llm/voyager_an open-ended embodied agent with large language models.pdf": {
     "file_key": "llm/voyager_an open-ended embodied agent with large language models.pdf",
     "title": "VOYAGER_An Open-Ended Embodied Agent with Large Language Models",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Guanzhi Wang and Yuqi Xie and Yunfan Jiang and Ajay Mandlekar and Chaowei Xiao and Yuke Zhu and Linxi Fan and Anima Anandkumar",
+    "year": "2023",
+    "venue": "NeurIPS Workshop",
     "tags": [
-      "unsorted"
+      "Embodied AI"
     ],
     "pdf": "papers/LLM/VOYAGER_An%20Open-Ended%20Embodied%20Agent%20with%20Large%20Language%20Models.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/LLM/VOYAGER_An%20Open-Ended%20Embodied%20Agent%20with%20Large%20Language%20Models.pdf",
@@ -769,16 +770,16 @@
   },
   "vr/_a peek into the metaverse  detecting 3d model clones in mobile games.pdf": {
     "file_key": "vr/_a peek into the metaverse  detecting 3d model clones in mobile games.pdf",
-    "title": "_A Peek into the Metaverse  Detecting 3D Model Clones in Mobile Games",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "title": "A Peek into the Metaverse  Detecting 3D Model Clones in Mobile Games",
+    "authors": "Chaoshun Zuo, Zhiqiang Lin",
+    "year": "2023",
+    "venue": "Usenix SEC",
     "tags": [
-      "unsorted"
+      "Game"
     ],
     "pdf": "papers/VR/_A%20Peek%20into%20the%20Metaverse%20%20Detecting%203D%20Model%20Clones%20in%20Mobile%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_A%20Peek%20into%20the%20Metaverse%20%20Detecting%203D%20Model%20Clones%20in%20Mobile%20Games.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -829,16 +830,16 @@
   },
   "vr/_virtual reality (vr) automated testing in the wild a case study on unity-based vr applications.pdf": {
     "file_key": "vr/_virtual reality (vr) automated testing in the wild a case study on unity-based vr applications.pdf",
-    "title": "_Virtual Reality (VR) Automated Testing in the Wild A Case Study on Unity-Based VR Applications",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "title": "Virtual Reality (VR) Automated Testing in the Wild A Case Study on Unity-Based VR Applications",
+    "authors": " Xue Qin",
+    "year": "2023",
+    "venue": "ISSTA",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/_Virtual%20Reality%20%28VR%29%20Automated%20Testing%20in%20the%20Wild%20A%20Case%20Study%20on%20Unity-Based%20VR%20Applications.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/_Virtual%20Reality%20%28VR%29%20Automated%20Testing%20in%20the%20Wild%20A%20Case%20Study%20on%20Unity-Based%20VR%20Applications.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -890,11 +891,11 @@
   "vr/adcube webvr ad fraud and practical confinement of third-party ads.pdf": {
     "file_key": "vr/adcube webvr ad fraud and practical confinement of third-party ads.pdf",
     "title": "AdCube WebVR Ad Fraud and Practical Confinement of Third-Party Ads",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Hyunjoo Lee and Jiyeon Lee and Daejun Kim and Suman Jana and Insik Shin and Sooel Son",
+    "year": "2021",
+    "venue": "Usenix SEC",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/AdCube%20WebVR%20Ad%20Fraud%20and%20Practical%20Confinement%20of%20Third-Party%20Ads.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AdCube%20WebVR%20Ad%20Fraud%20and%20Practical%20Confinement%20of%20Third-Party%20Ads.pdf",
@@ -914,18 +915,18 @@
     ],
     "pdf": "papers/VR/Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Aligning_Cyber_Space_with_Physical_World_A_Comprehensive_Survey_on_Embodied_AI.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "vr/an evolutionary approach for generating software models_the case of kromaia in game software engineering.pdf": {
     "file_key": "vr/an evolutionary approach for generating software models_the case of kromaia in game software engineering.pdf",
     "title": "An evolutionary approach for generating software models_The case of Kromaia in Game Software Engineering",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Daniel Blasco∗ , Jaime Font, Mar Zamorano, Carlos Cetina",
+    "year": "2021",
+    "venue": "JSS",
     "tags": [
-      "unsorted"
+      "Game"
     ],
     "pdf": "papers/VR/An%20evolutionary%20approach%20for%20generating%20software%20models_The%20case%20of%20Kromaia%20in%20Game%20Software%20Engineering.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/An%20evolutionary%20approach%20for%20generating%20software%20models_The%20case%20of%20Kromaia%20in%20Game%20Software%20Engineering.pdf",
@@ -981,26 +982,26 @@
   "vr/autoconsis_automatic gui-driven data inconsistency detection of mobile apps.pdf": {
     "file_key": "vr/autoconsis_automatic gui-driven data inconsistency detection of mobile apps.pdf",
     "title": "AutoConsis_Automatic GUI-driven Data Inconsistency Detection of Mobile Apps",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Yongxiang Hu (Fudan University)",
+    "year": "2024",
+    "venue": "ICSE-SEIP",
     "tags": [
-      "unsorted"
+      "GUI Testing"
     ],
     "pdf": "papers/VR/AutoConsis_Automatic%20GUI-driven%20Data%20Inconsistency%20Detection%20of%20Mobile%20Apps.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/AutoConsis_Automatic%20GUI-driven%20Data%20Inconsistency%20Detection%20of%20Mobile%20Apps.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "vr/automated usability evaluation of virtual reality application.pdf": {
     "file_key": "vr/automated usability evaluation of virtual reality application.pdf",
     "title": "Automated Usability Evaluation of Virtual Reality Application",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "PATRICK HARMS, University of Goettingen",
+    "year": "2019",
+    "venue": "TOCHI",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/Automated%20Usability%20Evaluation%20of%20Virtual%20Reality%20Application.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Automated%20Usability%20Evaluation%20of%20Virtual%20Reality%20Application.pdf",
@@ -1011,15 +1012,16 @@
   "vr/automatically detecting visual bugs in html5 canvas games.pdf": {
     "file_key": "vr/automatically detecting visual bugs in html5 canvas games.pdf",
     "title": "Automatically Detecting Visual Bugs in HTML5 Canvas Games",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Finlay Macklon",
+    "year": "2022",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "GUI Testing",
+      "Game Testing"
     ],
     "pdf": "papers/VR/Automatically%20Detecting%20Visual%20Bugs%20in%20HTML5%20Canvas%20Games.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Automatically%20Detecting%20Visual%20Bugs%20in%20HTML5%20Canvas%20Games.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1042,11 +1044,12 @@
   "vr/can cooperative multi-agent reinforcement learning boost automatic web testing an exploratory study.pdf": {
     "file_key": "vr/can cooperative multi-agent reinforcement learning boost automatic web testing an exploratory study.pdf",
     "title": "Can Cooperative Multi-Agent Reinforcement Learning Boost Automatic Web Testing An Exploratory Study",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Yujia Fan1,2, Sinan Wang1, Zebang Fei2, Yao Qin2, Huaxuan Li2, Yepang Liu",
+    "year": "2024",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "GUI Testing",
+      "RL"
     ],
     "pdf": "papers/VR/Can%20Cooperative%20Multi-Agent%20Reinforcement%20Learning%20Boost%20Automatic%20Web%20Testing%20An%20Exploratory%20Study.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Can%20Cooperative%20Multi-Agent%20Reinforcement%20Learning%20Boost%20Automatic%20Web%20Testing%20An%20Exploratory%20Study.pdf",
@@ -1057,11 +1060,11 @@
   "vr/deeply reinforcing android gui testing with deep reinforcement learning.pdf": {
     "file_key": "vr/deeply reinforcing android gui testing with deep reinforcement learning.pdf",
     "title": "Deeply Reinforcing Android GUI Testing with Deep Reinforcement Learning",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Yuanhong Lan",
+    "year": "2024",
+    "venue": "ICSE",
     "tags": [
-      "unsorted"
+      "GUI Testing"
     ],
     "pdf": "papers/VR/Deeply%20Reinforcing%20Android%20GUI%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Deeply%20Reinforcing%20Android%20GUI%20Testing%20with%20Deep%20Reinforcement%20Learning.pdf",
@@ -1207,11 +1210,11 @@
   "vr/fastbot2_reusable automated model-based gui testing for android enhanced by reinforcement learning.pdf": {
     "file_key": "vr/fastbot2_reusable automated model-based gui testing for android enhanced by reinforcement learning.pdf",
     "title": "Fastbot2_Reusable Automated Model-based GUI Testing for Android Enhanced by Reinforcement Learning",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Zhengwei Lv（ByteDance）",
+    "year": "2022",
+    "venue": "ASE",
     "tags": [
-      "unsorted"
+      "GUI Testing"
     ],
     "pdf": "papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Fastbot2_Reusable%20Automated%20Model-based%20GUI%20Testing%20for%20Android%20Enhanced%20by%20Reinforcement%20Learning.pdf",
@@ -1237,11 +1240,11 @@
   "vr/guided, stochastic model-based gui testing of android apps.pdf": {
     "file_key": "vr/guided, stochastic model-based gui testing of android apps.pdf",
     "title": "Guided, stochastic model-based GUI testing of Android apps",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Ting Su",
+    "year": "2017",
+    "venue": "FSE",
     "tags": [
-      "unsorted"
+      "GUI Testing"
     ],
     "pdf": "papers/VR/Guided%2C%20stochastic%20model-based%20GUI%20testing%20of%20Android%20apps.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Guided%2C%20stochastic%20model-based%20GUI%20testing%20of%20Android%20apps.pdf",
@@ -1252,11 +1255,11 @@
   "vr/habitat_a_platform_for_embodied_ai_research_iccv_2019_paper.pdf": {
     "file_key": "vr/habitat_a_platform_for_embodied_ai_research_iccv_2019_paper.pdf",
     "title": "Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Facebook AI Research",
+    "year": "2019",
+    "venue": "ICCV",
     "tags": [
-      "unsorted"
+      "Embodied AI"
     ],
     "pdf": "papers/VR/Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Habitat_A_Platform_for_Embodied_AI_Research_ICCV_2019_paper.pdf",
@@ -1417,11 +1420,11 @@
   "vr/semantic gui scene learning and video alignment for detecting duplicate video-based bug reports.pdf": {
     "file_key": "vr/semantic gui scene learning and video alignment for detecting duplicate video-based bug reports.pdf",
     "title": "Semantic GUI Scene Learning and Video Alignment for Detecting Duplicate Video-based Bug Reports",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": " Yanfu Yan(Williamsburg, Virginia, USA)",
+    "year": "2024",
+    "venue": "ICSE",
     "tags": [
-      "unsorted"
+      "GUI Testing"
     ],
     "pdf": "papers/VR/Semantic%20GUI%20Scene%20Learning%20and%20Video%20Alignment%20for%20Detecting%20Duplicate%20Video-based%20Bug%20Reports.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Semantic%20GUI%20Scene%20Learning%20and%20Video%20Alignment%20for%20Detecting%20Duplicate%20Video-based%20Bug%20Reports.pdf",
@@ -1477,11 +1480,11 @@
   "vr/towards automatic oracle prediction for ar testing_assessing virtual object placement quality under real-world scenes.pdf": {
     "file_key": "vr/towards automatic oracle prediction for ar testing_assessing virtual object placement quality under real-world scenes.pdf",
     "title": "Towards Automatic Oracle Prediction for AR Testing_Assessing Virtual Object Placement Quality under Real-World Scenes",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Xiaoyin wang",
+    "year": "2024",
+    "venue": "ISSTA",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/Towards%20Automatic%20Oracle%20Prediction%20for%20AR%20Testing_Assessing%20Virtual%20Object%20Placement%20Quality%20under%20Real-World%20Scenes.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Towards%20Automatic%20Oracle%20Prediction%20for%20AR%20Testing_Assessing%20Virtual%20Object%20Placement%20Quality%20under%20Real-World%20Scenes.pdf",
@@ -1492,11 +1495,11 @@
   "vr/unit test generation using large language models for unity game development.pdf": {
     "file_key": "vr/unit test generation using large language models for unity game development.pdf",
     "title": "Unit Test Generation using Large Language Models for Unity Game Development",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Ciprian Paduraru",
+    "year": "2024",
+    "venue": "FaSE4Games",
     "tags": [
-      "unsorted"
+      "Game"
     ],
     "pdf": "papers/VR/Unit%20Test%20Generation%20using%20Large%20Language%20Models%20for%20Unity%20Game%20Development.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Unit%20Test%20Generation%20using%20Large%20Language%20Models%20for%20Unity%20Game%20Development.pdf",
@@ -1507,26 +1510,26 @@
   "vr/unity rl playground_a versatile reinforcement learning  framework for mobile robots.pdf": {
     "file_key": "vr/unity rl playground_a versatile reinforcement learning  framework for mobile robots.pdf",
     "title": "Unity RL Playground_A Versatile Reinforcement Learning  Framework for Mobile Robots",
-    "authors": "Unknown",
+    "authors": "Linqi Ye and Rankun Li and Xiaowen Hu and Jiayi Li and Boyang Xing and Yan Peng and Bin Liang",
     "year": "2025",
-    "venue": "",
+    "venue": "arXiv",
     "tags": [
-      "unsorted"
+      "Embodied AI"
     ],
     "pdf": "papers/VR/Unity%20RL%20Playground_A%20Versatile%20Reinforcement%20Learning%20%20Framework%20for%20Mobile%20Robots.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Unity%20RL%20Playground_A%20Versatile%20Reinforcement%20Learning%20%20Framework%20for%20Mobile%20Robots.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
   "vr/utilizing generative ai for vr exploration testing_a case study.pdf": {
     "file_key": "vr/utilizing generative ai for vr exploration testing_a case study.pdf",
     "title": "Utilizing Generative AI for VR Exploration Testing_A Case Study",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
+    "authors": "Xue Qin",
+    "year": "2024",
+    "venue": "ASEW",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/Utilizing%20Generative%20AI%20for%20VR%20Exploration%20Testing_A%20Case%20Study.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Utilizing%20Generative%20AI%20for%20VR%20Exploration%20Testing_A%20Case%20Study.pdf",
@@ -1586,11 +1589,11 @@
     "year": "2025",
     "venue": "",
     "tags": [
-      "unsorted"
+      "VR"
     ],
     "pdf": "papers/VR/VRGuide%20Efficient%20Testing%20of%20Virtual%20Reality%20Scenes%20via%20Dynamic%20Cut%20Coverage.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/VRGuide%20Efficient%20Testing%20of%20Virtual%20Reality%20Scenes%20via%20Dynamic%20Cut%20Coverage.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
     "notes": ""
   },
@@ -1716,5 +1719,142 @@
     "read": false,
     "bib": "",
     "notes": "workshop"
+  },
+  "vr/principled and automated approach for investigating ar_vr attacks.pdf": {
+    "file_key": "vr/principled and automated approach for investigating ar_vr attacks.pdf",
+    "title": "Principled and Automated Approach for Investigating AR_VR Attacks",
+    "authors": "Muhammad Shoaib, Alex Suh, and Wajih Ul Hassan, University of Virginia",
+    "year": "2025",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/Principled%20and%20Automated%20Approach%20for%20Investigating%20AR_VR%20Attacks.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Principled%20and%20Automated%20Approach%20for%20Investigating%20AR_VR%20Attacks.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/can_virtual_reality_protect_users_from_keystroke_inference_attacks.pdf": {
+    "file_key": "vr/can_virtual_reality_protect_users_from_keystroke_inference_attacks.pdf",
+    "title": "Can_Virtual_Reality_Protect_Users_from_Keystroke_Inference_Attacks",
+    "authors": "Zhuolin Yang, Zain Sarwar, Iris Hwang, Ronik Bhaskar, Ben Y. Zhao, and Haitao Zheng, University of Chicago",
+    "year": "2024",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/Can_Virtual_Reality_Protect_Users_from_Keystroke_Inference_Attacks.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Can_Virtual_Reality_Protect_Users_from_Keystroke_Inference_Attacks.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/when_the_user_is_inside_the_user_interface_anempirical_study_of_ui_security_properties_in_augmented_reality.pdf": {
+    "file_key": "vr/when_the_user_is_inside_the_user_interface_anempirical_study_of_ui_security_properties_in_augmented_reality.pdf",
+    "title": "When_the_User_Is_Inside_the_User_Interface_AnEmpirical_Study_of_UI_Security_Properties_in_Augmented_Reality",
+    "authors": "Kaiming Cheng, Arkaprabha Bhattacharya, Michelle Lin, Jaewook Lee,  Aroosh Kumar, Jeffery F. Tian, Tadayoshi Kohno, and Franziska Roesner,  University of Washington",
+    "year": "2024",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/When_the_User_Is_Inside_the_User_Interface_AnEmpirical_Study_of_UI_Security_Properties_in_Augmented_Reality.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/When_the_User_Is_Inside_the_User_Interface_AnEmpirical_Study_of_UI_Security_Properties_in_Augmented_Reality.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/penetration_vision_through_virtual_reality_headsets_identifying_360-degree_videos_from_head_movements.pdf": {
+    "file_key": "vr/penetration_vision_through_virtual_reality_headsets_identifying_360-degree_videos_from_head_movements.pdf",
+    "title": "Penetration_Vision_through_Virtual_Reality_Headsets_Identifying_360-degree_Videos_from_Head_Movements",
+    "authors": "Anh Nguyen, Xiaokuan Zhang, and Zhisheng Yan, George Mason University",
+    "year": "2024",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/Penetration_Vision_through_Virtual_Reality_Headsets_Identifying_360-degree_Videos_from_Head_Movements.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Penetration_Vision_through_Virtual_Reality_Headsets_Identifying_360-degree_Videos_from_Head_Movements.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/that_doesnt_go_there_attacks_on_shared_state_in_multi-user_augmented_reality_applications.pdf": {
+    "file_key": "vr/that_doesnt_go_there_attacks_on_shared_state_in_multi-user_augmented_reality_applications.pdf",
+    "title": "That_Doesnt_Go_There_Attacks_on_Shared_State_in_Multi-User_Augmented_Reality_Applications",
+    "authors": " Carter Slocum, Yicheng Zhang, Erfan Shayegani, Pedram Zaree,  and Nael Abu-Ghazaleh, University of California, Riverside;  Jiasi Chen, University of Michigan",
+    "year": "2024",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/That_Doesnt_Go_There_Attacks_on_Shared_State_in_Multi-User_Augmented_Reality_Applications.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/That_Doesnt_Go_There_Attacks_on_Shared_State_in_Multi-User_Augmented_Reality_Applications.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/sok_come_together_unifying_security,information_theory,_and_cognition_for_a_mixed_reality_deception_attack_ontology_analysis_framework.pdf": {
+    "file_key": "vr/sok_come_together_unifying_security,information_theory,_and_cognition_for_a_mixed_reality_deception_attack_ontology_analysis_framework.pdf",
+    "title": "SoK_Come_Together_Unifying_Security,Information_Theory,_and_Cognition_for_a_Mixed_Reality_Deception_Attack_Ontology_Analysis_Framework",
+    "authors": " Ali Teymourian and Andrew M. Webb",
+    "year": "2025",
+    "venue": "Usenix SEC",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/SoK_Come_Together_Unifying_Security%2CInformation_Theory%2C_and_Cognition_for_a_Mixed_Reality_Deception_Attack_Ontology_Analysis_Framework.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/SoK_Come_Together_Unifying_Security%2CInformation_Theory%2C_and_Cognition_for_a_Mixed_Reality_Deception_Attack_Ontology_Analysis_Framework.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/ubiquitous_virtual_humans_a_multi-platform_framework_for_embodied_ai_agents_in_xr.pdf": {
+    "file_key": "vr/ubiquitous_virtual_humans_a_multi-platform_framework_for_embodied_ai_agents_in_xr.pdf",
+    "title": "Ubiquitous_Virtual_Humans_A_Multi-platform_Framework_for_Embodied_AI_Agents_in_XR",
+    "authors": "Arno Hartholt",
+    "year": "2019",
+    "venue": "AIVR",
+    "tags": [
+      "VR",
+      "Embodied AI"
+    ],
+    "pdf": "papers/VR/Ubiquitous_Virtual_Humans_A_Multi-platform_Framework_for_Embodied_AI_Agents_in_XR.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Ubiquitous_Virtual_Humans_A_Multi-platform_Framework_for_Embodied_AI_Agents_in_XR.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/special robot vision algorithm test platform in virtual reality environment.pdf": {
+    "file_key": "vlm/special robot vision algorithm test platform in virtual reality environment.pdf",
+    "title": "Special Robot Vision Algorithm Test Platform In Virtual Reality Environment",
+    "authors": "Yong Wang  Deparetment of Robot Testing  Xuzhou Quality and Technical",
+    "year": "2019",
+    "venue": "iThings",
+    "tags": [
+      "VR",
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/Special%20Robot%20Vision%20Algorithm%20Test%20Platform%20In%20Virtual%20Reality%20Environment.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/Special%20Robot%20Vision%20Algorithm%20Test%20Platform%20In%20Virtual%20Reality%20Environment.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/robothor anopensimulation-to-real embodied ai platform.pdf": {
+    "file_key": "vlm/robothor anopensimulation-to-real embodied ai platform.pdf",
+    "title": "RoboTHOR AnOpenSimulation-to-Real Embodied AI Platform",
+    "authors": "Allen Institute for AI",
+    "year": "2020",
+    "venue": "CVPR",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/RoboTHOR%20AnOpenSimulation-to-Real%20Embodied%20AI%20Platform.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/RoboTHOR%20AnOpenSimulation-to-Real%20Embodied%20AI%20Platform.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
   }
 }
