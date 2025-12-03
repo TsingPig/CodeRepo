@@ -21,7 +21,7 @@ data = [
     (2024, "DQT", "GUI", "Testing", "Deep Q-Network"),
     (2024, "VR-SP Detector", "XR", "Reliability", "Empirical study"),
     (2024, "GLIB", "Game", "Testing", "Automated GUI testing"),
-    (2024, "VRGuide", "XR", "Testing", "Computational geometry"),
+    (2023, "VRGuide", "XR", "Testing", "Computational geometry"),
     (2024, "Generative AI VR", "XR", "Testing", "Generative AI"),
     (2024, "Kea", "GUI", "Testing", "Property-based testing"),
     (2024, "VOPA", "XR", "Testing", "Oracle prediction"),
@@ -51,8 +51,12 @@ data = [
     (2019, "Wuji", "Game", "Development", "Evolutionary algorithms"),
     (2019, "VR Usability", "XR", "Testing", "Usability evaluation"),
     (2017, "Stoat", "GUI", "Testing", "Model-based testing"),
-    (2015, "Platform Game T.", "Game", "Testing", "Model-based testing")
+    (2015, "Platform Game T.", "Game", "Testing", "Model-based testing"),
+    (2021, "Habitat 2.0", "Embodied Agent", "Development", "ReplicaCAD dataset, physics-enabled simulator, Home Assistant Benchmark (HAB), RL vs SPA comparison"),
+    (2021, "iGibson", "Embodied Agent", "Development", "Interactive large-scale realistic scenes, virtual sensors, domain randomization, motion planning, imitation learning interface"),
+    (2024, "LEGENT", "Embodied Agent", "Development", "Open embodied-agent platform, LLM/LMM integration, data generation pipeline")
 ]
+
 
 df = pd.DataFrame(data, columns=['Year', 'Method', 'Domain', 'ProblemType', 'Methodology'])
 

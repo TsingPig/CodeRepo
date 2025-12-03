@@ -1746,9 +1746,9 @@
     ],
     "pdf": "papers/VR/Can_Virtual_Reality_Protect_Users_from_Keystroke_Inference_Attacks.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VR/Can_Virtual_Reality_Protect_Users_from_Keystroke_Inference_Attacks.pdf",
-    "read": false,
+    "read": true,
     "bib": "",
-    "notes": ""
+    "notes": "1. 攻击者（VR用户）可通过观察他人虚拟形象，还原另一VR用户输入的内容。作者对15名被测试者进行了攻击并且成功还原超过86%-98% of typed keys 和 98% of the meaning of the original typed content"
   },
   "vr/when_the_user_is_inside_the_user_interface_anempirical_study_of_ui_security_properties_in_augmented_reality.pdf": {
     "file_key": "vr/when_the_user_is_inside_the_user_interface_anempirical_study_of_ui_security_properties_in_augmented_reality.pdf",
@@ -1853,6 +1853,66 @@
     ],
     "pdf": "papers/VLM/RoboTHOR%20AnOpenSimulation-to-Real%20Embodied%20AI%20Platform.pdf",
     "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/RoboTHOR%20AnOpenSimulation-to-Real%20Embodied%20AI%20Platform.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/habitat_2_nip21_training_home_assistants_to_rearrange_their_habitat.pdf": {
+    "file_key": "vlm/habitat_2_nip21_training_home_assistants_to_rearrange_their_habitat.pdf",
+    "title": "Habitat_2_NIPS21_training_home_assistants_to_rearrange_their_habitat",
+    "authors": "Szot, Andrew and Clegg, Alex and Undersander, Eric and Wijmans, Erik and Zhao, Yili and Turner, John and Maestre, Noah and Mukadam, Mustafa and Chaplot, Devendra and Maksymets, Oleksandr and Gokaslan, Aaron and Vondrus, Vladimir and Dharur, Sameer and Meier, Franziska and Galuba, Wojciech and Chang, Angel and Kira, Zsolt and Koltun, Vladlen and Malik, Jitendra and Savva, Manolis and Batra, Dhruv",
+    "year": "2021",
+    "venue": "NIPS",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/Habitat_2_NIP21_training_home_assistants_to_rearrange_their_habitat.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/Habitat_2_NIP21_training_home_assistants_to_rearrange_their_habitat.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/igibson_iros21_a_simulation_environment_for_interactive_tasks_in_large_realistic_scenes.pdf": {
+    "file_key": "vlm/igibson_iros21_a_simulation_environment_for_interactive_tasks_in_large_realistic_scenes.pdf",
+    "title": "iGibson_IROS21_A_Simulation_Environment_for_Interactive_Tasks_in_Large_Realistic_Scenes",
+    "authors": " Bokui Shen , Fei Xia , Chengshu Li , Roberto Mart´ ın-Mart´ ın , Linxi Fan, Guanzhi Wang, Claudia P´ erez-D’Arpino,  Shyamal Buch, Sanjana Srivastava, Lyne Tchapmi, Micael Tchapmi, Kent Vainio, Josiah Wong, Li Fei-Fei, Silvio Savarese",
+    "year": "2021",
+    "venue": "IROS",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/iGibson_IROS21_A_Simulation_Environment_for_Interactive_Tasks_in_Large_Realistic_Scenes.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/iGibson_IROS21_A_Simulation_Environment_for_Interactive_Tasks_in_Large_Realistic_Scenes.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/legent_acl24_openplatform_for_embodied_agents.pdf": {
+    "file_key": "vlm/legent_acl24_openplatform_for_embodied_agents.pdf",
+    "title": "LEGENT_ACL24_OpenPlatform_for_Embodied_Agents",
+    "authors": "Zhili Cheng, Jinyi Hu, Zhitong Wang, Shengding Hu, An Liu,  Yuge Tu, Pengkai Li, Lei Shi, Zhiyuan Liu, Maosong Sun∗  Department of Computer Science and Technology, Tsinghua University",
+    "year": "2024",
+    "venue": "ACL",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/VLM/LEGENT_ACL24_OpenPlatform_for_Embodied_Agents.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/LEGENT_ACL24_OpenPlatform_for_Embodied_Agents.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vlm/safety of embodied navigation_a survey.pdf": {
+    "file_key": "vlm/safety of embodied navigation_a survey.pdf",
+    "title": "Safety of Embodied Navigation_A Survey",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "",
+    "tags": [
+      "unsorted"
+    ],
+    "pdf": "papers/VLM/Safety%20of%20Embodied%20Navigation_A%20Survey.pdf",
+    "pdf_local": "file:///E:/HenryLab/CodeRepo/Research/____Paper/papers/VLM/Safety%20of%20Embodied%20Navigation_A%20Survey.pdf",
     "read": false,
     "bib": "",
     "notes": ""
