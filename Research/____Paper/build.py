@@ -40,18 +40,25 @@ for rel_path, fname in pdf_files:
     if legacy_key in metadata and key != legacy_key:
         legacy_keys_to_remove.add(legacy_key)
 
+    # URL 编码路径
     quoted_rel_path = "/".join(urllib.parse.quote(part) for part in rel_path.split("/"))
 
-    abs_path = os.path.abspath(os.path.join(PDF_DIR, rel_path))
+    # 自动生成 tag：如果 metadata 中没有 tags 或为空，则使用 PDF 所在的一级文件夹
+    folder_tag = rel_path.split("/")[0] if "/" in rel_path else "unsorted"
+    tags = info.get("tags")
+    if not tags:
+        tags = [folder_tag]
+
     paper = {
         "file_key": key,
         "title": info.get("title", os.path.splitext(fname)[0]),
         "authors": info.get("authors", "Unknown"),
         "year": info.get("year", str(datetime.now().year)),
         "venue": info.get("venue", ""),
-        "tags": info.get("tags", ["unsorted"]),
+        "tags": tags,
         "pdf": f"{PDF_DIR}/{quoted_rel_path}",
-        "pdf_local": Path(abs_path).as_uri(),
+        # 使用相对路径，而不是 file:// URI
+        "pdf_local": f"{PDF_DIR}/{quoted_rel_path}",
         "read": info.get("read", False),
         "bib": info.get("bib", ""),
         "notes": info.get("notes", "")

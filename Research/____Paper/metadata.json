@@ -1916,5 +1916,20 @@
     "read": true,
     "bib": "",
     "notes": "short paper"
+  },
+  "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf": {
+    "file_key": "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf",
+    "title": "arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "pdf_local": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
   }
 }
