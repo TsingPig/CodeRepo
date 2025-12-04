@@ -27,6 +27,10 @@ def infer_venue_and_year(fname):
         (r"eccv(?:20)?(\d{2})", "ECCV"),
         (r"aaai(?:20)?(\d{2})", "AAAI"),
         (r"icra(?:20)?(\d{2})", "ICRA"),
+        (r"uist(?:20)?(\d{2})", "UIST"),
+        (r"sec(?:20)?(\d{2})", "Usenix SEC"),
+        (r"iva(?:20)?(\d{2})", "IVA"),
+        (r"icra(?:20)?(\d{2})", "CHI"),
         (r"siggraph(?:20)?(\d{2})", "SIGGRAPH"),
     ]
     for pat, venue_name in patterns:

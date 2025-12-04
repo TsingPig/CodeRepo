@@ -1924,10 +1924,56 @@
     "year": "2025",
     "venue": "arXiv",
     "tags": [
-      "VR"
+      "VR",
+      "survey"
     ],
     "pdf": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
     "pdf_local": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf": {
+    "file_key": "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf",
+    "title": "UIST24_Augmented_Object_Intelligence_with_XR-Objects",
+    "authors": "Mustafa Doga Dogan  Google ",
+    "year": "2024",
+    "venue": "UIST",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
+    "pdf_local": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf": {
+    "file_key": "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf",
+    "title": "arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes",
+    "authors": " Junlong Chen*  University of Cambridge",
+    "year": "2024",
+    "venue": "arXiv",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
+    "pdf_local": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf": {
+    "file_key": "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf",
+    "title": "iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans",
+    "authors": "Alon Shoa  The Advanced Reality Lab, Reichman University  Herzliya, Israel",
+    "year": "2023",
+    "venue": "IVA",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
+    "pdf_local": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
     "read": false,
     "bib": "",
     "notes": ""
