@@ -166,9 +166,9 @@ function createPaperCard(p) {
             <div class="note-content">${escapeHtml(p.notes)}</div>
         </div>` : ''}
         <div class="actions">
-            <a href="${escapeHtml(p.pdf)}" target="_blank" rel="noopener">🌐 浏览器打开</a>
-            ${p.pdf_local ? `<button type="button" onclick="openLocalSource('${encodedLocal}')" title="尝试通过 file:// 打开原始文件">�️ 打开源文件</button>` : ''}
+            ${p.pdf_local ? `<button type="button" onclick="openLocalSource('${encodedLocal}')" title="尝试通过 file:// 打开原始文件">打开源文件</button>` : ''}
             <button onclick="toggleEdit(this)">✏️ 编辑</button>
+            <button type="button" onclick="openContainingFolder('${encodedLocal}')" title="打开文件所在文件夹并聚焦">📂 打开所在目录</button>
         </div>
         <div class="collapse">
             <input value="${escapeHtml(p.title)}" placeholder="标题" class="edit-title"><br>
@@ -182,6 +182,28 @@ function createPaperCard(p) {
         </div>
     `;
     return div;
+}
+
+function openContainingFolder(encodedUri) {
+    try {
+        const path = decodeURIComponent(encodedUri || '');
+        if (!path) return;
+
+        // 构造文件夹路径
+        const folderPath = path.replace(/\/[^\/]+$/, ''); // 去掉文件名，只保留目录
+        const opened = window.open(folderPath, '_blank');
+        if (!opened) {
+            showStatus('浏览器限制无法直接打开文件夹，路径已复制到剪贴板', true);
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(path).catch(() => {});
+            }
+            alert('请手动打开文件夹并定位文件：\n' + path);
+        } else {
+            showStatus('尝试打开所在目录，如果被拦截请允许弹窗或复制路径手动打开', false);
+        }
+    } catch (err) {
+        showStatus('无法打开文件夹：' + err.message, true);
+    }
 }
 
 function toggleEdit(btn) {

@@ -18,11 +18,14 @@ def infer_venue_and_year(fname):
     patterns = [
         (r"ase(?:20)?(\d{2})", "ASE"),
         (r"icse(?:20)?(\d{2})", "ICSE"),
+        (r"fse(?:20)?(\d{2})", "FSE"),
+        (r"sbst(?:20)?(\d{2})", "SBST"),
         (r"issta(?:20)?(\d{2})", "ISSTA"),
         (r"acl(?:20)?(\d{2})", "ACL"),
         (r"arxiv(?:20)?(\d{2})", "arXiv"),
         (r"nip(?:s)?(?:20)?(\d{2})", "NeurIPS"),
         (r"cvpr(?:20)?(\d{2})", "CVPR"),
+        (r"ismar(?:20)?(\d{2})", "ISMAR"),
         (r"iccv(?:20)?(\d{2})", "ICCV"),
         (r"eccv(?:20)?(\d{2})", "ECCV"),
         (r"aaai(?:20)?(\d{2})", "AAAI"),
@@ -30,7 +33,7 @@ def infer_venue_and_year(fname):
         (r"uist(?:20)?(\d{2})", "UIST"),
         (r"sec(?:20)?(\d{2})", "Usenix SEC"),
         (r"iva(?:20)?(\d{2})", "IVA"),
-        (r"icra(?:20)?(\d{2})", "CHI"),
+        (r"chi(?:20)?(\d{2})", "CHI"),
         (r"siggraph(?:20)?(\d{2})", "SIGGRAPH"),
     ]
     for pat, venue_name in patterns:
@@ -93,8 +96,8 @@ for rel_path, fname in pdf_files:
         "file_key": key,
         "title": info.get("title", os.path.splitext(fname)[0]),
         "authors": info.get("authors", "Unknown"),
-        "year": year if year else "",      # 未匹配到保持空
-        "venue": venue if venue else "",   # 未匹配到保持空
+        "year": year if year else "",      
+        "venue": venue if venue else "",   
         "tags": tags,
         "pdf": f"{PDF_DIR}/{quoted_rel_path}",
         "pdf_local": f"{PDF_DIR}/{quoted_rel_path}",
@@ -106,8 +109,16 @@ for rel_path, fname in pdf_files:
     papers.append(paper)
     metadata[key] = paper
 
+# 删除 legacy key
 for legacy_key in legacy_keys_to_remove:
     metadata.pop(legacy_key, None)
+
+# ✅ 清理 metadata 中已不存在的 PDF
+existing_keys = set([rel_path.lower() for rel_path, _ in pdf_files])
+keys_to_remove = [k for k in metadata if k not in existing_keys]
+for k in keys_to_remove:
+    print(f"🗑️ 删除已不存在的 PDF 对应 metadata: {k}")
+    metadata.pop(k, None)
 
 # 保存 metadata.json
 with open(METADATA_FILE, "w", encoding="utf-8") as f:

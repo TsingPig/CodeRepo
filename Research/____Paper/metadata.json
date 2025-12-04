@@ -531,6 +531,21 @@
     "bib": "",
     "notes": ""
   },
+  "survey/a survey of performance optimization for mobile application.pdf": {
+    "file_key": "survey/a survey of performance optimization for mobile application.pdf",
+    "title": "A Survey of Performance Optimization for Mobile Application",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "",
+    "tags": [
+      "unsorted"
+    ],
+    "pdf": "papers/survey/a%20survey%20of%20performance%20optimization%20for%20mobile%20application.pdf",
+    "pdf_local": "papers/survey/a%20survey%20of%20performance%20optimization%20for%20mobile%20application.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
   "survey/a survey of video game testing.pdf": {
     "file_key": "survey/a survey of video game testing.pdf",
     "title": "A Survey of Video Game Testing",
@@ -563,38 +578,8 @@
     "bib": "",
     "notes": "VLA Survey, 介绍了具身智能相关的VLA技术应用"
   },
-  "unsorted/a survey of performance optimization for mobile application.pdf": {
-    "file_key": "unsorted/a survey of performance optimization for mobile application.pdf",
-    "title": "A Survey of Performance Optimization for Mobile Application",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
-    "tags": [
-      "unsorted"
-    ],
-    "pdf": "papers/unsorted/a%20survey%20of%20performance%20optimization%20for%20mobile%20application.pdf",
-    "pdf_local": "papers/unsorted/a%20survey%20of%20performance%20optimization%20for%20mobile%20application.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "unsorted/a survey on (m)llm-based gui agents.pdf": {
-    "file_key": "unsorted/a survey on (m)llm-based gui agents.pdf",
-    "title": "A Survey on (M)LLM-Based GUI Agents",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
-    "tags": [
-      "unsorted"
-    ],
-    "pdf": "papers/unsorted/a%20survey%20on%20%28m%29llm-based%20gui%20agents.pdf",
-    "pdf_local": "papers/unsorted/a%20survey%20on%20%28m%29llm-based%20gui%20agents.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "unsorted/a survey onthe design of virtual reality interaction interfaces.pdf": {
-    "file_key": "unsorted/a survey onthe design of virtual reality interaction interfaces.pdf",
+  "survey/a survey onthe design of virtual reality interaction interfaces.pdf": {
+    "file_key": "survey/a survey onthe design of virtual reality interaction interfaces.pdf",
     "title": "A Survey onthe Design of Virtual Reality Interaction Interfaces",
     "authors": "Unknown",
     "year": "2025",
@@ -602,8 +587,23 @@
     "tags": [
       "unsorted"
     ],
-    "pdf": "papers/unsorted/a%20survey%20onthe%20design%20of%20virtual%20reality%20interaction%20interfaces.pdf",
-    "pdf_local": "papers/unsorted/a%20survey%20onthe%20design%20of%20virtual%20reality%20interaction%20interfaces.pdf",
+    "pdf": "papers/survey/a%20survey%20onthe%20design%20of%20virtual%20reality%20interaction%20interfaces.pdf",
+    "pdf_local": "papers/survey/a%20survey%20onthe%20design%20of%20virtual%20reality%20interaction%20interfaces.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "survey/arxiv25_a survey on (m)llm-based gui agents.pdf": {
+    "file_key": "survey/arxiv25_a survey on (m)llm-based gui agents.pdf",
+    "title": "arXiv25_a survey on (m)llm-based gui agents",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "arXiv",
+    "tags": [
+      "survey"
+    ],
+    "pdf": "papers/survey/arXiv25_a%20survey%20on%20%28m%29llm-based%20gui%20agents.pdf",
+    "pdf_local": "papers/survey/arXiv25_a%20survey%20on%20%28m%29llm-based%20gui%20agents.pdf",
     "read": false,
     "bib": "",
     "notes": ""
@@ -773,21 +773,6 @@
     "bib": "",
     "notes": ""
   },
-  "unsorted/efish’nsea unity game set for learning software performance.pdf": {
-    "file_key": "unsorted/efish’nsea unity game set for learning software performance.pdf",
-    "title": "eFish’nSea Unity Game Set for Learning Software Performance",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
-    "tags": [
-      "unsorted"
-    ],
-    "pdf": "papers/unsorted/efish%E2%80%99nsea%20unity%20game%20set%20for%20learning%20software%20performance.pdf",
-    "pdf_local": "papers/unsorted/efish%E2%80%99nsea%20unity%20game%20set%20for%20learning%20software%20performance.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
   "unsorted/element-aware fine-tuning of vision-language models for cost-efficient gui testing in an industrial setting.pdf": {
     "file_key": "unsorted/element-aware fine-tuning of vision-language models for cost-efficient gui testing in an industrial setting.pdf",
     "title": "Element-Aware Fine-Tuning of Vision-Language Models for Cost-Efficient GUI Testing in an Industrial Setting",
@@ -829,21 +814,6 @@
     ],
     "pdf": "papers/unsorted/erebus%20access%20control%20for%20augmented%20reality%20systems.pdf",
     "pdf_local": "papers/unsorted/erebus%20access%20control%20for%20augmented%20reality%20systems.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "unsorted/evombt_at_the_sbst_2022_tool_competition.pdf": {
-    "file_key": "unsorted/evombt_at_the_sbst_2022_tool_competition.pdf",
-    "title": "EvoMBT_at_the_SBST_2022_Tool_Competition",
-    "authors": "Unknown",
-    "year": "2025",
-    "venue": "",
-    "tags": [
-      "unsorted"
-    ],
-    "pdf": "papers/unsorted/evombt_at_the_sbst_2022_tool_competition.pdf",
-    "pdf_local": "papers/unsorted/evombt_at_the_sbst_2022_tool_competition.pdf",
     "read": false,
     "bib": "",
     "notes": ""
@@ -919,21 +889,6 @@
     ],
     "pdf": "papers/unsorted/improving%20playtesting%20coverage%20via%20curiosity%20driven%20reinforcement%20learning%20agents.pdf",
     "pdf_local": "papers/unsorted/improving%20playtesting%20coverage%20via%20curiosity%20driven%20reinforcement%20learning%20agents.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "unsorted/know your bugs_a survey of issues in automated.pdf": {
-    "file_key": "unsorted/know your bugs_a survey of issues in automated.pdf",
-    "title": "Know Your Bugs A Survey of Issues in Automated",
-    "authors": "Unknown Authors",
-    "year": "2025",
-    "venue": "",
-    "tags": [
-      "unsorted"
-    ],
-    "pdf": "papers/unsorted/know%20your%20bugs_a%20survey%20of%20issues%20in%20automated.pdf",
-    "pdf_local": "papers/unsorted/know%20your%20bugs_a%20survey%20of%20issues%20in%20automated.pdf",
     "read": false,
     "bib": "",
     "notes": ""
@@ -1643,6 +1598,52 @@
     "bib": "",
     "notes": ""
   },
+  "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf": {
+    "file_key": "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf",
+    "title": "arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes",
+    "authors": " Junlong Chen*  University of Cambridge",
+    "year": "2024",
+    "venue": "arXiv",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
+    "pdf_local": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/arxiv24_smore_enhancing_object_manipulation_and_organization_in_mixed_reality_spaces_with_llms_and_generative_ai.pdf": {
+    "file_key": "vr/arxiv24_smore_enhancing_object_manipulation_and_organization_in_mixed_reality_spaces_with_llms_and_generative_ai.pdf",
+    "title": "arXiv24_sMoRe_Enhancing_Object_Manipulation_and_Organization_in_Mixed_Reality_Spaces_with_LLMs_and_Generative_AI",
+    "authors": "YUNHAOXING,University of Notre Dame, USA",
+    "year": "2024",
+    "venue": "arXiv",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/arXiv24_sMoRe_Enhancing_Object_Manipulation_and_Organization_in_Mixed_Reality_Spaces_with_LLMs_and_Generative_AI.pdf",
+    "pdf_local": "papers/VR/arXiv24_sMoRe_Enhancing_Object_Manipulation_and_Organization_in_Mixed_Reality_Spaces_with_LLMs_and_Generative_AI.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf": {
+    "file_key": "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf",
+    "title": "arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "arXiv",
+    "tags": [
+      "VR",
+      "survey"
+    ],
+    "pdf": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "pdf_local": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
   "vr/automated usability evaluation of virtual reality application.pdf": {
     "file_key": "vr/automated usability evaluation of virtual reality application.pdf",
     "title": "Automated Usability Evaluation of Virtual Reality Application",
@@ -1688,6 +1689,21 @@
     "read": true,
     "bib": "",
     "notes": "1. 攻击者（VR用户）可通过观察他人虚拟形象，还原另一VR用户输入的内容。作者对15名被测试者进行了攻击并且成功还原超过86%-98% of typed keys 和 98% of the meaning of the original typed content"
+  },
+  "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf": {
+    "file_key": "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf",
+    "title": "iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans",
+    "authors": "Alon Shoa  The Advanced Reality Lab, Reichman University  Herzliya, Israel",
+    "year": "2023",
+    "venue": "IVA",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
+    "pdf_local": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
   },
   "vr/penetration_vision_through_virtual_reality_headsets_identifying_360-degree_videos_from_head_movements.pdf": {
     "file_key": "vr/penetration_vision_through_virtual_reality_headsets_identifying_360-degree_videos_from_head_movements.pdf",
@@ -1811,6 +1827,21 @@
     "bib": "",
     "notes": ""
   },
+  "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf": {
+    "file_key": "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf",
+    "title": "UIST24_Augmented_Object_Intelligence_with_XR-Objects",
+    "authors": "Mustafa Doga Dogan  Google ",
+    "year": "2024",
+    "venue": "UIST",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
+    "pdf_local": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
   "vr/utilizing generative ai for vr exploration testing_a case study.pdf": {
     "file_key": "vr/utilizing generative ai for vr exploration testing_a case study.pdf",
     "title": "Utilizing Generative AI for VR Exploration Testing_A Case Study",
@@ -1917,63 +1948,47 @@
     "bib": "",
     "notes": "short paper"
   },
-  "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf": {
-    "file_key": "vr/arxiv25_survey_of_large_language_models_in_extended_reality_technical_paradigms_and_application_frontiers.pdf",
-    "title": "arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers",
+  "model-based testing/sbst22_evombt_at_the_sbst_2022_tool_competition.pdf": {
+    "file_key": "model-based testing/sbst22_evombt_at_the_sbst_2022_tool_competition.pdf",
+    "title": "sbst22_evombt_at_the_sbst_2022_tool_competition",
     "authors": "Unknown",
-    "year": "2025",
-    "venue": "arXiv",
+    "year": "2022",
+    "venue": "SBST",
     "tags": [
-      "VR",
+      "Model-based Testing"
+    ],
+    "pdf": "papers/Model-based%20Testing/sbst22_evombt_at_the_sbst_2022_tool_competition.pdf",
+    "pdf_local": "papers/Model-based%20Testing/sbst22_evombt_at_the_sbst_2022_tool_competition.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "survey/know your bugs_a survey of issues in automated.pdf": {
+    "file_key": "survey/know your bugs_a survey of issues in automated.pdf",
+    "title": "know your bugs_a survey of issues in automated",
+    "authors": "Unknown",
+    "year": "",
+    "venue": "",
+    "tags": [
       "survey"
     ],
-    "pdf": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
-    "pdf_local": "papers/VR/arXiv25_Survey_of_Large_Language_Models_in_Extended_Reality_Technical_Paradigms_and_Application_Frontiers.pdf",
+    "pdf": "papers/survey/know%20your%20bugs_a%20survey%20of%20issues%20in%20automated.pdf",
+    "pdf_local": "papers/survey/know%20your%20bugs_a%20survey%20of%20issues%20in%20automated.pdf",
     "read": false,
     "bib": "",
     "notes": ""
   },
-  "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf": {
-    "file_key": "vr/uist24_augmented_object_intelligence_with_xr-objects.pdf",
-    "title": "UIST24_Augmented_Object_Intelligence_with_XR-Objects",
-    "authors": "Mustafa Doga Dogan  Google ",
+  "vr/ismar24_xair_an_xr_platform_that_integrates_large_language_models_with_the_physical_world.pdf": {
+    "file_key": "vr/ismar24_xair_an_xr_platform_that_integrates_large_language_models_with_the_physical_world.pdf",
+    "title": "ismar24_XaiR_An_XR_Platform_that_Integrates_Large_Language_Models_with_the_Physical_World",
+    "authors": "Sruti Srinidhi ( Carnegie Mellon University)",
     "year": "2024",
-    "venue": "UIST",
+    "venue": "ISMAR",
     "tags": [
       "VR"
     ],
-    "pdf": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
-    "pdf_local": "papers/VR/UIST24_Augmented_Object_Intelligence_with_XR-Objects.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf": {
-    "file_key": "vr/arxiv24_analyzing_multimodal_interaction_strategies_for_llm-assisted_manipulation_of_3d_scenes.pdf",
-    "title": "arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes",
-    "authors": " Junlong Chen*  University of Cambridge",
-    "year": "2024",
-    "venue": "arXiv",
-    "tags": [
-      "VR"
-    ],
-    "pdf": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
-    "pdf_local": "papers/VR/arXiv24_Analyzing_Multimodal_Interaction_Strategies_for_LLM-Assisted_Manipulation_of_3D_Scenes.pdf",
-    "read": false,
-    "bib": "",
-    "notes": ""
-  },
-  "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf": {
-    "file_key": "vr/iva23_sushi_with_einstein_enhancing_hybrid_live_events_with_llm-based_virtual_humans.pdf",
-    "title": "iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans",
-    "authors": "Alon Shoa  The Advanced Reality Lab, Reichman University  Herzliya, Israel",
-    "year": "2023",
-    "venue": "IVA",
-    "tags": [
-      "VR"
-    ],
-    "pdf": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
-    "pdf_local": "papers/VR/iva23_Sushi_with_Einstein_Enhancing_Hybrid_Live_Events_with_LLM-Based_Virtual_Humans.pdf",
+    "pdf": "papers/VR/ismar24_XaiR_An_XR_Platform_that_Integrates_Large_Language_Models_with_the_Physical_World.pdf",
+    "pdf_local": "papers/VR/ismar24_XaiR_An_XR_Platform_that_Integrates_Large_Language_Models_with_the_Physical_World.pdf",
     "read": false,
     "bib": "",
     "notes": ""

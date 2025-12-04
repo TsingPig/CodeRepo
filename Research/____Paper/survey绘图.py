@@ -25,6 +25,7 @@ data = [
     (2024, "Generative AI VR", "XR", "Testing", "Generative AI"),
     (2024, "Kea", "GUI", "Testing", "Property-based testing"),
     (2024, "VOPA", "XR", "Testing", "Oracle prediction"),
+    (2024, "XaiR", "XR", "Development", "Oracle prediction"),
     (2024, "AutoConsis", "GUI", "Testing", "Multimodal model"),
     (2024, "HarmonyOS T.", "GUI", "Testing", "Model-based testing"),
     (2023, "Erebus", "XR", "Reliability", "Access control"),
