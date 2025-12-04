@@ -242,18 +242,20 @@ function toggleGroup(header) {
 }
 
 function getFilteredList(q, venue = currentVenueFilter) {
-    const query = (q || '').toLowerCase();
+    const query = normalize(q);
     return papers.filter(p => {
-        const tagsText = (p.tags || []).join(',');
-        const venueText = (p.venue || '');
-        const matchesSearch = !query ||
-            p.title.toLowerCase().includes(query) ||
-            p.authors.toLowerCase().includes(query) ||
-            tagsText.toLowerCase().includes(query) ||
-            venueText.toLowerCase().includes(query);
-        const matchesVenue = (venue === 'all') ? true : (venueText.trim() === venue);
+        const title = normalize(p.title);
+        const authors = normalize(p.authors);
+        const tagsText = normalize((p.tags || []).join(','));
+        const venueText = normalize(p.venue || '');
+        const matchesSearch = !query || title.includes(query) || authors.includes(query) || tagsText.includes(query) || venueText.includes(query);
+        const matchesVenue = (venue === 'all') ? true : (normalize(venueText) === normalize(venue));
         return matchesSearch && matchesVenue;
     });
+}
+
+function normalize(str = '') {
+    return str.toLowerCase().replace(/[\s_\-]+/g, '');
 }
 
 function arrayToMetadataMap(list) {
