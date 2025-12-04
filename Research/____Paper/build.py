@@ -1,6 +1,7 @@
 import os
 import json
 import urllib.parse
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -10,6 +11,31 @@ OUTPUT_HTML = "index.html"
 TEMPLATE_HTML = "template.html"
 
 os.makedirs(PDF_DIR, exist_ok=True)
+
+# 根据文件名自动推断会议/年份（如果匹配不到则返回 None）
+def infer_venue_and_year(fname):
+    fname_lower = fname.lower()
+    patterns = [
+        (r"ase(?:20)?(\d{2})", "ASE"),
+        (r"icse(?:20)?(\d{2})", "ICSE"),
+        (r"issta(?:20)?(\d{2})", "ISSTA"),
+        (r"acl(?:20)?(\d{2})", "ACL"),
+        (r"arxiv(?:20)?(\d{2})", "arXiv"),
+        (r"nip(?:s)?(?:20)?(\d{2})", "NeurIPS"),
+        (r"cvpr(?:20)?(\d{2})", "CVPR"),
+        (r"iccv(?:20)?(\d{2})", "ICCV"),
+        (r"eccv(?:20)?(\d{2})", "ECCV"),
+        (r"aaai(?:20)?(\d{2})", "AAAI"),
+        (r"icra(?:20)?(\d{2})", "ICRA"),
+        (r"siggraph(?:20)?(\d{2})", "SIGGRAPH"),
+    ]
+    for pat, venue_name in patterns:
+        match = re.search(pat, fname_lower)
+        if match:
+            year_suffix = match.group(1)
+            year = f"20{year_suffix}"
+            return venue_name, year
+    return None, None
 
 # 加载或创建 metadata
 if os.path.exists(METADATA_FILE):
@@ -49,15 +75,24 @@ for rel_path, fname in pdf_files:
     if not tags:
         tags = [folder_tag]
 
+    # 自动从文件名推断年份和会议
+    year = info.get("year")
+    venue = info.get("venue")
+    if not year or not venue:
+        inferred_venue, inferred_year = infer_venue_and_year(fname)
+        if not year:
+            year = inferred_year  # 只有匹配到才填
+        if not venue:
+            venue = inferred_venue  # 只有匹配到才填
+
     paper = {
         "file_key": key,
         "title": info.get("title", os.path.splitext(fname)[0]),
         "authors": info.get("authors", "Unknown"),
-        "year": info.get("year", str(datetime.now().year)),
-        "venue": info.get("venue", ""),
+        "year": year if year else "",      # 未匹配到保持空
+        "venue": venue if venue else "",   # 未匹配到保持空
         "tags": tags,
         "pdf": f"{PDF_DIR}/{quoted_rel_path}",
-        # 使用相对路径，而不是 file:// URI
         "pdf_local": f"{PDF_DIR}/{quoted_rel_path}",
         "read": info.get("read", False),
         "bib": info.get("bib", ""),
@@ -65,7 +100,7 @@ for rel_path, fname in pdf_files:
     }
 
     papers.append(paper)
-    metadata[key] = paper  # 保存最新数据，键为相对路径
+    metadata[key] = paper
 
 for legacy_key in legacy_keys_to_remove:
     metadata.pop(legacy_key, None)
