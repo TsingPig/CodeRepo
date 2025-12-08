@@ -15,6 +15,57 @@ os.makedirs(PDF_DIR, exist_ok=True)
 # 根据文件名自动推断会议/年份（如果匹配不到则返回 None）
 def infer_venue_and_year(fname):
     fname_lower = fname.lower()
+
+    # ① Companion 匹配优先
+    companion_patterns = [
+        (r"(ase|icse|fse|issta|uist|chi)(?:20)?(\d{2})comp", "{conf} Companion"),
+    ]
+
+    for pat, venue_template in companion_patterns:
+        match = re.search(pat, fname_lower)
+        if match:
+            conf = match.group(1).upper()
+            year_suffix = match.group(2)
+            year = f"20{year_suffix}"
+            venue = venue_template.format(conf=conf)
+            return venue, year
+
+    # ② 常规会议
+    patterns = [
+        (r"ase(?:20)?(\d{2})", "ASE"),
+        (r"icse(?:20)?(\d{2})", "ICSE"),
+        (r"fse(?:20)?(\d{2})", "FSE"),
+        (r"sbst(?:20)?(\d{2})", "SBST"),
+        (r"issta(?:20)?(\d{2})", "ISSTA"),
+        (r"acl(?:20)?(\d{2})", "ACL"),
+        (r"arxiv(?:20)?(\d{2})", "arXiv"),
+        (r"nip(?:s)?(?:20)?(\d{2})", "NeurIPS"),
+        (r"cvpr(?:20)?(\d{2})", "CVPR"),
+        (r"ismar(?:20)?(\d{2})", "ISMAR"),
+        (r"iccv(?:20)?(\d{2})", "ICCV"),
+        (r"eccv(?:20)?(\d{2})", "ECCV"),
+        (r"aaai(?:20)?(\d{2})", "AAAI"),
+        (r"icra(?:20)?(\d{2})", "ICRA"),
+        (r"uist(?:20)?(\d{2})", "UIST"),
+        (r"sec(?:20)?(\d{2})", "Usenix SEC"),
+        (r"iva(?:20)?(\d{2})", "IVA"),
+        (r"chi(?:20)?(\d{2})", "CHI"),
+        (r"tosem(?:20)?(\d{2})", "TOSEM"),
+        (r"tifs(?:20)?(\d{2})", "TIFS"),
+        (r"tse(?:20)?(\d{2})", "TSE"),
+        (r"siggraph(?:20)?(\d{2})", "SIGGRAPH"),
+    ]
+
+    for pat, venue_name in patterns:
+        match = re.search(pat, fname_lower)
+        if match:
+            year_suffix = match.group(1)
+            year = f"20{year_suffix}"
+            return venue_name, year
+
+    return None, None
+
+    fname_lower = fname.lower()
     patterns = [
         (r"ase(?:20)?(\d{2})", "ASE"),
         (r"icse(?:20)?(\d{2})", "ICSE"),

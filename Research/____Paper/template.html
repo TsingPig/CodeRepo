@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>论文管理系统</title>
+<title>Papers Visualizer</title>
 <style>
 body { font-family: "Segoe UI", system-ui, sans-serif; background:#f5f5f5; margin:20px; color:#222; }
 h1 { color:#333; margin-bottom:16px; }
@@ -36,15 +36,30 @@ button:hover { background:#f0f0f0; }
 .read-flag { display:inline-flex; align-items:center; gap:4px; font-size:0.85em; color:#2f855a; white-space:nowrap; padding:4px 8px; border-radius:999px; background:rgba(47,133,90,0.12); }
 .paper-unread .read-flag { color:#555; background:#f1f5f9; }
 .read-flag input { width:auto; margin:0; }
+.flat-mode { display:flex; flex-direction:column; gap:12px; }
 </style>
 </head>
 <body>
-<h1>📚 论文管理系统</h1>
+<h1>📚 Papers Visualizer</h1>
 <div class="toolbar">
     <input type="text" id="search" placeholder="搜索标题/作者/标签..." style="flex:1; min-width:220px;">
     <select id="venue-filter" style="flex:0 0 200px; min-width:160px;">
         <option value="all">全部会议/期刊</option>
     </select>
+    <select id="sort-by" style="flex:0 0 200px; min-width:160px;">
+        <option value="default">默认排序（标签分组）</option>
+        <option value="year-desc">年份（新到旧）</option>
+        <option value="year-asc">年份（旧到新）</option>
+        <option value="title-asc">标题（A-Z）</option>
+        <option value="title-desc">标题（Z-A）</option>
+        <option value="venue-asc">会议名称（A-Z）</option>
+        <option value="venue-desc">会议名称（Z-A）</option>
+    </select>
+    <!-- 新增显示模式切换按钮 -->
+    <button id="toggle-view-mode" style="background: #4f46e5; color: white; border-color: #4f46e5;">
+        📁 切换到平铺模式
+    </button>
+    <button id="toggle-all-groups">📁 折叠所有</button>
     <button id="bind-file">📂 绑定 metadata.json</button>
     <button id="download-json">💾 导出 metadata.json</button>
     <button id="reload-data">🔄 重新加载</button>
@@ -68,7 +83,13 @@ const bindBtn = document.getElementById('bind-file');
 const reloadBtn = document.getElementById('reload-data');
 const statusEl = document.getElementById('status');
 const venueFilter = document.getElementById('venue-filter');
+const sortBySelect = document.getElementById('sort-by');
+const toggleAllBtn = document.getElementById('toggle-all-groups');
+const toggleViewModeBtn = document.getElementById('toggle-view-mode');  // 新增
 let currentVenueFilter = 'all';
+let currentSortBy = 'default';
+let areAllGroupsExpanded = true;
+let isFlatMode = false;  // 新增：当前是否是平铺模式
 
 function escapeHtml(str = '') {
     return String(str)
@@ -94,40 +115,124 @@ async function initApp() {
         currentVenueFilter = e.target.value || 'all';
         render(getFilteredList(searchInput.value));
     });
+    sortBySelect.addEventListener('change', e => {
+        currentSortBy = e.target.value || 'default';
+        render(getFilteredList(searchInput.value));
+    });
+    toggleAllBtn.addEventListener('click', toggleAllGroups);
+    // 新增显示模式切换事件
+    toggleViewModeBtn.addEventListener('click', toggleViewMode);
 
     await loadMetadataViaFetch({ fallbackToEmbedded: true });
 }
 
 function render(list) {
     papersContainer.innerHTML = '';
-    const groups = groupByTag(list);
-    if (!Object.keys(groups).length) {
+    
+    if (!list.length) {
         papersContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">暂无数据，请加载 metadata.json</div>`;
         return;
     }
+    
+    if (isFlatMode) {
+        // 平铺模式：直接展示所有论文
+        renderFlatMode(list);
+    } else {
+        // 分组模式：按标签分组展示
+        renderGroupMode(list);
+    }
+}
+
+function renderFlatMode(list) {
+    papersContainer.className = 'flat-mode';
+    
+    const sortedItems = sortPapers(list, currentSortBy);
+    sortedItems.forEach(p => {
+        const paperCard = createPaperCard(p);
+        // 在平铺模式下添加标签信息
+        const tags = (p.tags || []).filter(Boolean);
+        if (tags.length > 0) {
+            const headerDiv = paperCard.querySelector('.paper-header > div');
+            if (headerDiv) {
+                const tagsHtml = tags.map(tag => 
+                    `<span style="display:inline-block; background:#e5e7eb; color:#4b5563; padding:2px 8px; border-radius:12px; font-size:0.85em; margin-right:4px;">#${escapeHtml(tag)}</span>`
+                ).join('');
+                const tagsEl = document.createElement('div');
+                tagsEl.style.marginTop = '4px';
+                tagsEl.style.marginBottom = '4px';
+                tagsEl.innerHTML = tagsHtml;
+                headerDiv.appendChild(tagsEl);
+            }
+        }
+        papersContainer.appendChild(paperCard);
+    });
+}
+
+function renderGroupMode(list) {
+    papersContainer.className = 'groups';
+    const groups = groupByTag(list);
+    
     Object.entries(groups).forEach(([tag, items]) => {
         const section = document.createElement('section');
-        section.className = 'group';
+        section.className = areAllGroupsExpanded ? 'group open' : 'group';
         section.innerHTML = `
             <div class="group-header" onclick="toggleGroup(this)">
                 <div>
                     <span class="group-title"># ${escapeHtml(tag)}</span>
                     <span class="group-count">(${items.length})</span>
                 </div>
-                <button type="button">折叠</button>
+                <button type="button">${areAllGroupsExpanded ? '折叠' : '展开'}</button>
             </div>
             <div class="group-collapse"></div>
         `;
 
         const collapse = section.querySelector('.group-collapse');
-        items.forEach(p => collapse.appendChild(createPaperCard(p)));
+        const sortedItems = sortPapers(items, currentSortBy);
+        sortedItems.forEach(p => collapse.appendChild(createPaperCard(p)));
         papersContainer.appendChild(section);
     });
 }
 
+// 新增：切换显示模式
+function toggleViewMode() {
+    isFlatMode = !isFlatMode;
+    toggleViewModeBtn.textContent = isFlatMode ? '📁 切换到分组模式' : '📁 切换到平铺模式';
+    toggleViewModeBtn.style.background = isFlatMode ? '#10b981' : '#4f46e5';
+    toggleViewModeBtn.style.borderColor = isFlatMode ? '#10b981' : '#4f46e5';
+    
+    // 在平铺模式下隐藏折叠所有按钮，分组模式下显示
+    toggleAllBtn.style.display = isFlatMode ? 'none' : '';
+    
+    // 重新渲染
+    render(getFilteredList(searchInput.value));
+}
+
+function toggleAllGroups() {
+    const groups = document.querySelectorAll('.group');
+    if (groups.length === 0) return;
+    
+    areAllGroupsExpanded = !areAllGroupsExpanded;
+    
+    groups.forEach(group => {
+        if (areAllGroupsExpanded) {
+            group.classList.add('open');
+            const button = group.querySelector('.group-header button');
+            if (button) button.textContent = '折叠';
+        } else {
+            group.classList.remove('open');
+            const button = group.querySelector('.group-header button');
+            if (button) button.textContent = '展开';
+        }
+    });
+    
+    toggleAllBtn.textContent = areAllGroupsExpanded ? '📁 折叠所有' : '📁 展开所有';
+}
+
 function groupByTag(list) {
     const grouped = {};
-    list.forEach(p => {
+    const sortedList = sortPapers(list, currentSortBy);
+    
+    sortedList.forEach(p => {
         const tags = (p.tags && p.tags.length) ? p.tags : ['未分组'];
         tags.forEach(tag => {
             const key = tag || '未分组';
@@ -135,7 +240,71 @@ function groupByTag(list) {
             grouped[key].push(p);
         });
     });
+    
     return Object.fromEntries(Object.entries(grouped).sort((a,b)=>a[0].localeCompare(b[0], 'zh')));
+}
+
+function sortPapers(papersList, sortBy) {
+    const sorted = [...papersList];
+    
+    switch(sortBy) {
+        case 'year-desc':
+            sorted.sort((a, b) => {
+                const yearA = parseInt(a.year) || 0;
+                const yearB = parseInt(b.year) || 0;
+                return yearB - yearA;
+            });
+            break;
+        case 'year-asc':
+            sorted.sort((a, b) => {
+                const yearA = parseInt(a.year) || 9999;
+                const yearB = parseInt(b.year) || 9999;
+                return yearA - yearB;
+            });
+            break;
+        case 'title-asc':
+            sorted.sort((a, b) => {
+                const titleA = (a.title || '').toLowerCase().replace(/^(a|an|the)\s+/i, '');
+                const titleB = (b.title || '').toLowerCase().replace(/^(a|an|the)\s+/i, '');
+                return titleA.localeCompare(titleB, 'zh');
+            });
+            break;
+        case 'title-desc':
+            sorted.sort((a, b) => {
+                const titleA = (a.title || '').toLowerCase().replace(/^(a|an|the)\s+/i, '');
+                const titleB = (b.title || '').toLowerCase().replace(/^(a|an|the)\s+/i, '');
+                return titleB.localeCompare(titleA, 'zh');
+            });
+            break;
+        case 'venue-asc':
+            sorted.sort((a, b) => {
+                const venueA = (a.venue || '').toLowerCase();
+                const venueB = (b.venue || '').toLowerCase();
+                return venueA.localeCompare(venueB, 'zh') || (a.title || '').localeCompare(b.title || '', 'zh');
+            });
+            break;
+        case 'venue-desc':
+            sorted.sort((a, b) => {
+                const venueA = (a.venue || '').toLowerCase();
+                const venueB = (b.venue || '').toLowerCase();
+                return venueB.localeCompare(venueA, 'zh') || (a.title || '').localeCompare(b.title || '', 'zh');
+            });
+            break;
+    }
+    return sorted;
+}
+
+function getFilteredList(q, venue = currentVenueFilter) {
+    const query = normalize(q);
+    return papers.filter(p => {
+        const title = normalize(p.title);
+        const authors = normalize(p.authors);
+        const tagsText = normalize((p.tags || []).join(','));
+        const venueText = normalize(p.venue || '');
+        const matchesSearch = !query || title.includes(query) || authors.includes(query) || tagsText.includes(query) || venueText.includes(query);
+        const matchesVenue = (venue === 'all') ? true : (normalize(venueText) === normalize(venue));
+        return matchesSearch && matchesVenue;
+    });
 }
 
 function createPaperCard(p) {
@@ -145,17 +314,16 @@ function createPaperCard(p) {
     div.innerHTML = `
         <div class="paper-header">
             <div>
-                <b>${escapeHtml(p.title)}</b> (${escapeHtml(p.year)})<br>
+                <b>
+                    <span style="color: #E53935;">
+                        ${p.venue || p.year ? '[' : ''}${escapeHtml(p.venue || '')}${p.venue && p.year ? ' ' : ''}${p.year ? escapeHtml(p.year) : ''}${p.venue || p.year ? '] ' : ''}
+                    </span>
+                    <span style="color: black;">
+                        ${escapeHtml(p.title)}
+                    </span>
+                </b><br>
                 作者: ${escapeHtml(p.authors)}<br>
-                会议/期刊: ${escapeHtml(p.venue || '未填写')}<br>
-                标签: ${escapeHtml((p.tags || []).join(', '))}<br>
             </div>
-        </div>
-        <div class="read-row">
-            <label class="read-flag" title="标记是否已读">
-                <input type="checkbox" ${p.read ? 'checked' : ''} onchange="handleReadToggle(event, '${p.file_key}')">
-                ${p.read ? '已读' : '未读'}
-            </label>
         </div>
         ${p.notes ? `
         <div class="note">
@@ -165,11 +333,19 @@ function createPaperCard(p) {
             </div>
             <div class="note-content">${escapeHtml(p.notes)}</div>
         </div>` : ''}
-        <div class="actions">
+
+        <!-- 按钮和已读在同一行 -->
+        <div class="actions" style="display: flex; align-items: center; gap: 4px; flex-wrap: nowrap;">
             ${p.pdf_local ? `<button type="button" onclick="openLocalSource('${encodedLocal}')" title="尝试通过 file:// 打开原始文件">打开源文件</button>` : ''}
             <button onclick="toggleEdit(this)">✏️ 编辑</button>
             <button type="button" onclick="openContainingFolder('${encodedLocal}')" title="打开文件所在文件夹并聚焦">📂 打开所在目录</button>
+
+            <label class="read-flag" style="margin-left: auto; display: flex; align-items: center; gap: 4px;" title="标记是否已读">
+                <input type="checkbox" ${p.read ? 'checked' : ''} onchange="handleReadToggle(event, '${p.file_key}')">
+                ${p.read ? '已读' : '未读'}
+            </label>
         </div>
+
         <div class="collapse">
             <input value="${escapeHtml(p.title)}" placeholder="标题" class="edit-title"><br>
             <input value="${escapeHtml(p.authors)}" placeholder="作者" class="edit-authors"><br>
@@ -189,8 +365,7 @@ function openContainingFolder(encodedUri) {
         const path = decodeURIComponent(encodedUri || '');
         if (!path) return;
 
-        // 构造文件夹路径
-        const folderPath = path.replace(/\/[^\/]+$/, ''); // 去掉文件名，只保留目录
+        const folderPath = path.replace(/\/[^\/]+$/, '');
         const opened = window.open(folderPath, '_blank');
         if (!opened) {
             showStatus('浏览器限制无法直接打开文件夹，路径已复制到剪贴板', true);
@@ -261,19 +436,6 @@ function toggleGroup(header) {
     const button = header.querySelector('button');
     const isOpen = group.classList.toggle('open');
     button.textContent = isOpen ? '折叠' : '展开';
-}
-
-function getFilteredList(q, venue = currentVenueFilter) {
-    const query = normalize(q);
-    return papers.filter(p => {
-        const title = normalize(p.title);
-        const authors = normalize(p.authors);
-        const tagsText = normalize((p.tags || []).join(','));
-        const venueText = normalize(p.venue || '');
-        const matchesSearch = !query || title.includes(query) || authors.includes(query) || tagsText.includes(query) || venueText.includes(query);
-        const matchesVenue = (venue === 'all') ? true : (normalize(venueText) === normalize(venue));
-        return matchesSearch && matchesVenue;
-    });
 }
 
 function normalize(str = '') {
@@ -351,7 +513,7 @@ async function loadMetadataViaFetch({ fallbackToEmbedded = false } = {}) {
             applyMetadataMap(arrayToMetadataMap(EMBEDDED_PAPERS));
             showStatus('无法读取 metadata.json，已回退至内置数据；建议使用本地服务器或绑定文件以保持同步', true);
         } else {
-            showStatus('无法直接读取 metadata.json，请使用本地服务器或“绑定”按钮手动选择文件', true);
+            showStatus('无法直接读取 metadata.json，请使用本地服务器或"绑定"按钮手动选择文件', true);
             render([]);
         }
     }
@@ -414,7 +576,7 @@ function triggerDownloadFallback(payload, auto) {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-    showStatus('浏览器限制，已触发 metadata.json 下载，请手动替换或使用“绑定/选择保存文件”', true);
+    showStatus('浏览器限制，已触发 metadata.json 下载，请手动替换或使用"绑定/选择保存文件"', true);
 }
 
 async function promptForSaveHandle(auto) {
