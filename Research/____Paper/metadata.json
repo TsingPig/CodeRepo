@@ -1992,5 +1992,170 @@
     "read": false,
     "bib": "",
     "notes": ""
+  },
+  "vr/xrcare_issta25_extended_reality_cybersickness_assessment_via_user_review_analysis.pdf": {
+    "file_key": "vr/xrcare_issta25_extended_reality_cybersickness_assessment_via_user_review_analysis.pdf",
+    "title": "XRCare_issta25_Extended_Reality_Cybersickness_Assessment_via_User_Review_Analysis",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "VR"
+    ],
+    "pdf": "papers/VR/XRCare_issta25_Extended_Reality_Cybersickness_Assessment_via_User_Review_Analysis.pdf",
+    "pdf_local": "papers/VR/XRCare_issta25_Extended_Reality_Cybersickness_Assessment_via_User_Review_Analysis.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "gui testing/item_issta25_intention-based_gui_test_migration_for_mobile_apps_using_large_language_models.pdf": {
+    "file_key": "gui testing/item_issta25_intention-based_gui_test_migration_for_mobile_apps_using_large_language_models.pdf",
+    "title": "ITeM_issta25_Intention-Based_GUI_Test_Migration_for_Mobile_Apps_using_Large_Language_Models",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "GUI Testing"
+    ],
+    "pdf": "papers/GUI%20Testing/ITeM_issta25_Intention-Based_GUI_Test_Migration_for_Mobile_Apps_using_Large_Language_Models.pdf",
+    "pdf_local": "papers/GUI%20Testing/ITeM_issta25_Intention-Based_GUI_Test_Migration_for_Mobile_Apps_using_Large_Language_Models.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "game testing/bugcraft_ase25_agents_in_the_sandbox_end-to-end_crash_bug_reproduction_for_minecraft.pdf": {
+    "file_key": "game testing/bugcraft_ase25_agents_in_the_sandbox_end-to-end_crash_bug_reproduction_for_minecraft.pdf",
+    "title": "BugCraft_ase25_Agents_in_the_Sandbox_End-to-End_Crash_Bug_Reproduction_for_Minecraft",
+    "authors": "Eray Yapa˘ gcı (Bilkent University)",
+    "year": "2025",
+    "venue": "ASE",
+    "tags": [
+      "Game Testing"
+    ],
+    "pdf": "papers/Game%20Testing/BugCraft_ase25_Agents_in_the_Sandbox_End-to-End_Crash_Bug_Reproduction_for_Minecraft.pdf",
+    "pdf_local": "papers/Game%20Testing/BugCraft_ase25_Agents_in_the_Sandbox_End-to-End_Crash_Bug_Reproduction_for_Minecraft.pdf",
+    "read": false,
+    "bib": "",
+    "notes": "Minecraft 崩溃bug复现"
+  },
+  "gui testing/guipilot_issta25_a_consistency-based_mobile_gui_testing_approach_for_detecting_application-specific_bugs.pdf": {
+    "file_key": "gui testing/guipilot_issta25_a_consistency-based_mobile_gui_testing_approach_for_detecting_application-specific_bugs.pdf",
+    "title": "GUIPilot_issta25_A_Consistency-Based_Mobile_GUI_Testing_Approach_for_Detecting_Application-Specific_Bugs",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "GUI Testing"
+    ],
+    "pdf": "papers/GUI%20Testing/GUIPilot_issta25_A_Consistency-Based_Mobile_GUI_Testing_Approach_for_Detecting_Application-Specific_Bugs.pdf",
+    "pdf_local": "papers/GUI%20Testing/GUIPilot_issta25_A_Consistency-Based_Mobile_GUI_Testing_Approach_for_Detecting_Application-Specific_Bugs.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "embodied ai/gzfuzz_issta25_reinforcement_learning-based_fuzz_testing_for_the_gazebo_robotic_simulator.pdf": {
+    "file_key": "embodied ai/gzfuzz_issta25_reinforcement_learning-based_fuzz_testing_for_the_gazebo_robotic_simulator.pdf",
+    "title": "GzFuzz_issta25_Reinforcement_Learning-Based_Fuzz_Testing_for_the_Gazebo_Robotic_Simulator",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/Embodied%20AI/GzFuzz_issta25_Reinforcement_Learning-Based_Fuzz_Testing_for_the_Gazebo_Robotic_Simulator.pdf",
+    "pdf_local": "papers/Embodied%20AI/GzFuzz_issta25_Reinforcement_Learning-Based_Fuzz_Testing_for_the_Gazebo_Robotic_Simulator.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "metamorphic testing/issta25_improving_deep_learning_framework_testing_with_model-level_metamorphic_testing.pdf": {
+    "file_key": "metamorphic testing/issta25_improving_deep_learning_framework_testing_with_model-level_metamorphic_testing.pdf",
+    "title": "issta25_Improving_Deep_Learning_Framework_Testing_with_Model-Level_Metamorphic_Testing",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "Metamorphic Testing"
+    ],
+    "pdf": "papers/Metamorphic%20Testing/issta25_Improving_Deep_Learning_Framework_Testing_with_Model-Level_Metamorphic_Testing.pdf",
+    "pdf_local": "papers/Metamorphic%20Testing/issta25_Improving_Deep_Learning_Framework_Testing_with_Model-Level_Metamorphic_Testing.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "game testing/sojourner_under_sabotage_issta25_teaching_software_testing_and_debugging_with_the_serious_game_sojourner_under_sabotage.pdf": {
+    "file_key": "game testing/sojourner_under_sabotage_issta25_teaching_software_testing_and_debugging_with_the_serious_game_sojourner_under_sabotage.pdf",
+    "title": "Sojourner_under_Sabotage_issta25_Teaching_Software_Testing_and_Debugging_with_the_Serious_Game_Sojourner_under_Sabotage",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "ISSTA",
+    "tags": [
+      "Game Testing"
+    ],
+    "pdf": "papers/Game%20Testing/Sojourner_under_Sabotage_issta25_Teaching_Software_Testing_and_Debugging_with_the_Serious_Game_Sojourner_under_Sabotage.pdf",
+    "pdf_local": "papers/Game%20Testing/Sojourner_under_Sabotage_issta25_Teaching_Software_Testing_and_Debugging_with_the_Serious_Game_Sojourner_under_Sabotage.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "embodied ai/roscallbax_fse25_statically_detecting_inconsistencies_in_callbackfunction_setup_of_robotic_systems.pdf": {
+    "file_key": "embodied ai/roscallbax_fse25_statically_detecting_inconsistencies_in_callbackfunction_setup_of_robotic_systems.pdf",
+    "title": "ROSCallBaX_fse25_Statically_Detecting_Inconsistencies_in_CallbackFunction_Setup_of_Robotic_Systems",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "FSE",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/Embodied%20AI/ROSCallBaX_fse25_Statically_Detecting_Inconsistencies_in_CallbackFunction_Setup_of_Robotic_Systems.pdf",
+    "pdf_local": "papers/Embodied%20AI/ROSCallBaX_fse25_Statically_Detecting_Inconsistencies_in_CallbackFunction_Setup_of_Robotic_Systems.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "embodied ai/robofuzz_fse25_fuzzing_robotic_systems_over_robot_operating_system_(ros)_for_finding_correctness_bugs.pdf": {
+    "file_key": "embodied ai/robofuzz_fse25_fuzzing_robotic_systems_over_robot_operating_system_(ros)_for_finding_correctness_bugs.pdf",
+    "title": "RoboFuzz_fse25_fuzzing_robotic_systems_over_robot_operating_system_(ROS)_for_finding_correctness_bugs",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "FSE",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/Embodied%20AI/RoboFuzz_fse25_fuzzing_robotic_systems_over_robot_operating_system_%28ROS%29_for_finding_correctness_bugs.pdf",
+    "pdf_local": "papers/Embodied%20AI/RoboFuzz_fse25_fuzzing_robotic_systems_over_robot_operating_system_%28ROS%29_for_finding_correctness_bugs.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "embodied ai/physframe_fse21_type_checking_physical_frames_of_reference_for_robotic_systems.pdf": {
+    "file_key": "embodied ai/physframe_fse21_type_checking_physical_frames_of_reference_for_robotic_systems.pdf",
+    "title": "PHYSFRAME_fse21_type_checking_physical_frames_of_reference_for_robotic_systems",
+    "authors": "Unknown",
+    "year": "2021",
+    "venue": "FSE",
+    "tags": [
+      "Embodied AI"
+    ],
+    "pdf": "papers/Embodied%20AI/PHYSFRAME_fse21_type_checking_physical_frames_of_reference_for_robotic_systems.pdf",
+    "pdf_local": "papers/Embodied%20AI/PHYSFRAME_fse21_type_checking_physical_frames_of_reference_for_robotic_systems.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
+  },
+  "game/fse25_enhancing_game_ai_behaviors_with_large_language_models_and_agentic_ai.pdf": {
+    "file_key": "game/fse25_enhancing_game_ai_behaviors_with_large_language_models_and_agentic_ai.pdf",
+    "title": "fse25_Enhancing_Game_AI_Behaviors_with_Large_Language_Models_and_Agentic_AI",
+    "authors": "Unknown",
+    "year": "2025",
+    "venue": "FSE",
+    "tags": [
+      "Game"
+    ],
+    "pdf": "papers/Game/fse25_Enhancing_Game_AI_Behaviors_with_Large_Language_Models_and_Agentic_AI.pdf",
+    "pdf_local": "papers/Game/fse25_Enhancing_Game_AI_Behaviors_with_Large_Language_Models_and_Agentic_AI.pdf",
+    "read": false,
+    "bib": "",
+    "notes": ""
   }
 }
